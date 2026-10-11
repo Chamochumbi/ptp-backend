@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: ptp-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: WIX_SITE_ID
+        value: 11bfcf84-d1f4-4604-bfcf-82c08b20f0d4
+      - key: WIX_CLIENT_ID
+        value: 33921d68-22e1-4e95-b38a-d8f4c70aa416
+      - key: PTP_FRONTEND_ORIGIN
+        value: https://headless-imjmmxsthlj-pedrousinae-140b.wix-site-host.com
