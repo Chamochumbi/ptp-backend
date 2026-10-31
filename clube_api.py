@@ -90,9 +90,14 @@ def require(*roles):
 def login(data:Login):
     email=valid_email(data.email)
     with db() as c:
-        u=c.execute("select id,password_hash,active from ptp_users where email=%s",(email,)).fetchone()
+        u=c.execute("""select u.id,u.password_hash,u.active,u.company_id,
+                 co.active as company_active from ptp_users u
+                 left join ptp_companies co on co.id=u.company_id
+                 where u.email=%s""",(email,)).fetchone()
         if not u or not u["active"] or not check_password(data.password,u["password_hash"]):
             raise HTTPException(401,"Credenciais inválidas")
+        if u["company_id"] is not None and not u["company_active"]:
+            raise HTTPException(403,"Vínculo empresarial não habilitado")
         token=secrets.token_urlsafe(48)
         c.execute("insert into ptp_sessions(user_id,token_hash,expires_at) values (%s,%s,now()+interval '8 hours')",(u["id"],digest(token)))
         c.commit()
