@@ -160,3 +160,31 @@ def disable_user(user_id:int,data:UserDisable,u=Depends(require("admin"))):
         c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"user_disabled",str(user_id)))
         c.commit()
     return {"status":"disabled"}
+
+
+class ActivationRequest(BaseModel):
+    reason:str=Field(min_length=5,max_length=350)
+@app.post("/admin/users/{user_id}/activate")
+def activate_user(user_id:int,data:ActivationRequest,u=Depends(require("admin"))):
+    with db() as c:
+        target=c.execute("select id,company_id,role from ptp_users where id=%s",(user_id,)).fetchone()
+        if not target:raise HTTPException(404,"Conta não encontrada")
+        if target["company_id"]:
+            co=c.execute("select active from ptp_companies where id=%s",(target["company_id"],)).fetchone()
+            if not co or not co["active"]:raise HTTPException(409,"Empresa não homologada")
+        c.execute("update ptp_users set active=true where id=%s",(user_id,))
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"user_activated",str(user_id)))
+        c.commit()
+    return {"status":"activated"}
+
+@app.get("/admin/users")
+def list_users(u=Depends(require("admin"))):
+    with db() as c:
+        return {"users":[dict(r) for r in c.execute(
+          "select id,email,name,role,company_id,active,created_at from ptp_users order by id desc limit 200").fetchall()]}
+
+@app.get("/admin/audit")
+def list_audit(u=Depends(require("admin"))):
+    with db() as c:
+        return {"events":[dict(r) for r in c.execute(
+          "select id,actor_id,action,target,created_at from ptp_audit order by id desc limit 200").fetchall()]}
