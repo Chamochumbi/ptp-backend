@@ -50,7 +50,7 @@ def ready():
     if not DB_URL:raise HTTPException(503,"Banco não configurado")
     with db() as c:
         found={r["table_name"] for r in c.execute("select table_name from information_schema.tables where table_schema='public'").fetchall()}
-    required={"ptp_companies","ptp_users","ptp_sessions","ptp_invites","ptp_audit"}
+    required={"ptp_companies","ptp_users","ptp_sessions","ptp_invites","ptp_audit","ptp_applications"}
     if not required.issubset(found):raise HTTPException(503,"Migrações pendentes")
     return {"status":"ready","database":"postgresql","migrations":"present"}
 
