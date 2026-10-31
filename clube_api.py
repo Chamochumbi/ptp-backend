@@ -188,3 +188,6 @@ def list_audit(u=Depends(require("admin"))):
     with db() as c:
         return {"events":[dict(r) for r in c.execute(
           "select id,actor_id,action,target,created_at from ptp_audit order by id desc limit 200").fetchall()]}
+
+# Explicit opt-in migration bootstrap for staging
+import clube_startup  # noqa: E402,F401
