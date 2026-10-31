@@ -1,5 +1,6 @@
 """Clube PTP — identidade isolada. Requer PostgreSQL, segredos e homologação antes de uso público."""
-import os, re, secrets, hashlib, hmac, datetime
+import os, re, secrets, hashlib, hmac, datetime, smtplib, ssl
+from email.message import EmailMessage
 from contextlib import contextmanager
 from fastapi import FastAPI, HTTPException, Depends, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -53,6 +54,30 @@ def ready():
     required={"ptp_companies","ptp_users","ptp_sessions","ptp_invites","ptp_audit","ptp_applications"}
     if not required.issubset(found):raise HTTPException(503,"Migrações pendentes")
     return {"status":"ready","database":"postgresql","migrations":"present"}
+
+def send_invite_email(email, token):
+    host=os.getenv("PTP_SMTP_HOST","").strip()
+    sender=os.getenv("PTP_SMTP_FROM","").strip()
+    login=os.getenv("PTP_SMTP_USER","").strip()
+    secret=os.getenv("PTP_SMTP_PASSWORD","")
+    if not all((host,sender,login,secret)):
+        raise HTTPException(503,"Entrega de convites ainda não configurada")
+    url=os.getenv("PTP_INVITE_URL","https://headless-bnbjhenmacf-pedrousinae-140b.wix-site-host.com/painel.html")
+    # The invitation token is not embedded in a tracking URL or server logs.
+    msg=EmailMessage()
+    msg["Subject"]="Convite individual — Clube de Benefícios PTP"
+    msg["From"]=sender
+    msg["To"]=email
+    msg.set_content("Você foi convidado para o Clube de Benefícios PTP.\\n"
+                    "Acesse a área de participantes: "+url+"\\n"
+                    "Código de convite (uso único; válido por 48 horas): "+token+"\\n"
+                    "Não compartilhe este código.")
+    try:
+        with smtplib.SMTP_SSL(host,int(os.getenv("PTP_SMTP_PORT","465")),context=ssl.create_default_context(),timeout=12) as smtp:
+            smtp.login(login,secret)
+            smtp.send_message(msg)
+    except (OSError,smtplib.SMTPException,ValueError):
+        raise HTTPException(503,"Não foi possível entregar o convite; tente novamente")
 
 class Login(BaseModel):
     email:str
@@ -142,9 +167,9 @@ def create_invitation(data:Invite,u=Depends(require("admin","manager"))):
                   (email,data.role,data.company_id,digest(token),u["id"]))
         c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
                   (u["id"],"invite_created",email))
+        send_invite_email(email,token)
         c.commit()
-    # Apenas homologação: envio por email transacional ainda não está integrado.
-    return {"status":"pending_delivery","invite_id_delivery_required":True}
+    return {"status":"sent","invite_id_delivery_required":False}
 
 @app.post("/auth/accept-invite")
 def accept_invite(data:InvitationAcceptance):
@@ -323,9 +348,10 @@ def invite_beneficiary(data:BeneficiaryInvite,u=Depends(require("manager"))):
           values (%s,'employee',%s,%s,%s,now()+interval '48 hours') returning id""",
           (email,u["company_id"],digest(token),u["id"])).fetchone()
         c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"beneficiary_invited",email))
+        send_invite_email(email,token)
         c.commit()
-    return {"invitation_id":row["id"],"status":"pending_delivery",
-            "message":"Convite registrado, mas o envio de e-mail ainda não está habilitado"}
+    return {"invitation_id":row["id"],"status":"sent",
+            "message":"Convite enviado ao e-mail do beneficiário"}
 
 
 @app.get("/admin/beneficiaries")
