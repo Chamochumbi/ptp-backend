@@ -13,4 +13,6 @@ def initialize_staging_database():
     sql = Path(__file__).with_name("clube_migration_001.sql").read_text(encoding="utf-8")
     with psycopg.connect(dsn, sslmode="require", connect_timeout=10) as conn:
         conn.execute(sql)
+        next_migration = Path(__file__).with_name("clube_migration_002.sql").read_text(encoding="utf-8")
+        conn.execute(next_migration)
         conn.commit()
