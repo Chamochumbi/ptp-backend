@@ -68,9 +68,9 @@ def send_invite_email(email, token):
     msg["Subject"]="Convite individual — Clube de Benefícios PTP"
     msg["From"]=sender
     msg["To"]=email
-    msg.set_content("Você foi convidado para o Clube de Benefícios PTP.\\n"
-                    "Acesse a área de participantes: "+url+"\\n"
-                    "Código de convite (uso único; válido por 48 horas): "+token+"\\n"
+    msg.set_content("Você foi convidado para o Clube de Benefícios PTP.\n"
+                    "Acesse a área de participantes: "+url+"\n"
+                    "Código de convite (uso único; válido por 48 horas): "+token+"\n"
                     "Não compartilhe este código.")
     try:
         with smtplib.SMTP_SSL(host,int(os.getenv("PTP_SMTP_PORT","465")),context=ssl.create_default_context(),timeout=12) as smtp:
@@ -178,13 +178,18 @@ def accept_invite(data:InvitationAcceptance):
               where token_hash=%s and consumed_at is null and expires_at>now()
               for update""",(digest(data.token),)).fetchone()
         if not invite:raise HTTPException(400,"Convite inválido ou expirado")
+        if invite["company_id"] is not None:
+            company=c.execute("select active from ptp_companies where id=%s",(invite["company_id"],)).fetchone()
+            if not company or not company["active"]:
+                raise HTTPException(409,"Empresa não habilitada")
         if c.execute("select 1 from ptp_users where email=%s",(invite["email"],)).fetchone():
             raise HTTPException(409,"Conta já existente")
         c.execute("""insert into ptp_users(email,name,password_hash,role,company_id,active)
-              values (%s,%s,%s,%s,%s,false)""",(invite["email"],data.name,password_hash(data.password),invite["role"],invite["company_id"]))
+              values (%s,%s,%s,%s,%s,%s)""",(invite["email"],data.name,password_hash(data.password),invite["role"],invite["company_id"],invite["role"] in ("manager","employee") and invite["company_id"] is not None))
         c.execute("update ptp_invites set consumed_at=now() where id=%s",(invite["id"],))
         c.commit()
-    return {"status":"created","message":"Conta criada; habilitação e critérios empresariais ainda sujeitos à verificação"}
+    return {"status":"created","active":invite["role"] in ("manager","employee") and invite["company_id"] is not None,
+            "message":"Conta criada. Acesse com seu e-mail e senha." if invite["role"] in ("manager","employee") and invite["company_id"] is not None else "Conta criada; aguardando habilitação administrativa."}
 
 @app.post("/admin/users/{user_id}/disable")
 def disable_user(user_id:int,data:UserDisable,u=Depends(require("admin"))):
