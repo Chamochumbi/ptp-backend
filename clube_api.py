@@ -145,7 +145,7 @@ def accept_invite(data:InvitationAcceptance):
         if c.execute("select 1 from ptp_users where email=%s",(invite["email"],)).fetchone():
             raise HTTPException(409,"Conta já existente")
         c.execute("""insert into ptp_users(email,name,password_hash,role,company_id,active)
-              values (%s,%s,%s,%s,%s,true)""",(invite["email"],data.name,password_hash(data.password),invite["role"],invite["company_id"]))
+              values (%s,%s,%s,%s,%s,false)""",(invite["email"],data.name,password_hash(data.password),invite["role"],invite["company_id"]))
         c.execute("update ptp_invites set consumed_at=now() where id=%s",(invite["id"],))
         c.commit()
     return {"status":"created","message":"Conta criada; habilitação e critérios empresariais ainda sujeitos à verificação"}
