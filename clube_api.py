@@ -194,5 +194,50 @@ def list_audit(u=Depends(require("admin"))):
         return {"events":[dict(r) for r in c.execute(
           "select id,actor_id,action,target,created_at from ptp_audit order by id desc limit 200").fetchall()]}
 
+
+class CompanyCreate(BaseModel):
+    name:str=Field(min_length=3,max_length=200)
+class CompanyDecision(BaseModel):
+    reason:str=Field(min_length=5,max_length=350)
+
+@app.get("/admin/companies")
+def admin_companies(u=Depends(require("admin"))):
+    with db() as c:
+        companies=c.execute("""select co.id,co.name,co.active,co.created_at,
+         count(us.id) as total_people,
+         count(us.id) filter (where us.active) as active_people
+         from ptp_companies co left join ptp_users us on us.company_id=co.id
+         group by co.id order by co.id desc limit 200""").fetchall()
+    return {"companies":[dict(company) for company in companies]}
+
+@app.post("/admin/companies")
+def admin_create_company(data:CompanyCreate,u=Depends(require("admin"))):
+    with db() as c:
+        co=c.execute("insert into ptp_companies(name,active) values (%s,false) returning id,name,active",(data.name.strip(),)).fetchone()
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"company_created",str(co["id"])))
+        c.commit()
+    return dict(co)
+
+@app.post("/admin/companies/{company_id}/activate")
+def admin_activate_company(company_id:int,data:CompanyDecision,u=Depends(require("admin"))):
+    with db() as c:
+        co=c.execute("update ptp_companies set active=true where id=%s returning id",(company_id,)).fetchone()
+        if not co:raise HTTPException(404,"Empresa não encontrada")
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"company_activated",str(company_id)))
+        c.commit()
+    return {"status":"active"}
+
+@app.post("/admin/companies/{company_id}/suspend")
+def admin_suspend_company(company_id:int,data:CompanyDecision,u=Depends(require("admin"))):
+    with db() as c:
+        co=c.execute("update ptp_companies set active=false where id=%s returning id",(company_id,)).fetchone()
+        if not co:raise HTTPException(404,"Empresa não encontrada")
+        c.execute("""update ptp_sessions set revoked_at=now()
+              where user_id in (select id from ptp_users where company_id=%s)
+              and revoked_at is null""",(company_id,))
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"company_suspended",str(company_id)))
+        c.commit()
+    return {"status":"suspended","sessions_revoked":True}
+
 # Explicit opt-in migration bootstrap for staging
 import clube_startup  # noqa: E402,F401
