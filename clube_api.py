@@ -131,6 +131,12 @@ def create_invitation(data:Invite,u=Depends(require("admin","manager"))):
     if data.role in ("manager","employee") and not data.company_id:raise HTTPException(422,"Empresa obrigatória")
     token=secrets.token_urlsafe(40)
     with db() as c:
+        if data.company_id is not None:
+            company=c.execute("select active from ptp_companies where id=%s",(data.company_id,)).fetchone()
+            if not company or not company["active"]:
+                raise HTTPException(409,"A associação da empresa deve estar habilitada")
+        if c.execute("select 1 from ptp_users where email=%s",(email,)).fetchone():
+            raise HTTPException(409,"Usuário já cadastrado")
         c.execute("""insert into ptp_invites(email,role,company_id,token_hash,created_by,expires_at)
                   values (%s,%s,%s,%s,%s,now()+interval '48 hours')""",
                   (email,data.role,data.company_id,digest(token),u["id"]))
@@ -286,6 +292,40 @@ def review_application(application_id:int,data:ApplicationReview,u=Depends(requi
                   (u["id"],"application_"+data.status,str(application_id)))
         c.commit()
     return dict(row)
+
+
+@app.get("/manager/beneficiaries")
+def manager_beneficiaries(u=Depends(require("manager"))):
+    if u["company_id"] is None:raise HTTPException(403,"Gestor sem associação")
+    with db() as c:
+        rows=c.execute("""select id,name,email,role,active,created_at from ptp_users
+          where company_id=%s and role='employee' order by created_at desc limit 200""",(u["company_id"],)).fetchall()
+        invites=c.execute("""select id,email,expires_at,consumed_at from ptp_invites
+          where company_id=%s and role='employee' order by id desc limit 200""",(u["company_id"],)).fetchall()
+    return {"beneficiaries":[dict(x) for x in rows],"invitations":[dict(x) for x in invites]}
+
+class BeneficiaryInvite(BaseModel):
+    email:str
+@app.post("/manager/beneficiaries/invitations",status_code=202)
+def invite_beneficiary(data:BeneficiaryInvite,u=Depends(require("manager"))):
+    if u["company_id"] is None:raise HTTPException(403,"Gestor sem empresa")
+    email=valid_email(data.email)
+    with db() as c:
+        company=c.execute("select active from ptp_companies where id=%s",(u["company_id"],)).fetchone()
+        if not company or not company["active"]:raise HTTPException(409,"Empresa ainda não habilitada")
+        if c.execute("select 1 from ptp_users where email=%s",(email,)).fetchone():
+            raise HTTPException(409,"E-mail já cadastrado")
+        if c.execute("""select 1 from ptp_invites where email=%s and company_id=%s and
+                    consumed_at is null and expires_at>now()""",(email,u["company_id"])).fetchone():
+            raise HTTPException(409,"Convite válido já registrado")
+        token=secrets.token_urlsafe(40)
+        row=c.execute("""insert into ptp_invites(email,role,company_id,token_hash,created_by,expires_at)
+          values (%s,'employee',%s,%s,%s,now()+interval '48 hours') returning id""",
+          (email,u["company_id"],digest(token),u["id"])).fetchone()
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"beneficiary_invited",email))
+        c.commit()
+    return {"invitation_id":row["id"],"status":"pending_delivery",
+            "message":"Convite registrado, mas o envio de e-mail ainda não está habilitado"}
 
 # Explicit opt-in migration bootstrap for staging
 import clube_startup  # noqa: E402,F401
