@@ -327,5 +327,32 @@ def invite_beneficiary(data:BeneficiaryInvite,u=Depends(require("manager"))):
     return {"invitation_id":row["id"],"status":"pending_delivery",
             "message":"Convite registrado, mas o envio de e-mail ainda não está habilitado"}
 
+
+@app.get("/admin/beneficiaries")
+def admin_all_beneficiaries(u=Depends(require("admin"))):
+    with db() as c:
+        people=c.execute("""select p.id,p.name,p.email,p.active,p.created_at,
+           co.id as company_id,co.name as company_name
+           from ptp_users p join ptp_companies co on co.id=p.company_id
+           where p.role='employee' order by p.created_at desc limit 200""").fetchall()
+    return {"beneficiaries":[dict(v) for v in people],"limit":200}
+
+@app.get("/admin/overview")
+def admin_overview(u=Depends(require("admin"))):
+    with db() as c:
+        companies=c.execute("""select count(*) total,
+             count(*) filter(where active) active from ptp_companies""").fetchone()
+        users=c.execute("""select count(*) total,
+             count(*) filter(where active) active,
+             count(*) filter(where role='employee') beneficiaries
+             from ptp_users""").fetchone()
+        pending=c.execute("""select count(*) total from ptp_applications
+             where status in ('pending','under_review')""").fetchone()
+        outstanding=c.execute("""select count(*) total from ptp_invites
+             where consumed_at is null and expires_at>now()""").fetchone()
+    return {"companies":dict(companies),"users":dict(users),
+            "pending_applications":pending["total"],"pending_invites":outstanding["total"],
+            "offers":None,"redemptions":None,"financial":None}
+
 # Explicit opt-in migration bootstrap for staging
 import clube_startup  # noqa: E402,F401
