@@ -55,7 +55,7 @@ def operational_capabilities():
     try:
         with db() as c:
             names={r["table_name"] for r in c.execute("select table_name from information_schema.tables where table_schema='public'").fetchall()}
-        required={"ptp_companies","ptp_users","ptp_sessions","ptp_invites","ptp_audit","ptp_applications"}
+        required={"ptp_companies","ptp_users","ptp_sessions","ptp_invites","ptp_audit","ptp_applications","ptp_benefits","ptp_redemptions"}
         database="ready" if required.issubset(names) else "migrations_pending"
     except HTTPException:
         database="unavailable"
@@ -506,6 +506,34 @@ def decide_redemption(redemption_id:int,data:RedemptionDecision,u=Depends(requir
                   (u["id"],"redemption_"+data.status,str(redemption_id)))
         c.commit()
     return dict(row)
+
+
+class BenefitCatalogItem(BaseModel):
+    id:str=Field(min_length=1,max_length=120)
+    title:str=Field(min_length=2,max_length=250)
+    provider:str=Field(default="",max_length=250)
+    category:str=Field(default="",max_length=100)
+    description:str=Field(default="",max_length=5000)
+    active:bool=True
+class BenefitCatalogImport(BaseModel):
+    benefits:list[BenefitCatalogItem]=Field(min_length=1,max_length=250)
+
+@app.post("/admin/benefits/import")
+def import_benefit_catalog(data:BenefitCatalogImport,u=Depends(require("admin"))):
+    if len({v.id for v in data.benefits})!=len(data.benefits):
+        raise HTTPException(422,"Identificadores duplicados")
+    with db() as c:
+        for v in data.benefits:
+            c.execute("""insert into ptp_benefits(id,title,provider,category,description,active)
+                  values (%s,%s,%s,%s,%s,%s)
+                  on conflict(id) do update set title=excluded.title,provider=excluded.provider,
+                    category=excluded.category,description=excluded.description,active=excluded.active,
+                    updated_at=now()""",
+                  (v.id,v.title,v.provider,v.category,v.description,v.active))
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
+                  (u["id"],"catalog_import",str(len(data.benefits))))
+        c.commit()
+    return {"imported":len(data.benefits),"message":"Catálogo gravado no banco do Clube"}
 
 # Explicit opt-in migration bootstrap for staging
 import clube_startup  # noqa: E402,F401
