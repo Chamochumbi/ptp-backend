@@ -26,3 +26,17 @@ def test_untrusted_user_cannot_issue_invites():
 def test_no_caching_of_sensitive_responses():
     r=client.get("/me")
     assert "no-store" in r.headers.get("cache-control","")
+
+def test_capability_status_does_not_expose_secrets(monkeypatch):
+    monkeypatch.setattr("clube_api.DB_URL","")
+    response=client.get("/status/capabilities")
+    assert response.status_code==200
+    assert response.json()["database"]=="not_configured"
+    assert response.json()["operations_ready"] is False
+    assert "DATABASE_URL" not in response.text
+    assert "PTP_SMTP_PASSWORD" not in response.text
+
+def test_admin_data_requires_authorization():
+    for endpoint in ("/admin/overview","/admin/beneficiaries","/admin/companies","/admin/applications"):
+        response=client.get(endpoint)
+        assert response.status_code==401
