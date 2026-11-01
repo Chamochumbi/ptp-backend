@@ -388,8 +388,13 @@ def admin_overview(u=Depends(require("admin"))):
 
 @app.get("/me/eligibility")
 def account_eligibility(u=Depends(principal)):
-    eligible=bool(u["active"] and (u["role"]=="admin" or u["company_id"] is not None))
-    return {"eligible":eligible,"company_verified":u["company_id"] is not None or u["role"]=="admin",
+    company_verified=u["role"]=="admin"
+    if u["company_id"] is not None:
+        with db() as c:
+            company=c.execute("select active from ptp_companies where id=%s",(u["company_id"],)).fetchone()
+            company_verified=bool(company and company["active"])
+    eligible=bool(u["active"] and company_verified and u["role"] in ("admin","manager","employee"))
+    return {"eligible":eligible,"company_verified":company_verified,
             "cpf_verified":False,"email_verified":False,
             "verification_note":"CPF e e-mail ainda não possuem módulo de verificação"}
 
