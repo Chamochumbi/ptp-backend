@@ -432,5 +432,80 @@ def company_invitations(u=Depends(require("manager","admin"))):
           where company_id=%s and role='employee' order by id desc limit 200""",(u["company_id"],)).fetchall()
     return {"invitations":[dict(x) for x in rows]}
 
+
+class RedemptionRequest(BaseModel):
+    benefit_id:str=Field(min_length=1,max_length=120)
+
+@app.get("/benefits")
+def list_benefits():
+    with db() as c:
+        rows=c.execute("select id,title,provider,category,description,active from ptp_benefits where active=true order by title limit 250").fetchall()
+    return {"benefits":[dict(r) for r in rows]}
+
+@app.post("/redemptions",status_code=201)
+def create_redemption(data:RedemptionRequest,u=Depends(require("employee","manager"))):
+    if u["company_id"] is None:
+        raise HTTPException(403,"Vínculo empresarial obrigatório")
+    with db() as c:
+        co=c.execute("select active from ptp_companies where id=%s",(u["company_id"],)).fetchone()
+        if not co or not co["active"]:raise HTTPException(403,"Empresa não habilitada")
+        benefit=c.execute("select active from ptp_benefits where id=%s",(data.benefit_id,)).fetchone()
+        if not benefit or not benefit["active"]:raise HTTPException(404,"Benefício indisponível")
+        record=c.execute("""insert into ptp_redemptions(benefit_id,user_id,company_id)
+            values (%s,%s,%s) returning id,status,requested_at""",
+            (data.benefit_id,u["id"],u["company_id"])).fetchone()
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"redemption_requested",str(record["id"])))
+        c.commit()
+    return dict(record)
+
+@app.get("/me/redemptions")
+def my_redemptions(u=Depends(principal)):
+    with db() as c:
+        rows=c.execute("""select r.id,r.benefit_id,b.title,r.status,r.requested_at,r.confirmed_at
+           from ptp_redemptions r join ptp_benefits b on b.id=r.benefit_id
+           where r.user_id=%s order by r.requested_at desc limit 200""",(u["id"],)).fetchall()
+    return {"redemptions":[dict(x) for x in rows]}
+
+@app.get("/admin/benefits")
+def admin_benefits(u=Depends(require("admin"))):
+    with db() as c:
+        rows=c.execute("""select b.id,b.title,b.provider,b.category,b.active,
+          count(r.id) filter (where r.status='confirmed') as confirmed,
+          count(r.id) filter (where r.status='requested') as pending,
+          count(distinct r.user_id) filter (where r.status='confirmed') as unique_users,
+          count(distinct r.company_id) filter (where r.status='confirmed') as using_companies
+          from ptp_benefits b left join ptp_redemptions r on r.benefit_id=b.id
+          group by b.id order by b.title""").fetchall()
+    return {"benefits":[dict(x) for x in rows]}
+
+@app.get("/admin/benefits/{benefit_id}/usage")
+def benefit_usage(benefit_id:str,u=Depends(require("admin"))):
+    with db() as c:
+        benefit=c.execute("select id,title,provider,category,description,active from ptp_benefits where id=%s",(benefit_id,)).fetchone()
+        if not benefit:raise HTTPException(404,"Benefício não cadastrado")
+        rows=c.execute("""select r.id,r.status,r.requested_at,r.confirmed_at,
+              us.name as beneficiary,us.email as beneficiary_email,co.name as company
+              from ptp_redemptions r join ptp_users us on us.id=r.user_id
+              join ptp_companies co on co.id=r.company_id
+              where r.benefit_id=%s order by r.requested_at desc limit 200""",(benefit_id,)).fetchall()
+    return {"benefit":dict(benefit),"records":[dict(x) for x in rows],"returned_limit":200}
+
+class RedemptionDecision(BaseModel):
+    status:str
+@app.post("/admin/redemptions/{redemption_id}/decision")
+def decide_redemption(redemption_id:int,data:RedemptionDecision,u=Depends(require("admin"))):
+    if data.status not in ("confirmed","cancelled"):raise HTTPException(422,"Decisão inválida")
+    with db() as c:
+        row=c.execute("""update ptp_redemptions
+          set status=%s,confirmed_at=case when %s='confirmed' then now() else null end,
+              confirmed_by=%s
+          where id=%s and status='requested' returning id,status""",
+          (data.status,data.status,u["id"],redemption_id)).fetchone()
+        if not row:raise HTTPException(409,"Resgate inexistente ou já decidido")
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
+                  (u["id"],"redemption_"+data.status,str(redemption_id)))
+        c.commit()
+    return dict(row)
+
 # Explicit opt-in migration bootstrap for staging
 import clube_startup  # noqa: E402,F401
