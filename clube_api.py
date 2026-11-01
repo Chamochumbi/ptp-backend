@@ -402,5 +402,15 @@ def company_members(u=Depends(require("manager","admin"))):
           where company_id=%s and role='employee' order by created_at desc limit 200""",(u["company_id"],)).fetchall()
     return {"members":[dict(x) for x in rows],"total":len(rows)}
 
+
+@app.get("/company/invitations")
+def company_invitations(u=Depends(require("manager","admin"))):
+    if u["company_id"] is None:
+        raise HTTPException(422,"Uma empresa vinculada é necessária")
+    with db() as c:
+        rows=c.execute("""select id,email,expires_at,consumed_at from ptp_invites
+          where company_id=%s and role='employee' order by id desc limit 200""",(u["company_id"],)).fetchall()
+    return {"invitations":[dict(x) for x in rows]}
+
 # Explicit opt-in migration bootstrap for staging
 import clube_startup  # noqa: E402,F401
