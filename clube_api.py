@@ -46,6 +46,21 @@ def valid_email(v):
 
 @app.get("/health")
 def health():return {"status":"alive","service":"clube-ptp-identity"}
+@app.get("/status/capabilities")
+def operational_capabilities():
+    smtp_keys=("PTP_SMTP_HOST","PTP_SMTP_FROM","PTP_SMTP_USER","PTP_SMTP_PASSWORD")
+    smtp_configured=all(bool(os.getenv(k,"").strip()) for k in smtp_keys)
+    if not DB_URL:
+        return {"api":"online","database":"not_configured","invitations":"configured" if smtp_configured else "not_configured","operations_ready":False}
+    try:
+        with db() as c:
+            names={r["table_name"] for r in c.execute("select table_name from information_schema.tables where table_schema='public'").fetchall()}
+        required={"ptp_companies","ptp_users","ptp_sessions","ptp_invites","ptp_audit","ptp_applications"}
+        database="ready" if required.issubset(names) else "migrations_pending"
+    except HTTPException:
+        database="unavailable"
+    return {"api":"online","database":database,"invitations":"configured" if smtp_configured else "not_configured","operations_ready":database=="ready" and smtp_configured}
+
 @app.get("/ready")
 def ready():
     if not DB_URL:raise HTTPException(503,"Banco não configurado")
