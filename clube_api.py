@@ -385,5 +385,22 @@ def admin_overview(u=Depends(require("admin"))):
             "pending_applications":pending["total"],"pending_invites":outstanding["total"],
             "offers":None,"redemptions":None,"financial":None}
 
+
+@app.get("/me/eligibility")
+def account_eligibility(u=Depends(principal)):
+    eligible=bool(u["active"] and (u["role"]=="admin" or u["company_id"] is not None))
+    return {"eligible":eligible,"company_verified":u["company_id"] is not None or u["role"]=="admin",
+            "cpf_verified":False,"email_verified":False,
+            "verification_note":"CPF e e-mail ainda não possuem módulo de verificação"}
+
+@app.get("/company/members")
+def company_members(u=Depends(require("manager","admin"))):
+    if u["role"]=="admin" and u["company_id"] is None:
+        raise HTTPException(422,"Selecione uma empresa pela visão administrativa")
+    with db() as c:
+        rows=c.execute("""select id,name,email,role,active,created_at from ptp_users
+          where company_id=%s and role='employee' order by created_at desc limit 200""",(u["company_id"],)).fetchall()
+    return {"members":[dict(x) for x in rows],"total":len(rows)}
+
 # Explicit opt-in migration bootstrap for staging
 import clube_startup  # noqa: E402,F401
