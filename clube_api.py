@@ -10,7 +10,8 @@ from psycopg.rows import dict_row
 
 app=FastAPI(title="Clube PTP - Identidade (Homologação)",docs_url=None,redoc_url=None,openapi_url=None)
 DB_URL=os.getenv("DATABASE_URL","")
-ORIGINS=[s.strip() for s in os.getenv("PTP_CORS_ORIGINS","").split(",") if s.strip()]
+DEFAULT_ORIGINS=["https://headless-bnbjhenmacf-pedrousinae-140b.wix-site-host.com","https://headless-uydjfwgjdgr-pedrousinae-140b.wix-site-host.com"]
+ORIGINS=list(dict.fromkeys(DEFAULT_ORIGINS+[s.strip() for s in os.getenv("PTP_CORS_ORIGINS","").split(",") if s.strip()]))
 if ORIGINS: app.add_middleware(CORSMiddleware,allow_origins=ORIGINS,allow_credentials=False,allow_methods=["GET","POST"],allow_headers=["Authorization","Content-Type"])
 @app.middleware("http")
 async def no_cache(req:Request,call_next):
