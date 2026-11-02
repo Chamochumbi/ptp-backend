@@ -580,6 +580,18 @@ def company_invitations(u=Depends(require("manager","admin"))):
           where company_id=%s and role='employee' order by id desc limit 200""",(cid,)).fetchall()
     return {"invitations":[dict(x) for x in rows]}
 
+@app.post("/company/members/{member_id}/deactivate")
+def deactivate_company_member(member_id:int,u=Depends(require("manager","admin"))):
+    cid=scoped_company_id(u)
+    with db() as c:
+        row=c.execute("""update ptp_users set active=false where id=%s and company_id=%s
+            and role='employee' and active=true returning id,email""",(member_id,cid)).fetchone()
+        if not row:raise HTTPException(404,"Colaborador ativo não encontrado nesta empresa")
+        c.execute("update ptp_sessions set revoked_at=now() where user_id=%s and revoked_at is null",(member_id,))
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"company_employee_deactivated",str(member_id)))
+        c.commit()
+    return {"status":"deactivated","member_id":member_id}
+
 @app.get("/company/usage")
 def corporate_usage(u=Depends(require("manager","admin"))):
     cid=scoped_company_id(u)
