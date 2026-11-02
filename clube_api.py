@@ -151,6 +151,25 @@ def logout(authorization:str|None=Header(None),u=Depends(principal)):
         c.commit()
     return {"status":"revoked"}
 
+class PasswordChange(BaseModel):
+    current_password:str=Field(min_length=1)
+    new_password:str=Field(min_length=12,max_length=128)
+
+@app.post("/auth/change-password")
+def change_password(data:PasswordChange,u=Depends(principal),authorization:str|None=Header(None)):
+    if data.current_password==data.new_password:
+        raise HTTPException(422,"A nova senha deve ser diferente da atual")
+    session_token=authorization[7:].strip()
+    with db() as c:
+        account=c.execute("select id,password_hash from ptp_users where id=%s for update",(u["id"],)).fetchone()
+        if not account or not check_password(data.current_password,account["password_hash"]):
+            raise HTTPException(401,"Senha atual incorreta")
+        c.execute("update ptp_users set password_hash=%s where id=%s",(password_hash(data.new_password),u["id"]))
+        c.execute("update ptp_sessions set revoked_at=now() where user_id=%s and revoked_at is null",(u["id"],))
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"password_changed",str(u["id"])))
+        c.commit()
+    return {"status":"changed","sessions_revoked":True,"message":"Senha alterada. Entre novamente."}
+
 @app.get("/me")
 def me(u=Depends(principal)):
     return {k:v for k,v in u.items() if k!="company_active"}
