@@ -763,5 +763,48 @@ def manager_redemptions(u=Depends(require("manager","admin"))):
             order by r.requested_at desc limit 200""",(u["company_id"],)).fetchall()
     return {"redemptions":[dict(x) for x in rows]}
 
+
+@app.get("/provider/digital-requests")
+def provider_digital_requests(u=Depends(require("provider","admin"))):
+    if u["role"]=="provider" and not u["company_id"]:raise HTTPException(403,"Vincule uma empresa ofertante")
+    with db() as c:
+        if u["role"]=="admin":
+            rows=c.execute("""select r.id,r.status,r.requested_at,r.benefit_id,b.title,
+              us.name as member_name,co.name as member_company
+              from ptp_redemptions r join ptp_benefits b on b.id=r.benefit_id
+              join ptp_users us on us.id=r.user_id join ptp_companies co on co.id=r.company_id
+              where r.status='requested' order by r.requested_at desc limit 200""").fetchall()
+        else:
+            rows=c.execute("""select r.id,r.status,r.requested_at,r.benefit_id,b.title,
+              us.name as member_name,co.name as member_company
+              from ptp_redemptions r join ptp_benefits b on b.id=r.benefit_id
+              join ptp_users us on us.id=r.user_id join ptp_companies co on co.id=r.company_id
+              join ptp_companies provider_co on provider_co.id=%s
+              where r.status='requested' and provider_co.active
+               and lower(trim(provider_co.name))=lower(trim(b.provider))
+              order by r.requested_at desc limit 200""",(u["company_id"],)).fetchall()
+    return {"requests":[dict(x) for x in rows]}
+class ProviderDecision(BaseModel):
+    decision:str
+@app.post("/provider/digital-requests/{redemption_id}/decision")
+def provider_digital_decision(redemption_id:int,data:ProviderDecision,u=Depends(require("provider","admin"))):
+    if data.decision not in ("confirmed","cancelled"):raise HTTPException(422,"Decisão inválida")
+    with db() as c:
+        row=c.execute("""select r.id,b.provider,b.id as benefit_id
+           from ptp_redemptions r join ptp_benefits b on b.id=r.benefit_id
+           where r.id=%s and r.status='requested' for update of r""",(redemption_id,)).fetchone()
+        if not row:raise HTTPException(409,"Solicitação indisponível ou já decidida")
+        if u["role"]=="provider":
+            company=c.execute("select name,active from ptp_companies where id=%s",(u["company_id"],)).fetchone() if u["company_id"] else None
+            if not company or not company["active"] or company["name"].strip().casefold()!=row["provider"].strip().casefold():
+                raise HTTPException(403,"A solicitação não pertence ao seu estabelecimento")
+        c.execute("""update ptp_redemptions set status=%s,
+              confirmed_at=case when %s='confirmed' then now() else null end,
+              confirmed_by=%s where id=%s""",(data.decision,data.decision,u["id"],redemption_id))
+        c.execute("insert into ptp_audit(actor_id,action,target) values(%s,%s,%s)",
+                  (u["id"],"provider_digital_"+data.decision,str(redemption_id)))
+        c.commit()
+    return {"id":redemption_id,"status":data.decision}
+
 # Explicit opt-in migration bootstrap for staging
 import clube_startup  # noqa: E402,F401
