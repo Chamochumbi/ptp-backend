@@ -535,5 +535,44 @@ def import_benefit_catalog(data:BenefitCatalogImport,u=Depends(require("admin"))
         c.commit()
     return {"imported":len(data.benefits),"message":"Catálogo gravado no banco do Clube"}
 
+
+# Central catalog: database wins; the published 25-offer snapshot is a bootstrap-only fallback.
+CATALOG_SEED_URL="https://headless-uydjfwgjdgr-pedrousinae-140b.wix-site-host.com/assets/ofertas-publicas.json"
+
+@app.get("/catalog")
+def central_catalog():
+    import json,urllib.request
+    if DB_URL:
+        try:
+            with db() as c:
+                rows=c.execute("""select id,title,provider,category,description,active
+                    from ptp_benefits order by id""").fetchall()
+            if rows:
+                return {"source":"postgresql","canonical":True,
+                    "benefits":[{"id":r["id"],"title":r["title"],"partner":r["provider"],
+                     "category":r["category"],"description":r["description"],"active":r["active"]} for r in rows]}
+        except (HTTPException,psycopg.Error):
+            pass
+    try:
+        with urllib.request.urlopen(CATALOG_SEED_URL,timeout=5) as resp:
+            data=json.load(resp)
+        if not isinstance(data,list) or len(data)<1:raise ValueError("Catálogo vazio")
+        return {"source":"published_snapshot","canonical":False,"benefits":data,
+                "warning":"Catálogo de contingência: banco ainda não homologado"}
+    except Exception:
+        raise HTTPException(503,"Catálogo indisponível")
+
+@app.get("/catalog/providers")
+def central_providers():
+    catalog=central_catalog()
+    groups={}
+    for item in catalog["benefits"]:
+        partner=(item.get("partner") or item.get("provider") or "Não identificado").strip()
+        entry=groups.setdefault(partner,{"name":partner,"benefit_ids":[],"benefit_count":0})
+        entry["benefit_ids"].append(str(item["id"]))
+        entry["benefit_count"]+=1
+    return {"source":catalog["source"],"canonical":catalog["canonical"],
+             "providers":list(groups.values())}
+
 # Explicit opt-in migration bootstrap for staging
 import clube_startup  # noqa: E402,F401
