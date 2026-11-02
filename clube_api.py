@@ -847,3 +847,6 @@ def provider_digital_decision(redemption_id:int,data:ProviderDecision,u=Depends(
 
 # Explicit opt-in migration bootstrap for staging
 import clube_startup  # noqa: E402,F401
+
+# Register startup migrations and institutional bootstrap with the ASGI entrypoint.
+import clube_startup  # register lifecycle hook
