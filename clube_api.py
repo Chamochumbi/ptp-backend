@@ -689,6 +689,14 @@ def central_catalog():
         except (HTTPException,psycopg.Error):
             pass
     try:
+        from pathlib import Path
+        snapshot=Path(__file__).with_name('clube_catalog_snapshot.json')
+        data=json.loads(snapshot.read_text(encoding='utf-8'))
+        if isinstance(data,list) and len(data)>=25:
+            return {'source':'bundled_official_catalog','canonical':False,'benefits':data,'warning':'Catálogo publicado de contingência; sincronização transacional pendente'}
+    except (OSError,ValueError):
+        pass
+    try:
         with urllib.request.urlopen(CATALOG_SEED_URL,timeout=5) as resp:
             data=json.load(resp)
         if not isinstance(data,list) or len(data)<1:raise ValueError("Catálogo vazio")
