@@ -676,34 +676,36 @@ CATALOG_SEED_URL="https://headless-uydjfwgjdgr-pedrousinae-140b.wix-site-host.co
 
 @app.get("/catalog")
 def central_catalog():
-    import json,urllib.request
+    import json
+    from pathlib import Path
+    snapshot=[]
+    try:
+        data=json.loads(Path(__file__).with_name("clube_catalog_snapshot.json").read_text(encoding="utf-8"))
+        if isinstance(data,list):
+            snapshot=data
+    except (OSError,ValueError):
+        pass
+    base={str(item.get("id")):dict(item) for item in snapshot if isinstance(item,dict) and item.get("id") is not None}
     if DB_URL:
         try:
             with db() as c:
                 rows=c.execute("""select id,title,provider,category,description,active
                     from ptp_benefits order by id""").fetchall()
             if rows:
-                return {"source":"postgresql","canonical":True,
-                    "benefits":[{"id":r["id"],"title":r["title"],"partner":r["provider"],
-                     "category":r["category"],"description":r["description"],"active":r["active"]} for r in rows]}
+                for row in rows:
+                    key=str(row["id"])
+                    item=base.get(key,{"id":row["id"],"group":"Parceiros"})
+                    item.update({"id":row["id"],"title":row["title"],"partner":row["provider"],
+                        "category":row["category"],"description":row["description"],"active":row["active"]})
+                    base[key]=item
+                return {"source":"postgresql_merged_with_published_catalog","canonical":True,
+                    "benefits":list(base.values())}
         except (HTTPException,psycopg.Error):
             pass
-    try:
-        from pathlib import Path
-        snapshot=Path(__file__).with_name('clube_catalog_snapshot.json')
-        data=json.loads(snapshot.read_text(encoding='utf-8'))
-        if isinstance(data,list) and len(data)>=25:
-            return {'source':'bundled_official_catalog','canonical':False,'benefits':data,'warning':'Catálogo publicado de contingência; sincronização transacional pendente'}
-    except (OSError,ValueError):
-        pass
-    try:
-        with urllib.request.urlopen(CATALOG_SEED_URL,timeout=5) as resp:
-            data=json.load(resp)
-        if not isinstance(data,list) or len(data)<1:raise ValueError("Catálogo vazio")
-        return {"source":"published_snapshot","canonical":False,"benefits":data,
-                "warning":"Catálogo de contingência: banco ainda não homologado"}
-    except Exception:
-        raise HTTPException(503,"Catálogo indisponível")
+    if snapshot:
+        return {"source":"bundled_official_catalog","canonical":False,"benefits":snapshot,
+                "warning":"Catálogo de contingência: sincronização transacional indisponível"}
+    raise HTTPException(503,"Catálogo indisponível")
 
 @app.get("/catalog/providers")
 def central_providers():
