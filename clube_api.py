@@ -547,25 +547,51 @@ def account_eligibility(u=Depends(principal)):
             "cpf_verified":False,"email_verified":False,
             "verification_note":"CPF e e-mail ainda não possuem módulo de verificação"}
 
+def scoped_company_id(u):
+    if u["role"]=="admin" and u["email"]=="parquetecnologicopiracicaba@gmail.com":
+        with db() as c:
+            row=c.execute("select id from ptp_companies where name=%s and active=true order by id limit 1",("Parque Tecnológico de Piracicaba",)).fetchone()
+        if not row:raise HTTPException(503,"Contexto corporativo institucional indisponível")
+        return row["id"]
+    if u["company_id"] is None:raise HTTPException(403,"Gestor sem empresa vinculada")
+    return u["company_id"]
+
+@app.get("/company/profile")
+def corporate_profile(u=Depends(require("manager","admin"))):
+    cid=scoped_company_id(u)
+    with db() as c:
+        co=c.execute("select id,name,active from ptp_companies where id=%s",(cid,)).fetchone()
+    if not co:raise HTTPException(404,"Empresa não encontrada")
+    return {"id":co["id"],"name":co["name"],"active":co["active"],"institutional":u["role"]=="admin"}
+
 @app.get("/company/members")
 def company_members(u=Depends(require("manager","admin"))):
-    if u["role"]=="admin" and u["company_id"] is None:
-        raise HTTPException(422,"Selecione uma empresa pela visão administrativa")
+    cid=scoped_company_id(u)
     with db() as c:
         rows=c.execute("""select id,name,email,role,active,created_at from ptp_users
-          where company_id=%s and role='employee' order by created_at desc limit 200""",(u["company_id"],)).fetchall()
+          where company_id=%s and role='employee' order by created_at desc limit 200""",(cid,)).fetchall()
     return {"members":[dict(x) for x in rows],"total":len(rows)}
-
 
 @app.get("/company/invitations")
 def company_invitations(u=Depends(require("manager","admin"))):
-    if u["company_id"] is None:
-        raise HTTPException(422,"Uma empresa vinculada é necessária")
+    cid=scoped_company_id(u)
     with db() as c:
         rows=c.execute("""select id,email,expires_at,consumed_at from ptp_invites
-          where company_id=%s and role='employee' order by id desc limit 200""",(u["company_id"],)).fetchall()
+          where company_id=%s and role='employee' order by id desc limit 200""",(cid,)).fetchall()
     return {"invitations":[dict(x) for x in rows]}
 
+@app.get("/company/usage")
+def corporate_usage(u=Depends(require("manager","admin"))):
+    cid=scoped_company_id(u)
+    with db() as c:
+        metrics=c.execute("""select count(*) as total_requests,
+         count(*) filter (where status='confirmed') as completed,
+         count(distinct user_id) as unique_users from ptp_redemptions where company_id=%s""",(cid,)).fetchone()
+        rows=c.execute("""select us.name as user_name,count(*) as total_requests,
+        count(*) filter (where r.status='confirmed') as completed
+        from ptp_redemptions r join ptp_users us on us.id=r.user_id
+        where r.company_id=%s group by us.id,us.name order by total_requests desc limit 100""",(cid,)).fetchall()
+    return {"summary":dict(metrics),"by_user":[dict(row) for row in rows]}
 
 class RedemptionRequest(BaseModel):
     benefit_id:str=Field(min_length=1,max_length=120)
