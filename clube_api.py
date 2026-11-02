@@ -128,6 +128,7 @@ def first_admin_request(data:FirstAdminRequest):
         recent=c.execute("select 1 from ptp_first_admin_tokens where email=%s and created_at>now()-interval '2 minutes' limit 1",(email,)).fetchone()
         if recent:raise HTTPException(429,"Aguarde antes de solicitar outro código")
         c.execute("insert into ptp_first_admin_tokens(email,name,token_hash,expires_at) values (%s,%s,%s,now()+interval '15 minutes')",(email,data.name.strip(),digest(token)))
+        c.commit()
     msg=EmailMessage()
     msg["Subject"]="PTP — verificação do primeiro administrador"
     msg["From"]=sender;msg["To"]=email
