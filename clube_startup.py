@@ -35,5 +35,12 @@ def initialize_staging_database():
             else:
                 print("PTP_ADMIN_BOOTSTRAP: active_admin_exists_no_change",flush=True)
             conn.commit()
+    with psycopg.connect(dsn,sslmode="require",connect_timeout=10) as conn:
+        conn.execute("select pg_advisory_xact_lock(71204009)")
+        company=conn.execute("select id from ptp_companies where name=%s order by id limit 1",("Parque Tecnológico de Piracicaba",)).fetchone()
+        if not company:
+            conn.execute("insert into ptp_companies(name,active) values (%s,true)",("Parque Tecnológico de Piracicaba",))
+        conn.commit()
+    print("PTP_CORPORATE_CONTEXT: institutional_company_ready",flush=True)
     print("PTP_DATABASE_CHECK: migrations_applied",flush=True)
     print("PTP_ADMIN_BOOTSTRAP: email_verified_flow_only",flush=True)
