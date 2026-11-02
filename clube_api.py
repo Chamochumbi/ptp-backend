@@ -507,7 +507,14 @@ def admin_overview(u=Depends(require("admin"))):
              where status in ('pending','under_review')""").fetchone()
         outstanding=c.execute("""select count(*) total from ptp_invites
              where consumed_at is null and expires_at>now()""").fetchone()
+        providers=c.execute("""select count(*) total,
+             count(*) filter(where active) active
+             from ptp_users where role='provider'""").fetchone()
+        provider_requests=c.execute("""select count(*) total from ptp_applications
+             where application_type='provider' and status in ('pending','under_review')""").fetchone()
     return {"companies":dict(companies),"users":dict(users),
+            "providers":{"total":providers["total"],"active":providers["active"],
+                         "pending_applications":provider_requests["total"],"count_basis":"contas de ofertantes"},
             "pending_applications":pending["total"],"pending_invites":outstanding["total"],
             "offers":None,"redemptions":None,"financial":None}
 
