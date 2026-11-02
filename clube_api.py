@@ -128,7 +128,6 @@ def first_admin_request(data:FirstAdminRequest):
         recent=c.execute("select 1 from ptp_first_admin_tokens where email=%s and created_at>now()-interval '2 minutes' limit 1",(email,)).fetchone()
         if recent:raise HTTPException(429,"Aguarde antes de solicitar outro código")
         c.execute("insert into ptp_first_admin_tokens(email,name,token_hash,expires_at) values (%s,%s,%s,now()+interval '15 minutes')",(email,data.name.strip(),digest(token)))
-        c.commit()
     msg=EmailMessage()
     msg["Subject"]="PTP — verificação do primeiro administrador"
     msg["From"]=sender;msg["To"]=email
@@ -137,7 +136,10 @@ def first_admin_request(data:FirstAdminRequest):
         with smtplib.SMTP_SSL(host,int(os.getenv("PTP_SMTP_PORT","465")),context=ssl.create_default_context(),timeout=12) as smtp:
             smtp.login(login,secret);smtp.send_message(msg)
     except (OSError,smtplib.SMTPException,ValueError):
-        raise HTTPException(503,"Não foi possível enviar o código")
+        with db() as c:
+            c.execute("delete from ptp_first_admin_tokens where email=%s and token_hash=%s and consumed_at is null",(email,digest(token)))
+            c.commit()
+        raise HTTPException(503,"O servidor de e-mail recusou o envio. Verifique a credencial SMTP do remetente.")
     return {"status":"sent","message":"Código encaminhado ao e-mail institucional"}
 
 @app.post("/auth/first-admin/finish")
