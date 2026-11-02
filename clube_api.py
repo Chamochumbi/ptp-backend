@@ -324,7 +324,7 @@ class ApplicationReview(BaseModel):
 
 @app.post("/applications",status_code=201)
 def submit_application(data:ApplicationSubmit):
-    if data.application_type not in ("company","provider"):
+    if data.application_type not in ("company","provider","access"):
         raise HTTPException(422,"Tipo de solicitação inválido")
     email=valid_email(data.contact_email)
     with db() as c:
@@ -357,6 +357,26 @@ def review_application(application_id:int,data:ApplicationReview,u=Depends(requi
         c.commit()
     return dict(row)
 
+
+class AdminRoleRequest(BaseModel):
+    reason:str=Field(min_length=8,max_length=350)
+
+@app.post("/admin/users/{user_id}/grant-ptp-admin")
+def grant_ptp_admin(user_id:int,data:AdminRoleRequest,u=Depends(require("admin"))):
+    # Reserved institutional identity; a public applicant cannot elevate itself.
+    with db() as c:
+        target=c.execute("select id,email,role,active from ptp_users where id=%s for update",(user_id,)).fetchone()
+        if not target:raise HTTPException(404,"Conta não encontrada")
+        if target["email"].strip().lower()!="parquetecnologicopiracicaba@gmail.com":
+            raise HTTPException(403,"Perfil ADM reservado exclusivamente ao e-mail institucional PTP")
+        if not target["active"]:
+            raise HTTPException(409,"Ative a conta antes de atribuir perfil ADM")
+        if target["role"]=="admin":return {"status":"already_admin","user_id":user_id}
+        c.execute("update ptp_users set role='admin' where id=%s",(user_id,))
+        c.execute("update ptp_sessions set revoked_at=now() where user_id=%s and revoked_at is null",(user_id,))
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"ptp_admin_granted",str(user_id)))
+        c.commit()
+    return {"status":"admin_granted","user_id":user_id,"sessions_revoked":True}
 
 @app.get("/manager/beneficiaries")
 def manager_beneficiaries(u=Depends(require("manager"))):
