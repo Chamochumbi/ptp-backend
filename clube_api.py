@@ -520,6 +520,7 @@ class BenefitCatalogImport(BaseModel):
 
 @app.post("/admin/benefits/import")
 def import_benefit_catalog(data:BenefitCatalogImport,u=Depends(require("admin"))):
+    if any(v.category not in OFFER_CATEGORIES for v in data.benefits):raise HTTPException(422,"Categoria fora do padrão do Clube")
     if len({v.id for v in data.benefits})!=len(data.benefits):
         raise HTTPException(422,"Identificadores duplicados")
     with db() as c:
@@ -575,9 +576,15 @@ def central_providers():
              "providers":list(groups.values())}
 
 
+OFFER_CATEGORIES=["Comunicação","Desenvolvimento","Educação","Finanças","Gestão","Hospedagem","Infraestrutura","Internacionalização","Saúde","Serviços","Sustentabilidade","Tecnologia"]
+
+@app.get("/offer-categories")
+def offer_categories():
+    return {"categories":OFFER_CATEGORIES}
+
 class OfferSubmission(BaseModel):
     title:str=Field(min_length=3,max_length=250)
-    category:str=Field(default="",max_length=100)
+    category:str=Field(min_length=2,max_length=100)
     description:str=Field(min_length=10,max_length=5000)
 class ReviewOffer(BaseModel):
     decision:str
@@ -588,6 +595,7 @@ class UsageEvent(BaseModel):
     subject_id:str=Field(min_length=1,max_length=120)
 @app.post("/provider/offers",status_code=201)
 def submit_offer(data:OfferSubmission,u=Depends(require("provider"))):
+    if data.category not in OFFER_CATEGORIES:raise HTTPException(422,"Selecione uma categoria válida do catálogo")
     with db() as c:
         row=c.execute("""insert into ptp_offer_submissions(provider_user_id,title,category,description)
             values(%s,%s,%s,%s) returning id,status,submitted_at""",
