@@ -18,5 +18,22 @@ def initialize_staging_database():
         with psycopg.connect(dsn,sslmode="require",connect_timeout=10) as conn:
             conn.execute(sql)
             conn.commit()
+    bootstrap_hash=os.getenv("PTP_FIRST_ADMIN_BOOTSTRAP_HASH","").strip()
+    if os.getenv("PTP_FIRST_ADMIN_BOOTSTRAP")=="1" and bootstrap_hash:
+        email="parquetecnologicopiracicaba@gmail.com"
+        with psycopg.connect(dsn,sslmode="require",connect_timeout=10) as conn:
+            conn.execute("select pg_advisory_xact_lock(71204008)")
+            active=conn.execute("select 1 from ptp_users where role='admin' and active=true limit 1").fetchone()
+            if not active:
+                conn.execute("""insert into ptp_users(email,name,password_hash,role,company_id,active)
+                    values (%s,%s,%s,'admin',null,true)
+                    on conflict(email) do update set
+                    name=excluded.name,password_hash=excluded.password_hash,role='admin',company_id=null,active=true""",
+                    (email,"Administração Institucional PTP",bootstrap_hash))
+                conn.execute("insert into ptp_audit(action,target) values ('institutional_admin_bootstrapped',%s)",(email,))
+                print("PTP_ADMIN_BOOTSTRAP: institutional_account_created",flush=True)
+            else:
+                print("PTP_ADMIN_BOOTSTRAP: active_admin_exists_no_change",flush=True)
+            conn.commit()
     print("PTP_DATABASE_CHECK: migrations_applied",flush=True)
     print("PTP_ADMIN_BOOTSTRAP: email_verified_flow_only",flush=True)
