@@ -55,7 +55,7 @@ def operational_capabilities():
     try:
         with db() as c:
             names={r["table_name"] for r in c.execute("select table_name from information_schema.tables where table_schema='public'").fetchall()}
-        required={"ptp_companies","ptp_users","ptp_sessions","ptp_invites","ptp_audit","ptp_applications","ptp_benefits","ptp_redemptions","ptp_offer_submissions","ptp_usage_events"}
+        required={"ptp_companies","ptp_users","ptp_sessions","ptp_invites","ptp_audit","ptp_applications","ptp_benefits","ptp_redemptions","ptp_offer_submissions","ptp_usage_events","ptp_member_credentials","ptp_checkin_tokens","ptp_physical_checkins"}
         database="ready" if required.issubset(names) else "migrations_pending"
     except HTTPException:
         database="unavailable"
@@ -660,6 +660,108 @@ def dimensions(u=Depends(require("admin"))):
           order by events desc limit 500""").fetchall()
         flows=c.execute("""select status,count(*) as total from ptp_offer_submissions group by status""").fetchall()
     return {"events":[dict(r) for r in events],"offer_workflow":[dict(r) for r in flows]}
+
+
+class PhysicalValidation(BaseModel):
+    credential:str=Field(min_length=8,max_length=256)
+    benefit_id:str=Field(min_length=1,max_length=120)
+def physical_context(c,operator,credential,benefit_id,lock=False):
+    if operator["role"]!="provider" and operator["role"]!="admin":raise HTTPException(403,"Operador não autorizado")
+    b=c.execute("select id,title,provider,active from ptp_benefits where id=%s",(benefit_id,)).fetchone()
+    if not b or not b["active"]:raise HTTPException(404,"Benefício indisponível")
+    if operator["role"]=="provider":
+        if not operator["company_id"]:raise HTTPException(403,"Ofertante ainda não vinculado a empresa")
+        org=c.execute("select name,active from ptp_companies where id=%s",(operator["company_id"],)).fetchone()
+        if not org or not org["active"] or org["name"].strip().casefold()!=b["provider"].strip().casefold():
+            raise HTTPException(403,"Benefício não pertence a este ofertante")
+    # Alphanumeric member code is a lookup only; check-in requires a rotating QR token.
+    if credential.startswith("PTP-"):
+        row=c.execute("""select us.id,us.name,us.company_id,us.active,co.active as company_active,
+               cr.photo_url from ptp_member_credentials cr join ptp_users us on us.id=cr.user_id
+               left join ptp_companies co on co.id=us.company_id
+               where cr.member_code=%s""",(credential,)).fetchone()
+        token_row=None
+    else:
+        lock_sql=" for update of t" if lock else ""
+        token_row=c.execute("""select t.token_hash,t.user_id,t.expires_at,t.consumed_at from ptp_checkin_tokens t
+            where t.token_hash=%s"""+lock_sql,(digest(credential),)).fetchone()
+        if not token_row or token_row["consumed_at"] or token_row["expires_at"]<=utc():
+            raise HTTPException(401,"QR expirado ou já utilizado")
+        row=c.execute("""select us.id,us.name,us.company_id,us.active,co.active as company_active,
+                cr.photo_url from ptp_users us left join ptp_companies co on co.id=us.company_id
+                left join ptp_member_credentials cr on cr.user_id=us.id where us.id=%s""",
+                (token_row["user_id"],)).fetchone()
+    if not row or not row["active"] or not row["company_id"] or not row["company_active"]:
+        raise HTTPException(403,"Beneficiário não habilitado")
+    return b,row,token_row
+
+@app.get("/me/credential")
+def member_credential(u=Depends(require("employee","manager"))):
+    if not u["company_id"]:raise HTTPException(403,"Empresa obrigatória")
+    with db() as c:
+        code=c.execute("select member_code,photo_url from ptp_member_credentials where user_id=%s",
+                     (u["id"],)).fetchone()
+        if not code:
+            member_code="PTP-"+secrets.token_hex(6).upper()
+            code=c.execute("""insert into ptp_member_credentials(user_id,member_code)
+                  values(%s,%s) on conflict(user_id) do update set user_id=excluded.user_id
+                  returning member_code,photo_url""",(u["id"],member_code)).fetchone()
+        token=secrets.token_urlsafe(32)
+        c.execute("""insert into ptp_checkin_tokens(token_hash,user_id,expires_at)
+            values(%s,%s,now()+interval '2 minutes')""",(digest(token),u["id"]))
+        c.commit()
+    return {"name":u["name"],"member_code":code["member_code"],"photo_url":code["photo_url"],
+            "qr_value":token,"qr_valid_seconds":120,
+            "note":"Código alfanumérico identifica o associado; confirmação exige QR válido"}
+
+@app.post("/provider/validate-member")
+def validate_member(data:PhysicalValidation,u=Depends(require("provider","admin"))):
+    with db() as c:
+        b,member,_=physical_context(c,u,data.credential,data.benefit_id)
+    return {"valid":True,"member_name":member["name"],"photo_url":member["photo_url"],
+            "benefit_title":b["title"],"confirmation_allowed":not data.credential.startswith("PTP-"),
+            "note":"Confira a fotografia presencialmente, quando cadastrada"}
+
+@app.post("/provider/checkin",status_code=201)
+def physical_checkin(data:PhysicalValidation,u=Depends(require("provider","admin"))):
+    if data.credential.startswith("PTP-"):
+        raise HTTPException(422,"Código impresso não autoriza resgate: solicite QR temporário")
+    with db() as c:
+        b,member,token_row=physical_context(c,u,data.credential,data.benefit_id,lock=True)
+        result=c.execute("""insert into ptp_redemptions(benefit_id,user_id,company_id,status,confirmed_at,confirmed_by)
+              values(%s,%s,%s,'confirmed',now(),%s) returning id,confirmed_at""",
+              (b["id"],member["id"],member["company_id"],u["id"])).fetchone()
+        c.execute("""insert into ptp_physical_checkins(redemption_id,provider_user_id,beneficiary_user_id,
+                  benefit_id,company_id) values(%s,%s,%s,%s,%s)""",
+                  (result["id"],u["id"],member["id"],b["id"],member["company_id"]))
+        c.execute("update ptp_checkin_tokens set consumed_at=now() where token_hash=%s",
+                  (token_row["token_hash"],))
+        c.execute("insert into ptp_audit(actor_id,action,target) values(%s,%s,%s)",
+                  (u["id"],"physical_checkin",str(result["id"])))
+        c.commit()
+    return {"redemption_id":result["id"],"status":"confirmed","confirmed_at":result["confirmed_at"]}
+
+@app.get("/provider/checkins")
+def provider_checkins(u=Depends(require("provider","admin"))):
+    with db() as c:
+        if u["role"]=="admin":
+            rows=c.execute("""select p.id,p.benefit_id,b.title,p.confirmed_at from ptp_physical_checkins p
+                join ptp_benefits b on b.id=p.benefit_id order by p.confirmed_at desc limit 200""").fetchall()
+        else:
+            rows=c.execute("""select p.id,p.benefit_id,b.title,p.confirmed_at from ptp_physical_checkins p
+                join ptp_benefits b on b.id=p.benefit_id
+                where p.provider_user_id=%s order by p.confirmed_at desc limit 200""",
+                (u["id"],)).fetchall()
+    return {"checkins":[dict(x) for x in rows]}
+@app.get("/manager/redemptions")
+def manager_redemptions(u=Depends(require("manager","admin"))):
+    if not u["company_id"]:raise HTTPException(422,"Empresa não vinculada")
+    with db() as c:
+        rows=c.execute("""select r.id,r.benefit_id,b.title,r.status,r.confirmed_at,
+            us.name as beneficiary from ptp_redemptions r join ptp_users us on us.id=r.user_id
+            join ptp_benefits b on b.id=r.benefit_id where r.company_id=%s
+            order by r.requested_at desc limit 200""",(u["company_id"],)).fetchall()
+    return {"redemptions":[dict(x) for x in rows]}
 
 # Explicit opt-in migration bootstrap for staging
 import clube_startup  # noqa: E402,F401
