@@ -256,7 +256,9 @@ def admin_summary(u=Depends(require("admin"))):
 @app.post("/admin/invites")
 def create_invitation(data:Invite,u=Depends(require("admin","manager"))):
     email=valid_email(data.email)
-    if data.role not in ("manager","employee","provider"):raise HTTPException(422,"Papel inválido")
+    if data.role not in ("admin","manager","employee","provider"):raise HTTPException(422,"Papel inválido")
+    if data.role=="admin" and u["role"]!="admin":raise HTTPException(403,"Somente ADM PTP pode convidar outro administrador")
+    if data.role=="admin" and data.company_id is not None:raise HTTPException(422,"Administrador PTP não deve ter empresa vinculada")
     if u["role"]=="manager" and (data.role!="employee" or data.company_id!=u["company_id"]):
         raise HTTPException(403,"Gestor só convida colaboradores da própria empresa")
     if data.role in ("manager","employee") and not data.company_id:raise HTTPException(422,"Empresa obrigatória")
@@ -272,7 +274,7 @@ def create_invitation(data:Invite,u=Depends(require("admin","manager"))):
                   values (%s,%s,%s,%s,%s,now()+interval '48 hours')""",
                   (email,data.role,data.company_id,digest(token),u["id"]))
         c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
-                  (u["id"],"invite_created",email))
+                  (u["id"],"admin_invite_created" if data.role=="admin" else "invite_created",email))
         send_invite_email(email,token)
         c.commit()
     return {"status":"sent","invite_id_delivery_required":False}
@@ -316,11 +318,12 @@ def activate_user(user_id:int,data:ActivationRequest,u=Depends(require("admin"))
     with db() as c:
         target=c.execute("select id,company_id,role from ptp_users where id=%s",(user_id,)).fetchone()
         if not target:raise HTTPException(404,"Conta não encontrada")
+        if target["role"]=="admin" and target["company_id"] is not None:raise HTTPException(409,"Administrador PTP não pode ter empresa vinculada")
         if target["company_id"]:
             co=c.execute("select active from ptp_companies where id=%s",(target["company_id"],)).fetchone()
             if not co or not co["active"]:raise HTTPException(409,"Empresa não homologada")
         c.execute("update ptp_users set active=true where id=%s",(user_id,))
-        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"user_activated",str(user_id)))
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"admin_activated" if target["role"]=="admin" else "user_activated",str(user_id)))
         c.commit()
     return {"status":"activated"}
 
