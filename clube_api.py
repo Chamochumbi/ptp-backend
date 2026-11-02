@@ -95,6 +95,77 @@ def send_invite_email(email, token):
     except (OSError,smtplib.SMTPException,ValueError):
         raise HTTPException(503,"Não foi possível entregar o convite; tente novamente")
 
+class FirstAdminRequest(BaseModel):
+    name:str=Field(min_length=2,max_length=180)
+    email:str
+class FirstAdminFinish(BaseModel):
+    email:str
+    code:str=Field(min_length=32,max_length=200)
+    password:str=Field(min_length=16,max_length=128)
+    name:str=Field(min_length=2,max_length=180)
+
+FIRST_ADMIN_EMAIL="parquetecnologicopiracicaba@gmail.com"
+
+@app.get("/auth/first-admin/status")
+def first_admin_status():
+    with db() as c:
+        row=c.execute("select exists(select 1 from ptp_users where role='admin' and active=true) as exists").fetchone()
+    return {"setup_available":not row["exists"],"email":FIRST_ADMIN_EMAIL if not row["exists"] else None}
+
+@app.post("/auth/first-admin/request")
+def first_admin_request(data:FirstAdminRequest):
+    email=valid_email(data.email)
+    if email!=FIRST_ADMIN_EMAIL:raise HTTPException(403,"Ativação reservada à conta institucional")
+    host=os.getenv("PTP_SMTP_HOST","").strip()
+    sender=os.getenv("PTP_SMTP_FROM","").strip()
+    login=os.getenv("PTP_SMTP_USER","").strip()
+    secret=os.getenv("PTP_SMTP_PASSWORD","")
+    if not all((host,sender,login,secret)):raise HTTPException(503,"Verificação por e-mail indisponível")
+    token=secrets.token_urlsafe(36)
+    with db() as c:
+        if c.execute("select 1 from ptp_users where role='admin' and active=true").fetchone():
+            raise HTTPException(409,"Administrador inicial já configurado")
+        recent=c.execute("select 1 from ptp_first_admin_tokens where email=%s and created_at>now()-interval '2 minutes' limit 1",(email,)).fetchone()
+        if recent:raise HTTPException(429,"Aguarde antes de solicitar outro código")
+        c.execute("insert into ptp_first_admin_tokens(email,name,token_hash,expires_at) values (%s,%s,%s,now()+interval '15 minutes')",(email,data.name.strip(),digest(token)))
+        c.commit()
+    msg=EmailMessage()
+    msg["Subject"]="PTP — verificação do primeiro administrador"
+    msg["From"]=sender;msg["To"]=email
+    msg.set_content("Código de ativação institucional (15 minutos, uso único): "+token+"\\nNão compartilhe este código.")
+    try:
+        with smtplib.SMTP_SSL(host,int(os.getenv("PTP_SMTP_PORT","465")),context=ssl.create_default_context(),timeout=12) as smtp:
+            smtp.login(login,secret);smtp.send_message(msg)
+    except (OSError,smtplib.SMTPException,ValueError):
+        raise HTTPException(503,"Não foi possível enviar o código")
+    return {"status":"sent","message":"Código encaminhado ao e-mail institucional"}
+
+@app.post("/auth/first-admin/finish")
+def first_admin_finish(data:FirstAdminFinish):
+    email=valid_email(data.email)
+    if email!=FIRST_ADMIN_EMAIL:raise HTTPException(403,"E-mail não autorizado")
+    with db() as c:
+        c.execute("select pg_advisory_xact_lock(71204008)")
+        if c.execute("select 1 from ptp_users where role='admin' and active=true").fetchone():
+            raise HTTPException(409,"Administrador inicial já configurado")
+        row=c.execute("""select id,name from ptp_first_admin_tokens
+            where email=%s and token_hash=%s and consumed_at is null and expires_at>now()
+            for update""",(email,digest(data.code.strip()))).fetchone()
+        if not row:raise HTTPException(400,"Código inválido ou expirado")
+        existing=c.execute("select id from ptp_users where email=%s for update",(email,)).fetchone()
+        if existing:
+            c.execute("update ptp_users set name=%s,password_hash=%s,role='admin',active=true where id=%s",(data.name.strip(),password_hash(data.password),existing["id"]))
+            user_id=existing["id"]
+        else:
+            user=c.execute("""insert into ptp_users(email,name,password_hash,role,company_id,active)
+                values (%s,%s,%s,'admin',null,true) returning id""",(email,data.name.strip(),password_hash(data.password))).fetchone()
+            user_id=user["id"]
+        c.execute("update ptp_first_admin_tokens set consumed_at=now() where id=%s",(row["id"],))
+        c.execute("update ptp_sessions set revoked_at=now() where user_id=%s and revoked_at is null",(user_id,))
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,'first_admin_activated',%s)",(user_id,str(user_id)))
+        c.commit()
+    return {"status":"activated","message":"Administrador institucional ativado; entre com sua senha"}
+
 class Login(BaseModel):
     email:str
     password:str=Field(min_length=1)
