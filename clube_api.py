@@ -324,6 +324,16 @@ def activate_user(user_id:int,data:ActivationRequest,u=Depends(require("admin"))
         c.commit()
     return {"status":"activated"}
 
+@app.get("/admin/invites/pending")
+def list_pending_invites(u=Depends(require("admin"))):
+    with db() as c:
+        rows=c.execute("""select i.id,i.email,i.role,i.company_id,i.created_at,i.expires_at,
+          co.name as company_name from ptp_invites i
+          left join ptp_companies co on co.id=i.company_id
+          where i.consumed_at is null and i.expires_at>now()
+          order by i.created_at desc limit 200""").fetchall()
+    return {"invites":[dict(row) for row in rows],"count":len(rows),"limited_to":200}
+
 @app.get("/admin/users")
 def list_users(u=Depends(require("admin"))):
     with db() as c:
