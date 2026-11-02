@@ -55,7 +55,7 @@ def operational_capabilities():
     try:
         with db() as c:
             names={r["table_name"] for r in c.execute("select table_name from information_schema.tables where table_schema='public'").fetchall()}
-        required={"ptp_companies","ptp_users","ptp_sessions","ptp_invites","ptp_audit","ptp_applications","ptp_benefits","ptp_redemptions"}
+        required={"ptp_companies","ptp_users","ptp_sessions","ptp_invites","ptp_audit","ptp_applications","ptp_benefits","ptp_redemptions","ptp_offer_submissions","ptp_usage_events"}
         database="ready" if required.issubset(names) else "migrations_pending"
     except HTTPException:
         database="unavailable"
@@ -573,6 +573,85 @@ def central_providers():
         entry["benefit_count"]+=1
     return {"source":catalog["source"],"canonical":catalog["canonical"],
              "providers":list(groups.values())}
+
+
+class OfferSubmission(BaseModel):
+    title:str=Field(min_length=3,max_length=250)
+    category:str=Field(default="",max_length=100)
+    description:str=Field(min_length=10,max_length=5000)
+class ReviewOffer(BaseModel):
+    decision:str
+    reason:str=Field(default="",max_length=500)
+class UsageEvent(BaseModel):
+    event_type:str=Field(pattern="^(benefit_view|benefit_click|provider_view|profile_view)$")
+    subject_type:str=Field(pattern="^(benefit|provider|profile)$")
+    subject_id:str=Field(min_length=1,max_length=120)
+@app.post("/provider/offers",status_code=201)
+def submit_offer(data:OfferSubmission,u=Depends(require("provider"))):
+    with db() as c:
+        row=c.execute("""insert into ptp_offer_submissions(provider_user_id,title,category,description)
+            values(%s,%s,%s,%s) returning id,status,submitted_at""",
+            (u["id"],data.title,data.category,data.description)).fetchone()
+        c.execute("insert into ptp_audit(actor_id,action,target) values(%s,%s,%s)",
+                  (u["id"],"offer_submitted",str(row["id"])))
+        c.commit()
+    return dict(row)
+@app.get("/provider/offers")
+def my_offers(u=Depends(require("provider"))):
+    with db() as c:
+        rows=c.execute("""select id,title,category,description,status,benefit_id,submitted_at,reviewed_at
+          from ptp_offer_submissions where provider_user_id=%s order by submitted_at desc limit 250""",
+          (u["id"],)).fetchall()
+    return {"offers":[dict(r) for r in rows]}
+@app.get("/admin/offers/queue")
+def offer_queue(u=Depends(require("admin"))):
+    with db() as c:
+        rows=c.execute("""select o.id,o.title,o.category,o.description,o.status,o.submitted_at,
+             p.name as provider,p.email as provider_email
+          from ptp_offer_submissions o join ptp_users p on p.id=o.provider_user_id
+          where o.status='pending' order by o.submitted_at limit 250""").fetchall()
+    return {"offers":[dict(r) for r in rows]}
+@app.post("/admin/offers/{offer_id}/review")
+def review_offer(offer_id:int,data:ReviewOffer,u=Depends(require("admin"))):
+    if data.decision not in ("approved","rejected"):raise HTTPException(422,"Decisão inválida")
+    with db() as c:
+        row=c.execute("""select o.id,o.title,o.category,o.description,o.status,
+                 p.name as provider from ptp_offer_submissions o
+                 join ptp_users p on p.id=o.provider_user_id
+                 where o.id=%s for update of o""",(offer_id,)).fetchone()
+        if not row:raise HTTPException(404,"Proposta inexistente")
+        if row["status"]!="pending":raise HTTPException(409,"Proposta já analisada")
+        benefit_id=None
+        if data.decision=="approved":
+            benefit_id="submitted-"+str(offer_id)
+            c.execute("""insert into ptp_benefits(id,title,provider,category,description,active)
+                values(%s,%s,%s,%s,%s,true) on conflict(id) do nothing""",
+                (benefit_id,row["title"],row["provider"],row["category"],row["description"]))
+        c.execute("""update ptp_offer_submissions set status=%s,benefit_id=%s,
+                  reviewed_by=%s,reviewed_at=now() where id=%s""",
+                  (data.decision,benefit_id,u["id"],offer_id))
+        c.execute("insert into ptp_audit(actor_id,action,target) values(%s,%s,%s)",
+                  (u["id"],"offer_"+data.decision,str(offer_id)))
+        c.commit()
+    return {"id":offer_id,"status":data.decision,"benefit_id":benefit_id}
+@app.post("/usage/events",status_code=201)
+def record_usage(data:UsageEvent,u=Depends(principal)):
+    valid={"benefit_view":"benefit","benefit_click":"benefit","provider_view":"provider","profile_view":"profile"}
+    if valid[data.event_type]!=data.subject_type:raise HTTPException(422,"Evento incompatível")
+    with db() as c:
+        c.execute("""insert into ptp_usage_events(user_id,company_id,event_type,subject_type,subject_id)
+            values(%s,%s,%s,%s,%s)""",(u["id"],u["company_id"],data.event_type,data.subject_type,data.subject_id))
+        c.commit()
+    return {"recorded":True}
+@app.get("/admin/analytics/dimensions")
+def dimensions(u=Depends(require("admin"))):
+    with db() as c:
+        events=c.execute("""select event_type,subject_type,subject_id,count(*) as events,
+          count(distinct user_id) as unique_users,count(distinct company_id) as companies
+          from ptp_usage_events group by event_type,subject_type,subject_id
+          order by events desc limit 500""").fetchall()
+        flows=c.execute("""select status,count(*) as total from ptp_offer_submissions group by status""").fetchall()
+    return {"events":[dict(r) for r in events],"offer_workflow":[dict(r) for r in flows]}
 
 # Explicit opt-in migration bootstrap for staging
 import clube_startup  # noqa: E402,F401
