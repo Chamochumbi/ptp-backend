@@ -220,6 +220,16 @@ def login(data:Login):
         c.commit()
         return {"access_token":token,"token_type":"bearer","expires_in":28800}
 
+@app.post("/auth/login-direct")
+async def login_direct(req:Request):
+    """Equivalent credential validation using a simple browser POST without CORS preflight."""
+    try:
+        payload=await req.json()
+        data=Login.model_validate(payload)
+    except Exception:
+        raise HTTPException(422,"Dados de autenticação inválidos")
+    return login(data)
+
 @app.post("/auth/logout")
 def logout(authorization:str|None=Header(None),u=Depends(principal)):
     token=authorization.split(" ",1)[1]
