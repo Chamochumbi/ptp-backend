@@ -12,7 +12,7 @@ app=FastAPI(title="Clube PTP - Identidade (Homologação)",docs_url=None,redoc_u
 DB_URL=os.getenv("DATABASE_URL","")
 DEFAULT_ORIGINS=["https://headless-bnbjhenmacf-pedrousinae-140b.wix-site-host.com","https://headless-uydjfwgjdgr-pedrousinae-140b.wix-site-host.com"]
 ORIGINS=list(dict.fromkeys(DEFAULT_ORIGINS+[s.strip() for s in os.getenv("PTP_CORS_ORIGINS","").split(",") if s.strip()]))
-if ORIGINS: app.add_middleware(CORSMiddleware,allow_origins=ORIGINS,allow_credentials=False,allow_methods=["GET","POST"],allow_headers=["Authorization","Content-Type"])
+if ORIGINS: app.add_middleware(CORSMiddleware,allow_origins=ORIGINS,allow_credentials=False,allow_methods=["GET","POST","PUT","PATCH","DELETE","OPTIONS"],allow_headers=["Authorization","Content-Type"])
 @app.middleware("http")
 async def no_cache(req:Request,call_next):
     response=await call_next(req)
