@@ -15,6 +15,8 @@ ORIGINS=list(dict.fromkeys(DEFAULT_ORIGINS+[s.strip() for s in os.getenv("PTP_CO
 if ORIGINS: app.add_middleware(CORSMiddleware,allow_origins=ORIGINS,allow_credentials=False,allow_methods=["GET","POST","PUT","PATCH","DELETE","OPTIONS"],allow_headers=["Authorization","Content-Type"])
 @app.middleware("http")
 async def no_cache(req:Request,call_next):
+    if req.url.path=="/auth/login" and req.method=="OPTIONS":
+        print("PTP_AUTH_PREFLIGHT: origin="+str(req.headers.get("origin","absent"))[:200]+", headers="+str(req.headers.get("access-control-request-headers","none"))[:120],flush=True)
     response=await call_next(req)
     response.headers["Cache-Control"]="no-store"
     response.headers["X-Content-Type-Options"]="nosniff"
