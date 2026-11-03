@@ -13,7 +13,7 @@ def initialize_staging_database():
     if os.getenv("PTP_RUN_MIGRATIONS")!="1":
         print("PTP_DATABASE_CHECK: migrations_disabled",flush=True)
         return
-    for name in ("clube_migration_001.sql","clube_migration_002.sql","clube_migration_003.sql","clube_migration_004.sql","clube_migration_005.sql","clube_migration_006.sql"):
+    for name in ("clube_migration_001.sql","clube_migration_002.sql","clube_migration_003.sql","clube_migration_004.sql","clube_migration_005.sql","clube_migration_006.sql","clube_migration_007.sql"):
         sql=Path(__file__).with_name(name).read_text(encoding="utf-8")
         with psycopg.connect(dsn,sslmode="require",connect_timeout=10) as conn:
             conn.execute(sql)
