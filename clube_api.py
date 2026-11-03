@@ -479,21 +479,21 @@ def manager_beneficiaries(u=Depends(require("manager"))):
 class BeneficiaryInvite(BaseModel):
     email:str
 @app.post("/manager/beneficiaries/invitations",status_code=202)
-def invite_beneficiary(data:BeneficiaryInvite,u=Depends(require("manager"))):
-    if u["company_id"] is None:raise HTTPException(403,"Gestor sem empresa")
+def invite_beneficiary(data:BeneficiaryInvite,u=Depends(require("manager","admin"))):
+    company_id=scoped_company_id(u)
     email=valid_email(data.email)
     with db() as c:
-        company=c.execute("select active from ptp_companies where id=%s",(u["company_id"],)).fetchone()
+        company=c.execute("select active from ptp_companies where id=%s",(company_id,)).fetchone()
         if not company or not company["active"]:raise HTTPException(409,"Empresa ainda não habilitada")
         if c.execute("select 1 from ptp_users where email=%s",(email,)).fetchone():
             raise HTTPException(409,"E-mail já cadastrado")
         if c.execute("""select 1 from ptp_invites where email=%s and company_id=%s and
-                    consumed_at is null and expires_at>now()""",(email,u["company_id"])).fetchone():
+                    consumed_at is null and expires_at>now()""",(email,company_id)).fetchone():
             raise HTTPException(409,"Convite válido já registrado")
         token=secrets.token_urlsafe(40)
         row=c.execute("""insert into ptp_invites(email,role,company_id,token_hash,created_by,expires_at)
           values (%s,'employee',%s,%s,%s,now()+interval '48 hours') returning id""",
-          (email,u["company_id"],digest(token),u["id"])).fetchone()
+          (email,company_id,digest(token),u["id"])).fetchone()
         c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"beneficiary_invited",email))
         send_invite_email(email,token)
         c.commit()
