@@ -556,13 +556,47 @@ def scoped_company_id(u):
     if u["company_id"] is None:raise HTTPException(403,"Gestor sem empresa vinculada")
     return u["company_id"]
 
+class CompanyPresentation(BaseModel):
+    display_name:str=Field(default="",max_length=200)
+    logo_url:str=Field(default="",max_length=1000)
+    segment:str=Field(default="",max_length=150)
+    city:str=Field(default="",max_length=150)
+    website:str=Field(default="",max_length=1000)
+    description:str=Field(default="",max_length=2000)
+
 @app.get("/company/profile")
 def corporate_profile(u=Depends(require("manager","admin"))):
     cid=scoped_company_id(u)
     with db() as c:
         co=c.execute("select id,name,active from ptp_companies where id=%s",(cid,)).fetchone()
+        row=c.execute("""select display_name,logo_url,segment,city,website,description,updated_at
+          from ptp_company_profiles where company_id=%s""",(cid,)).fetchone()
     if not co:raise HTTPException(404,"Empresa não encontrada")
-    return {"id":co["id"],"name":co["name"],"active":co["active"],"institutional":u["role"]=="admin"}
+    result={"id":co["id"],"name":co["name"],"active":co["active"],
+        "institutional":u["role"]=="admin"}
+    result.update(dict(row) if row else {"display_name":co["name"],"logo_url":"","segment":"","city":"","website":"","description":""})
+    return result
+
+@app.put("/company/profile")
+def corporate_profile_update(data:CompanyPresentation,u=Depends(require("manager","admin"))):
+    cid=scoped_company_id(u)
+    for url in (data.logo_url,data.website):
+        if url.strip() and not url.strip().lower().startswith("https://"):
+            raise HTTPException(422,"Endereços de logo e website devem utilizar HTTPS")
+    with db() as c:
+        row=c.execute("""insert into ptp_company_profiles
+          (company_id,display_name,logo_url,segment,city,website,description,updated_by,updated_at)
+          values (%s,%s,%s,%s,%s,%s,%s,%s,now())
+          on conflict(company_id) do update set display_name=excluded.display_name,
+          logo_url=excluded.logo_url,segment=excluded.segment,city=excluded.city,
+          website=excluded.website,description=excluded.description,
+          updated_by=excluded.updated_by,updated_at=now()
+          returning company_id""",(cid,data.display_name.strip(),data.logo_url.strip(),
+          data.segment.strip(),data.city.strip(),data.website.strip(),data.description.strip(),u["id"])).fetchone()
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
+          (u["id"],"company_presentation_updated",str(cid)))
+        c.commit()
+    return {"status":"updated","company_id":row["company_id"]}
 
 @app.get("/company/members")
 def company_members(u=Depends(require("manager","admin"))):
