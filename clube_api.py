@@ -290,6 +290,9 @@ def create_invitation(data:Invite,u=Depends(require("admin","manager"))):
                 raise HTTPException(409,"A associação da empresa deve estar habilitada")
         if c.execute("select 1 from ptp_users where email=%s",(email,)).fetchone():
             raise HTTPException(409,"Usuário já cadastrado")
+        if c.execute("""select 1 from ptp_invites where email=%s and
+             consumed_at is null and expires_at>now()""",(email,)).fetchone():
+            raise HTTPException(409,"Já existe convite pendente para este e-mail. Use Renovar convite na lista.")
         c.execute("""insert into ptp_invites(email,role,company_id,token_hash,created_by,expires_at)
                   values (%s,%s,%s,%s,%s,now()+interval '48 hours')""",
                   (email,data.role,data.company_id,digest(token),u["id"]))
@@ -336,7 +339,7 @@ async def accept_invite_direct(req:Request):
 @app.post("/auth/accept-invite")
 def accept_invite(data:InvitationAcceptance):
     with db() as c:
-        invite=c.execute("""select id,email,role,company_id from ptp_invites
+        invite=c.execute("""select id,email,role,company_id,created_by from ptp_invites
               where token_hash=%s and consumed_at is null and expires_at>now()
               for update""",(digest(data.token),)).fetchone()
         if not invite:raise HTTPException(400,"Convite inválido ou expirado")
@@ -349,6 +352,8 @@ def accept_invite(data:InvitationAcceptance):
         c.execute("""insert into ptp_users(email,name,password_hash,role,company_id,active)
               values (%s,%s,%s,%s,%s,%s)""",(invite["email"],data.name,password_hash(data.password),invite["role"],invite["company_id"],invite["role"] in ("manager","employee") and invite["company_id"] is not None))
         c.execute("update ptp_invites set consumed_at=now() where id=%s",(invite["id"],))
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
+                  (invite["created_by"],"invitation_accepted",str(invite["id"])))
         c.commit()
     return {"status":"created","active":invite["role"] in ("manager","employee") and invite["company_id"] is not None,
             "message":"Conta criada. Acesse com seu e-mail e senha." if invite["role"] in ("manager","employee") and invite["company_id"] is not None else "Conta criada; aguardando habilitação administrativa."}
