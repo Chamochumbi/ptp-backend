@@ -12,7 +12,7 @@ app=FastAPI(title="Clube PTP - Identidade (Homologação)",docs_url=None,redoc_u
 DB_URL=os.getenv("DATABASE_URL","")
 DEFAULT_ORIGINS=["https://headless-bnbjhenmacf-pedrousinae-140b.wix-site-host.com","https://headless-uydjfwgjdgr-pedrousinae-140b.wix-site-host.com"]
 ORIGINS=list(dict.fromkeys(DEFAULT_ORIGINS+[s.strip() for s in os.getenv("PTP_CORS_ORIGINS","").split(",") if s.strip()]))
-if ORIGINS: app.add_middleware(CORSMiddleware,allow_origins=ORIGINS,allow_credentials=False,allow_methods=["GET","POST","PUT","PATCH","DELETE","OPTIONS"],allow_headers=["Authorization","Content-Type"])
+if ORIGINS: app.add_middleware(CORSMiddleware,allow_origins=ORIGINS,allow_credentials=False,allow_methods=["GET","POST","PUT","PATCH","DELETE","OPTIONS"],allow_headers=["Authorization","Content-Type","Idempotency-Key"])
 @app.middleware("http")
 async def no_cache(req:Request,call_next):
     if req.url.path=="/auth/login" and req.method=="OPTIONS":
@@ -752,6 +752,60 @@ def list_benefits():
     with db() as c:
         rows=c.execute("select id,title,provider,category,description,active from ptp_benefits where active=true order by title limit 250").fetchall()
     return {"benefits":[dict(r) for r in rows]}
+
+@app.get("/offers")
+def member_offers(u=Depends(require("employee","manager","admin"))):
+    with db() as c:
+        rows=c.execute("""select id,title,provider,category,description,active
+            from ptp_benefits where active=true order by title limit 250""").fetchall()
+    return {"offers":[{"id":x["id"],"title":x["title"],
+        "provider_name":x["provider"],"method":"Solicitação sujeita a validação",
+        "category":x["category"],"description":x["description"]} for x in rows]}
+
+@app.get("/offers/{offer_id}/benefit")
+def member_offer_detail(offer_id:str,u=Depends(require("employee","manager","admin"))):
+    with db() as c:
+        row=c.execute("""select id,title,provider,category,description,active
+            from ptp_benefits where id=%s""",(offer_id,)).fetchone()
+    if not row or not row["active"]:raise HTTPException(404,"Benefício indisponível")
+    return {"id":row["id"],"title":row["title"],"provider_name":row["provider"],
+        "description":row["description"],"category":row["category"],
+        "status":"disponível para solicitação; sujeito a validação"}
+
+@app.get("/me/usage")
+def member_usage(u=Depends(principal)):
+    with db() as c:
+        summary=c.execute("""select count(*) total_requests,
+           count(*) filter(where status='confirmed') completed,
+           count(*) filter(where status='requested') initiated
+           from ptp_redemptions where user_id=%s""",(u["id"],)).fetchone()
+        rows=c.execute("""select r.id,b.title as offer_title,b.provider as provider_name,
+           r.status, to_char(r.requested_at at time zone 'America/Sao_Paulo',
+           'DD/MM/YYYY HH24:MI') as date_label
+           from ptp_redemptions r join ptp_benefits b on b.id=r.benefit_id
+           where r.user_id=%s order by r.requested_at desc limit 200""",(u["id"],)).fetchall()
+    return {"summary":dict(summary),"history":[dict(row) for row in rows]}
+
+@app.post("/offers/{offer_id}/redeem",status_code=201)
+def redeem_member_offer(offer_id:str,u=Depends(require("employee","manager"))):
+    if u["company_id"] is None:raise HTTPException(403,"Vínculo empresarial obrigatório")
+    lock_value=int.from_bytes(hashlib.sha256((str(u["id"])+":"+offer_id).encode()).digest()[:8],"big",signed=True)
+    with db() as c:
+        c.execute("select pg_advisory_xact_lock(%s)",(lock_value,))
+        co=c.execute("select active from ptp_companies where id=%s",(u["company_id"],)).fetchone()
+        if not co or not co["active"]:raise HTTPException(403,"Empresa não habilitada")
+        benefit=c.execute("select active from ptp_benefits where id=%s",(offer_id,)).fetchone()
+        if not benefit or not benefit["active"]:raise HTTPException(404,"Oferta indisponível")
+        existing=c.execute("""select id,status from ptp_redemptions
+          where user_id=%s and benefit_id=%s and status='requested'
+          order by id desc limit 1""",(u["id"],offer_id)).fetchone()
+        if existing:return {"protocol":existing["id"],"status":existing["status"],"already_pending":True}
+        row=c.execute("""insert into ptp_redemptions(benefit_id,user_id,company_id)
+          values (%s,%s,%s) returning id,status""",(offer_id,u["id"],u["company_id"])).fetchone()
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
+          (u["id"],"redemption_requested",str(row["id"])))
+        c.commit()
+    return {"protocol":row["id"],"status":row["status"],"already_pending":False}
 
 @app.post("/redemptions",status_code=201)
 def create_redemption(data:RedemptionRequest,u=Depends(require("employee","manager"))):
