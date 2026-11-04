@@ -73,6 +73,10 @@ def ready():
     if not required.issubset(found):raise HTTPException(503,"Migrações pendentes")
     return {"status":"ready","database":"postgresql","migrations":"present"}
 
+def invitation_activation_url(token):
+    # The secret stays in a browser URL fragment (not transmitted as URL path/query).
+    return "https://headless-bnbjhenmacf-pedrousinae-140b.wix-site-host.com/ativar-convite.html#token="+token
+
 def send_invite_email(email, token):
     host=os.getenv("PTP_SMTP_HOST","").strip()
     sender=os.getenv("PTP_SMTP_FROM","").strip()
@@ -290,9 +294,27 @@ def create_invitation(data:Invite,u=Depends(require("admin","manager"))):
                   (email,data.role,data.company_id,digest(token),u["id"]))
         c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
                   (u["id"],"admin_invite_created" if data.role=="admin" else "invite_created",email))
-        send_invite_email(email,token)
         c.commit()
-    return {"status":"sent","invite_id_delivery_required":False}
+    try:
+        send_invite_email(email,token)
+        return {"status":"sent","email_delivered":True}
+    except HTTPException:
+        return {"status":"manual_delivery_required","email_delivered":False,
+                "activation_url":invitation_activation_url(token),
+                "message":"Convite registrado. Compartilhe o link privado de ativação."}
+
+class InvitePreview(BaseModel):
+    token:str=Field(min_length=32,max_length=200)
+
+@app.post("/auth/invite/preview")
+def preview_invite(data:InvitePreview):
+    with db() as c:
+        row=c.execute("""select i.email,i.role,i.expires_at,c.name as company_name
+          from ptp_invites i left join ptp_companies c on c.id=i.company_id
+          where i.token_hash=%s and i.consumed_at is null and i.expires_at>now()""",
+          (digest(data.token),)).fetchone()
+    if not row:raise HTTPException(404,"Convite inexistente, utilizado ou expirado")
+    return dict(row)
 
 @app.post("/auth/accept-invite")
 def accept_invite(data:InvitationAcceptance):
@@ -507,10 +529,15 @@ def invite_beneficiary(data:BeneficiaryInvite,u=Depends(require("manager","admin
           values (%s,'employee',%s,%s,%s,now()+interval '48 hours') returning id""",
           (email,company_id,digest(token),u["id"])).fetchone()
         c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",(u["id"],"beneficiary_invited",email))
-        send_invite_email(email,token)
         c.commit()
-    return {"invitation_id":row["id"],"status":"sent",
-            "message":"Convite enviado ao e-mail do beneficiário"}
+    try:
+        send_invite_email(email,token)
+        return {"invitation_id":row["id"],"status":"sent","email_delivered":True,
+                "message":"Convite encaminhado ao e-mail do colaborador"}
+    except HTTPException:
+        return {"invitation_id":row["id"],"status":"manual_delivery_required","email_delivered":False,
+                "activation_url":invitation_activation_url(token),
+                "message":"Convite registrado. O e-mail automático não está configurado; compartilhe o link individual exibido."}
 
 
 @app.get("/admin/beneficiaries")
