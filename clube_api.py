@@ -669,6 +669,50 @@ def company_invitations(u=Depends(require("manager","admin"))):
           where company_id=%s and role='employee' order by id desc limit 200""",(cid,)).fetchall()
     return {"invitations":[dict(x) for x in rows]}
 
+@app.post("/company/invitations/{invitation_id}/renew")
+def renew_company_invitation(invitation_id:int,u=Depends(require("manager","admin"))):
+    cid=scoped_company_id(u)
+    token=secrets.token_urlsafe(40)
+    with db() as c:
+        row=c.execute("""update ptp_invites
+            set token_hash=%s,expires_at=now()+interval '48 hours'
+            where id=%s and company_id=%s and role='employee'
+              and consumed_at is null
+            returning id,email,expires_at""",(digest(token),invitation_id,cid)).fetchone()
+        if not row:raise HTTPException(404,"Convite não encontrado ou já utilizado nesta empresa")
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
+                  (u["id"],"company_invitation_renewed",str(row["id"])))
+        c.commit()
+    try:
+        send_invite_email(row["email"],token)
+        return {"invitation_id":row["id"],"status":"sent","email_delivered":True}
+    except HTTPException:
+        return {"invitation_id":row["id"],"status":"manual_delivery_required",
+                "email_delivered":False,"email":row["email"],
+                "activation_url":invitation_activation_url(token),
+                "message":"Convite renovado. Compartilhe o novo link; o anterior foi invalidado."}
+
+@app.post("/admin/invites/{invitation_id}/renew")
+def admin_renew_invitation(invitation_id:int,u=Depends(require("admin"))):
+    token=secrets.token_urlsafe(40)
+    with db() as c:
+        row=c.execute("""update ptp_invites
+            set token_hash=%s,expires_at=now()+interval '48 hours'
+            where id=%s and consumed_at is null returning id,email,role,company_id""",
+            (digest(token),invitation_id)).fetchone()
+        if not row:raise HTTPException(404,"Convite não encontrado ou já utilizado")
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
+                  (u["id"],"admin_invitation_renewed",str(row["id"])))
+        c.commit()
+    try:
+        send_invite_email(row["email"],token)
+        return {"invitation_id":row["id"],"status":"sent","email_delivered":True}
+    except HTTPException:
+        return {"invitation_id":row["id"],"status":"manual_delivery_required",
+                "email_delivered":False,"email":row["email"],
+                "activation_url":invitation_activation_url(token),
+                "message":"Convite renovado. Compartilhe o novo link; o anterior foi invalidado."}
+
 @app.post("/company/members/{member_id}/deactivate")
 def deactivate_company_member(member_id:int,u=Depends(require("manager","admin"))):
     cid=scoped_company_id(u)
