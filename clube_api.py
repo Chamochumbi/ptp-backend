@@ -316,6 +316,22 @@ def preview_invite(data:InvitePreview):
     if not row:raise HTTPException(404,"Convite inexistente, utilizado ou expirado")
     return dict(row)
 
+@app.post("/auth/invite/preview-direct")
+async def preview_invite_direct(req:Request):
+    try:
+        data=InvitePreview.model_validate(await req.json())
+    except Exception:
+        raise HTTPException(422,"Convite inválido")
+    return preview_invite(data)
+
+@app.post("/auth/accept-invite-direct")
+async def accept_invite_direct(req:Request):
+    try:
+        data=InvitationAcceptance.model_validate(await req.json())
+    except Exception:
+        raise HTTPException(422,"Dados de ativação inválidos")
+    return accept_invite(data)
+
 @app.post("/auth/accept-invite")
 def accept_invite(data:InvitationAcceptance):
     with db() as c:
