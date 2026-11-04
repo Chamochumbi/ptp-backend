@@ -90,10 +90,11 @@ def send_invite_email(email, token):
     msg["Subject"]="Convite individual — Clube de Benefícios PTP"
     msg["From"]=sender
     msg["To"]=email
-    msg.set_content("Você foi convidado para o Clube de Benefícios PTP.\n"
-                    "Acesse a área de participantes: "+url+"\n"
-                    "Código de convite (uso único; válido por 48 horas): "+token+"\n"
-                    "Não compartilhe este código.")
+    msg.set_content("Você recebeu um convite individual para o Clube de Benefícios PTP.\n"
+                    "Ative sua conta em até 48 horas pelo link individual: "+invitation_activation_url(token)+"\n"
+                    "Caso o link não abra, acesse a área de participantes: "+url+"\n"
+                    "Código de uso único: "+token+"\n"
+                    "Por segurança, não compartilhe este convite com terceiros.")
     try:
         with smtplib.SMTP_SSL(host,int(os.getenv("PTP_SMTP_PORT","465")),context=ssl.create_default_context(),timeout=12) as smtp:
             smtp.login(login,secret)
