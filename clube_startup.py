@@ -41,6 +41,27 @@ def initialize_staging_database():
         if not company:
             conn.execute("insert into ptp_companies(name,active) values (%s,true)",("Parque Tecnológico de Piracicaba",))
         conn.commit()
+    # Populate the published catalog only once. Existing edits always take precedence.
+    import json
+    with psycopg.connect(dsn,sslmode="require",connect_timeout=10) as conn:
+        conn.execute("select pg_advisory_xact_lock(71204010)")
+        conn.execute("""create table if not exists ptp_bootstrap_flags
+            (flag text primary key,applied_at timestamptz not null default now())""")
+        seeded=conn.execute("select 1 from ptp_bootstrap_flags where flag='published_25_benefits_v1'").fetchone()
+        if not seeded:
+            catalog=json.loads(Path(__file__).with_name("clube_catalog_snapshot.json").read_text(encoding="utf-8"))
+            inserted=0
+            for item in catalog:
+                record=conn.execute("""insert into ptp_benefits
+                    (id,title,provider,category,description,active)
+                    values (%s,%s,%s,%s,%s,%s)
+                    on conflict(id) do nothing returning id""",
+                    (str(item["id"]),item.get("title",""),item.get("partner",""),
+                    item.get("category",""),item.get("description",""),item.get("active",True))).fetchone()
+                if record:inserted+=1
+            conn.execute("insert into ptp_bootstrap_flags(flag) values ('published_25_benefits_v1')")
+            conn.commit()
+            print("PTP_CATALOG_BOOTSTRAP: inserted_missing_offers="+str(inserted),flush=True)
     print("PTP_CORPORATE_CONTEXT: institutional_company_ready",flush=True)
     print("PTP_DATABASE_CHECK: migrations_applied",flush=True)
     print("PTP_ADMIN_BOOTSTRAP: email_verified_flow_only",flush=True)
