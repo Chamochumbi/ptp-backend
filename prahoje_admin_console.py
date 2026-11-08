@@ -9,6 +9,9 @@ from prahoje_backend.app import APP,_wix,_query,_item_data
 USER=os.getenv('ADMIN_LOGIN','')
 PASS=os.getenv('ADMIN_SECRET','')
 COOKIE='pra_hj_admin'
+LOGIN_FAILURES={}
+MAX_FAILURES=5
+LOCK_SECONDS=900
 FORM_ID='cd2e856c-ff43-4e93-95af-45128253272d'
 
 class Login(BaseModel):
@@ -31,10 +34,20 @@ def auth(req:Request):
     return True
 
 @APP.post('/admin/login')
-def login(x:Login):
+def login(x:Login,req:Request):
     if not USER or not PASS:raise HTTPException(503,'Administrador não configurado')
-    if not hmac.compare_digest(x.usuario,USER) or not hmac.compare_digest(x.senha,PASS):
+    address=req.client.host if req.client else 'unknown'
+    now=time.time()
+    attempts=[t for t in LOGIN_FAILURES.get(address,[]) if now-t<LOCK_SECONDS]
+    if len(attempts)>=MAX_FAILURES:
+        raise HTTPException(429,'Muitas tentativas. Tente novamente mais tarde.')
+    valid_user=hmac.compare_digest(x.usuario,USER)
+    valid_pass=hmac.compare_digest(x.senha,PASS)
+    if not (valid_user and valid_pass):
+        attempts.append(now)
+        LOGIN_FAILURES[address]=attempts
         raise HTTPException(403,'Credenciais inválidas')
+    LOGIN_FAILURES.pop(address,None)
     ts=str(int(time.time()))
     signature=hmac.new(PASS.encode(),ts.encode(),hashlib.sha256).hexdigest()
     resp=JSONResponse({'ok':True})
@@ -150,7 +163,7 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 <div class="shell" id="app" hidden>
 <aside><div class="brand">Pra <span>Hj.</span></div><div class="sub">CENTRO DE COMANDO</div><div class="nav">
 <button class="menu active" data-view="overview">◈ Visão executiva</button><button class="menu" data-view="events">▦ Eventos</button><button class="menu" data-view="people">♧ Organizadores</button><button class="menu" data-view="applications">≡ Credenciamento</button><button class="menu" data-view="finance">◉ Assinaturas & finanças</button><button class="menu" data-view="operations">⚙ Operação</button></div>
-<div class="bottom">ADMIN MASTER · ADMPRAHJ<br>Powered by Run B.O.</div>
+<div class="bottom">ADMIN MASTER · ADMPRAHJ<br>Powered by Run b.o.</div>
 </aside>
 <main>
 <div class="top"><div><div class="eyebrow">Pra Hj / inteligência de gestão</div><h1 id="heading">Visão executiva</h1><div class="muted" id="stamp">Dados administrativos protegidos</div></div><div class="actions"><a class="btn" target="_blank" rel="noopener noreferrer" href="https://headless-uqcbszqzghi-pedrousinae-140b.wix-site-host.com/">↗ Vitrine pública</a><button class="btn" id="refresh">↻ Atualizar</button><button class="btn" id="logout">Sair</button></div></div>
