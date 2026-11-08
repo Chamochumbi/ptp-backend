@@ -1,5 +1,7 @@
 """Pra Hj | isolated protected administrative routes."""
-import os,time,hmac,hashlib,re
+import os,time,hmac,hashlib,re,json
+from urllib.request import Request as HTTPRequest, urlopen
+from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlsplit
 from fastapi import Request, HTTPException, Depends
 from fastapi.responses import HTMLResponse,JSONResponse
@@ -119,14 +121,50 @@ def disable(mid:str,_=Depends(auth)):
     return {'id':mid,'status':'DESABILITADO'}
 
 
+def public_events_from_media_tech():
+    """Read public CMS data with visitor credentials. This never grants admin write access."""
+    client_id=os.getenv('WIX_PUBLIC_CLIENT_ID','')
+    if not client_id:
+        return None, 'Client ID público não configurado'
+    try:
+        token_req=HTTPRequest(
+            'https://www.wixapis.com/oauth2/token',
+            data=json.dumps({'clientId':client_id,'grantType':'anonymous'}).encode(),
+            headers={'Content-Type':'application/json'},
+            method='POST'
+        )
+        with urlopen(token_req,timeout=9) as response:
+            auth_data=json.load(response)
+        token=auth_data.get('access_token') or auth_data.get('accessToken')
+        if not token:
+            return None, 'Não foi possível obter credencial de leitura'
+        query_req=HTTPRequest(
+            'https://www.wixapis.com/wix-data/v2/items/query',
+            data=json.dumps({'dataCollectionId':'prahoje_eventos','query':{'paging':{'limit':100}}}).encode(),
+            headers={'Content-Type':'application/json','Authorization':token},
+            method='POST'
+        )
+        with urlopen(query_req,timeout=12) as response:
+            data=json.load(response)
+        return [x.get('data') or {} for x in data.get('dataItems',[])],None
+    except (HTTPError,URLError,TimeoutError,ValueError,KeyError) as err:
+        return None, 'Leitura pública não autorizada ou indisponível'
+
 @APP.get('/admin/api/overview')
 def overview(_=Depends(auth)):
     events=[]
     error=None
+    event_source='admin-api'
     try:
         events=[_item_data(x) for x in _query('prahoje_eventos')]
-    except Exception as exc:
-        error='Consulta de eventos indisponível'
+    except Exception:
+        public_events,public_error=public_events_from_media_tech()
+        if public_events is None:
+            error='Consulta de eventos indisponível. O conector de gestão precisa de credenciais de servidor; '+str(public_error)
+            event_source='unavailable'
+        else:
+            events=public_events
+            event_source='visitor-read-only'
     try:
         registrations=listing()
         people=registrations.get('membros',[])
@@ -142,7 +180,7 @@ def overview(_=Depends(auth)):
             'approvedEvents':approved,'pendingEvents':pending,
             'members':people,'applications':applications,
             'activeMembers':sum(x.get('habilitacao')=='HABILITADO' for x in people),
-            'eventQueryError':error, 'financeStatus':'Não integrado: receita e pagamentos exigem confirmação transacional',
+            'eventQueryError':error, 'eventSource':event_source, 'integration':{'adminWixConfigured':bool(os.getenv('WIX_API_KEY') or os.getenv('WIX_TOKEN')),'publicRead':event_source=='visitor-read-only','writeOperations':'Dependem de API administrativa válida'}, 'financeStatus':'Não integrado: receita e pagamentos exigem confirmação transacional',
             'generatedAt':int(time.time())}
 
 PAGE='''<!doctype html>
@@ -201,7 +239,7 @@ function render(x){
 state=x;$('signin').hidden=true;$('app').hidden=false;
 set('k-events',x.eventQueryError?'Indisponível':x.totalEvents);set('k-approved',x.eventQueryError?'—':x.approvedEvents);set('k-active',x.activeMembers);set('k-applications',x.applications.length);
 set('stamp','Última consulta: '+new Date(x.generatedAt*1000).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}));
-set('dataHealth',x.eventQueryError?x.eventQueryError:'Consulta de eventos realizada. Acurácia depende da atualização e integridade da base de origem.');
+set('dataHealth',x.eventQueryError?x.eventQueryError:(x.eventSource==='visitor-read-only'?'Leitura pública da base Media Tech ativa. Operações administrativas de escrita exigem credenciais de servidor.':'Consulta administrativa realizada. Acurácia depende da integridade da base de origem.'));
 $('approvalbar').style.width=x.totalEvents?Math.round(x.approvedEvents/x.totalEvents*100)+'%':'0%';
 set('editorialText',x.approvedEvents+' aprovados · '+x.pendingEvents+' pendentes · '+(x.totalEvents-x.approvedEvents-x.pendingEvents)+' outros/sem classificação');
 set('financeStatus',x.financeStatus);
