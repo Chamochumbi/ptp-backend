@@ -1,6 +1,6 @@
 """Pra Hj | isolated protected administrative routes."""
 import os,time,hmac,hashlib,re
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 from fastapi import Request, HTTPException, Depends
 from fastapi.responses import HTMLResponse,JSONResponse
 from pydantic import BaseModel
@@ -30,7 +30,10 @@ def auth(req:Request):
     except Exception:raise HTTPException(401,'Sessão expirada ou inválida')
     if req.method=='POST':
         origin=req.headers.get('origin')
-        if origin and origin.rstrip('/')!=str(req.base_url).rstrip('/'):raise HTTPException(403,'Origem inválida')
+        if origin:
+            target=urlsplit(origin)
+            if target.scheme!='https' or target.netloc.lower()!=req.headers.get('host','').lower():
+                raise HTTPException(403,'Origem inválida')
     return True
 
 @APP.post('/admin/login')
@@ -53,6 +56,10 @@ def login(x:Login,req:Request):
     resp=JSONResponse({'ok':True})
     resp.set_cookie(COOKIE,ts+'.'+signature,secure=True,httponly=True,samesite='strict',max_age=28800,path='/admin')
     return resp
+
+@APP.get('/admin/api/session')
+def session(_=Depends(auth)):
+    return {'authenticated':True,'role':'ADMIN_MASTER','user':USER}
 
 @APP.post('/admin/logout')
 def logout():
@@ -202,10 +209,10 @@ const ebody=rows('eventRows');for(const e of x.events){const tr=document.createE
 const mbody=rows('memberRows');for(const m of x.members){const tr=document.createElement('tr');cell(tr,m.nome||m.email||'Organizador');cell(tr,m.statusConta);cell(tr,m.habilitacao);const td=document.createElement('td'),b=document.createElement('button');b.className='btn';const active=m.habilitacao==='HABILITADO';b.textContent=active?'Suspender':'Habilitar';b.onclick=async()=>{if(!confirm('Confirma a alteração de autorização deste organizador?'))return;let payload={};if(!active){const org=prompt('Identificador do organizador',m.organizadorId||m.id);if(!org)return;payload={organizadorId:org}}b.disabled=true;try{await api('/api/'+encodeURIComponent(m.id)+'/'+(active?'desabilitar':'habilitar'),payload);set('status','Autorização atualizada no servidor.');await load()}catch(err){set('status',err.message)}finally{b.disabled=false}};td.append(b);tr.append(td);mbody.append(tr)}if(!x.members.length){const tr=document.createElement('tr');cell(tr,'Nenhum membro retornado');mbody.append(tr)}
 const apps=$('applicationRows');apps.replaceChildren();if(!x.applications.length){const p=document.createElement('p');p.className='empty';p.textContent='Nenhum cadastro retornado pela consulta.';apps.append(p)}for(const a of x.applications){const p=document.createElement('pre');p.className='empty';p.style.whiteSpace='pre-wrap';p.style.overflowWrap='anywhere';p.textContent=JSON.stringify(a.dados,null,2);apps.append(p)}
 }
-async function load(){set('status','Sincronizando informações...');const r=await api('/api/overview');render(r);set('status','Dados atualizados.')}
-$('login').onsubmit=async ev=>{ev.preventDefault();const msg=$('loginStatus');msg.hidden=false;msg.textContent='Validando acesso...';try{await api('/login',{usuario:$('usr').value,senha:$('pwd').value});$('pwd').value='';await load();msg.hidden=true}catch(err){msg.textContent=err.message}};
+async function load(){set('status','Sincronizando informações...');try{const r=await api('/api/overview');render(r);set('status','Dados atualizados.')}catch(err){$('signin').hidden=true;$('app').hidden=false;set('status','Acesso autorizado. Indicadores temporariamente indisponíveis: '+err.message);}}
+$('login').onsubmit=async ev=>{ev.preventDefault();const msg=$('loginStatus');msg.hidden=false;msg.textContent='Validando acesso...';try{await api('/login',{usuario:$('usr').value,senha:$('pwd').value});$('pwd').value='';$('signin').hidden=true;$('app').hidden=false;msg.hidden=true;await load()}catch(err){msg.textContent=err.message}};
 $('refresh').onclick=()=>load().catch(err=>set('status',err.message));$('logout').onclick=async()=>{await api('/logout',{});location.reload()};
-load().catch(()=>{});
+api('/api/session').then(()=>load()).catch(()=>{});
 </script></body></html>'''
 @APP.get('/admin',response_class=HTMLResponse)
 def admin_page():
