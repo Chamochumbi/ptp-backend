@@ -181,6 +181,24 @@ def public_events_from_media_tech():
     except (HTTPError,URLError,TimeoutError,ValueError,KeyError) as err:
         return None, 'Leitura pública não autorizada ou indisponível'
 
+@APP.get('/v1/metricas/publicas')
+def public_metricas(eventoId:str):
+    """Public aggregate only. Never expose raw interactions, visitor IDs or management data."""
+    if not re.fullmatch(r'[A-Za-z0-9:_.-]{6,128}',eventoId):
+        raise HTTPException(400,'Identificador do evento inválido')
+    try:
+        data=[_item_data(x) for x in _query('prahoje_metricas_eventos',{'eventoId':eventoId})]
+    except Exception:
+        raise HTTPException(503,'Indicadores centralizados temporariamente indisponíveis')
+    if not data:
+        return {'eventoId':eventoId,'likes':0,'visualizacoes':0,'visualizacoesUnicas':0,'cliques':0}
+    latest=max(data,key=lambda x:str(x.get('atualizadoEm') or ''))
+    result={'eventoId':eventoId}
+    for key in ('likes','visualizacoes','visualizacoesUnicas','cliques'):
+        try:result[key]=max(0,int(float(latest.get(key) or 0)))
+        except (TypeError,ValueError):result[key]=0
+    return result
+
 @APP.get('/admin/api/overview')
 def overview(_=Depends(auth)):
     events=[]
