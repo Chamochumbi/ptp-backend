@@ -199,6 +199,47 @@ def public_metricas(eventoId:str):
         except (TypeError,ValueError):result[key]=0
     return result
 
+
+class MetricBatchRequest(BaseModel):
+    eventIds:list[str]
+
+@APP.post('/v1/metricas/likes/lote')
+def likes_batch(payload:MetricBatchRequest):
+    """Return only public aggregate likes. One backend request per visible page."""
+    ids=list(dict.fromkeys(payload.eventIds))
+    if len(ids)>100 or any(not re.fullmatch(r'[A-Za-z0-9:_.-]{6,128}',str(i)) for i in ids):
+        raise HTTPException(400,'Informe até 100 identificadores válidos')
+    if not ids:return {'counts':{},'source':'central'}
+    try:
+        items=[_item_data(x) for x in _query('prahoje_metricas_eventos')]
+    except Exception:
+        raise HTTPException(503,'Contador central temporariamente indisponível')
+    wanted=set(ids)
+    latest={}
+    for m in items:
+        mid=str(m.get('eventoId') or '')
+        if mid in wanted and (mid not in latest or str(m.get('atualizadoEm') or '')>str(latest[mid].get('atualizadoEm') or '')):
+            latest[mid]=m
+    result={}
+    for mid in ids:
+        try:result[mid]=max(0,int(float((latest.get(mid) or {}).get('likes') or 0)))
+        except (TypeError,ValueError):result[mid]=0
+    return {'counts':result,'source':'central'}
+
+@APP.get('/admin/api/integration-health')
+def integration_health(_=Depends(auth)):
+    state={'backend':'online','adminConfigured':bool(USER and PASS),
+           'wixAdminCredentialPresent':bool(os.getenv('WIX_API_KEY') or os.getenv('WIX_TOKEN')),
+           'socialStorage':'wix-private-cms','socialWriteVerified':False,'socialReadVerified':False}
+    try:
+        _query('prahoje_metricas_eventos',{'eventoId':'__healthprobe__'})
+        state['socialReadVerified']=True
+    except Exception:
+        pass
+    state['socialWriteVerified']=False
+    state['nextAction']='Configurar credencial administrativa válida para leitura e gravação no CMS; realizar teste de escrita protegido'
+    return state
+
 @APP.get('/admin/api/overview')
 def overview(_=Depends(auth)):
     events=[]
@@ -245,7 +286,7 @@ def overview(_=Depends(auth)):
             'members':people,'applications':applications,
             'activeMembers':sum(x.get('habilitacao')=='HABILITADO' for x in people),
             'eventQueryError':error, 'eventSource':event_source,'metricsQueryError':metrics_error,'metricsByEvent':by_event,'metricsEventCount':len(by_event),
-            'metricsTotals':{k:sum(max(0,int(float(m.get(k) or 0))) for m in by_event.values() if str(m.get(k) or '0').replace('.','',1).isdigit()) for k in ('visualizacoes','visualizacoesUnicas','cliques','likes')},'managementAvailable':management_available, 'integration':{'adminWixConfigured':bool(os.getenv('WIX_API_KEY') or os.getenv('WIX_TOKEN')),'publicRead':event_source=='visitor-read-only','writeOperations':'Dependem de API administrativa válida'}, 'financeStatus':'Não integrado: receita e pagamentos exigem confirmação transacional',
+            'metricsTotals':{k:sum(max(0,int(float(m.get(k) or 0))) for m in by_event.values() if str(m.get(k) or '0').replace('.','',1).isdigit()) for k in ('visualizacoes','visualizacoesUnicas','cliques','likes')},'managementAvailable':management_available, 'integration':{'adminWixConfigured':bool(os.getenv('WIX_API_KEY') or os.getenv('WIX_TOKEN')),'publicRead':event_source=='visitor-read-only','writeOperations':'Dependem de API administrativa válida'}, 'socialStorageStatus':'Indisponível: métricas exigem conector privado válido' if metrics_error else 'Leitura das métricas privadas disponível (escrita ainda não homologada)','financeStatus':'Não integrado: receita e pagamentos exigem confirmação transacional',
             'generatedAt':int(time.time())}
 
 PAGE='''<!doctype html>
