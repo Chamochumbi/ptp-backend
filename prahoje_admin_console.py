@@ -103,13 +103,44 @@ def listing(_=Depends(auth)):
     except HTTPException:applications=[]
     return {'membros':rows,'cadastros':applications}
 
+ELIGIBLE_PLAN_IDS={
+    'f6aa3a5f-1a49-4ecb-b500-55376ea546be',
+    'b53e5e61-3ec1-4001-ab22-430902ba6326',
+    '3cd9863c-0f36-4d29-b3c0-190e1eee7f72',
+}
+
+def verify_paid_subscription(mid:str):
+    """Fail closed: only an ACTIVE, PAID order for an eligible Pra Hj plan authorizes publication."""
+    try:
+        page=0
+        while page<10:
+            result=_wix('GET','/pricing-plans/v2/orders?buyerIds='+quote(mid)+'&orderStatuses=ACTIVE&limit=50&offset='+str(page*50))
+            orders=result.get('orders',[])
+            for order in orders:
+                buyer=order.get('buyer') or {}
+                if (buyer.get('memberId')==mid
+                    and order.get('status')=='ACTIVE'
+                    and order.get('planId') in ELIGIBLE_PLAN_IDS
+                    and order.get('lastPaymentStatus')=='PAID'
+                    and (not order.get('endDate') or order.get('endDate')>time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()))):
+                    return order
+            if not (result.get('pagingMetadata') or {}).get('hasNext'):
+                break
+            page+=1
+    except HTTPException:
+        raise HTTPException(503,'Não foi possível confirmar pagamento e assinatura no serviço financeiro. Habilitação bloqueada.')
+    except Exception:
+        raise HTTPException(503,'Validação financeira indisponível. Habilitação bloqueada.')
+    raise HTTPException(403,'Habilitação negada: exige plano Pra Hj elegível, assinatura ACTIVE e pagamento PAID.')
+
 @APP.post('/admin/api/{mid}/habilitar')
 def enable(mid:str,body:Approval,_=Depends(auth)):
     member_exists(mid)
     if not re.fullmatch(r'[\w-]{1,128}',body.organizadorId):raise HTTPException(400,'Organizador inválido')
+    order=verify_paid_subscription(mid)
     _wix('POST','/members/v1/members/'+quote(mid)+'/approve',{})
     persist(mid,body.organizadorId,'HABILITADO')
-    return {'id':mid,'status':'HABILITADO'}
+    return {'id':mid,'status':'HABILITADO','subscriptionId':order.get('id')}
 
 @APP.post('/admin/api/{mid}/desabilitar')
 def disable(mid:str,_=Depends(auth)):
@@ -224,7 +255,7 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 <section class="surface"><h2>Condição operacional</h2><div class="tag">Dados internos</div><p class="muted" id="dataHealth">Carregando...</p><p class="muted">A apuração de faturamento só será exibida quando houver integração transacional verificada.</p></section></div>
 <section class="surface"><h2>Prioridades de gestão</h2><div class="twocol"><p class="muted">1. Avaliar cadastros e habilitar perfis válidos.<br>2. Revisar agenda editorial e qualidade dos eventos.<br>3. Conferir assinaturas e pagamentos antes da liberação comercial.</p><p class="muted">4. Monitorar desempenho e conversão com dados auditáveis.<br>5. Consolidar relatórios gerenciais por período.<br>6. Revisar consistência entre Media Tech e vitrine.</p></div></section></div>
 <div class="view" id="view-events" hidden><section class="surface"><h2>Gestão de eventos</h2><p class="muted">Consulta da base cadastrada. Edição e aprovação devem seguir o fluxo autorizado do sistema, não uma alteração visual de status.</p><div class="tbl"><table><thead><tr><th>Evento</th><th>Data</th><th>Local</th><th>Status</th></tr></thead><tbody id="eventRows"></tbody></table></div></section></div>
-<div class="view" id="view-people" hidden><section class="surface"><h2>Organizadores e permissões</h2><p class="muted">Ações de habilitação são confirmadas pelo backend e registradas na base de permissões.</p><div class="tbl"><table><thead><tr><th>Organizador</th><th>Conta</th><th>Habilitação</th><th>Operação</th></tr></thead><tbody id="memberRows"></tbody></table></div></section></div>
+<div class="view" id="view-people" hidden><section class="surface"><h2>Organizadores e permissões</h2><p class="muted">A habilitação exige assinatura ativa e pagamento confirmado no servidor; o bloqueio de cadastro e a suspensão são administrados separadamente.</p><div class="tbl"><table><thead><tr><th>Organizador</th><th>Conta</th><th>Habilitação</th><th>Operação</th></tr></thead><tbody id="memberRows"></tbody></table></div></section></div>
 <div class="view" id="view-applications" hidden><section class="surface"><h2>Solicitações de credenciamento</h2><div id="applicationRows"></div></section></div>
 <div class="view" id="view-finance" hidden><section class="surface"><h2>Assinaturas e resultado financeiro</h2><div class="notice">Indicadores financeiros não homologados: nenhuma receita, conversão paga ou inadimplência será presumida.</div><p class="muted" id="financeStatus">Conciliação indisponível.</p><a class="btn" href="https://headless-jzeufymuejv-pedrousinae-140b.wix-site-host.com/planos.html" target="_blank" rel="noopener noreferrer">Consultar planos ↗</a></section></div>
 <div class="view" id="view-operations" hidden><section class="surface"><h2>Central operacional</h2><p class="muted">Acesso às frentes de operação existentes.</p><div class="actions"><a class="btn" target="_blank" rel="noopener noreferrer" href="https://headless-jzeufymuejv-pedrousinae-140b.wix-site-host.com/eventos.html">Cadastro de eventos ↗</a><a class="btn" target="_blank" rel="noopener noreferrer" href="https://headless-jzeufymuejv-pedrousinae-140b.wix-site-host.com/usuarios.html">Credenciamento ↗</a><a class="btn" target="_blank" rel="noopener noreferrer" href="https://headless-jzeufymuejv-pedrousinae-140b.wix-site-host.com/operacao.html">Media Tech ↗</a></div></section></div>
@@ -246,7 +277,7 @@ $('approvalbar').style.width=x.totalEvents?Math.round(x.approvedEvents/x.totalEv
 set('editorialText',x.approvedEvents+' aprovados · '+x.pendingEvents+' pendentes · '+(x.totalEvents-x.approvedEvents-x.pendingEvents)+' outros/sem classificação');
 set('financeStatus',x.financeStatus);if(!x.managementAvailable){set('status','Gestão de membros em modo somente leitura: credencial administrativa de dados ausente.');}
 const ebody=rows('eventRows');for(const e of x.events){const tr=document.createElement('tr');cell(tr,e.titulo||e.nome||e.title||'Evento sem título');cell(tr,e.data||e.dataInicio||e.startDate||'—');cell(tr,e.local||e.localizacao||e.venue||'—');cell(tr,e.statusEditorial||e.status||e.situacao||'Não classificado');ebody.append(tr)}if(!x.events.length){const tr=document.createElement('tr');cell(tr,x.eventQueryError||'Nenhum evento registrado');ebody.append(tr)}
-const mbody=rows('memberRows');for(const m of x.members){const tr=document.createElement('tr');cell(tr,m.nome||m.email||'Organizador');cell(tr,m.statusConta);cell(tr,m.habilitacao);const td=document.createElement('td'),b=document.createElement('button');b.className='btn';const active=m.habilitacao==='HABILITADO';b.textContent=active?'Suspender':'Habilitar';b.disabled=!x.managementAvailable;b.title=x.managementAvailable?'Alterar autorização':'Integração administrativa não configurada';b.onclick=async()=>{if(!confirm('Confirma a alteração de autorização deste organizador?'))return;let payload={};if(!active){const org=prompt('Identificador do organizador',m.organizadorId||m.id);if(!org)return;payload={organizadorId:org}}b.disabled=true;try{await api('/api/'+encodeURIComponent(m.id)+'/'+(active?'desabilitar':'habilitar'),payload);set('status','Autorização atualizada no servidor.');await load()}catch(err){set('status',err.message)}finally{b.disabled=false}};td.append(b);tr.append(td);mbody.append(tr)}if(!x.members.length){const tr=document.createElement('tr');cell(tr,'Nenhum membro retornado');mbody.append(tr)}
+const mbody=rows('memberRows');for(const m of x.members){const tr=document.createElement('tr');cell(tr,m.nome||m.email||'Organizador');cell(tr,m.statusConta);cell(tr,m.habilitacao);const td=document.createElement('td'),b=document.createElement('button');b.className='btn';const active=m.habilitacao==='HABILITADO';b.textContent=active?'Suspender':'Validar plano e habilitar';b.disabled=!x.managementAvailable;b.title=x.managementAvailable?'Alterar autorização':'Integração administrativa não configurada';b.onclick=async()=>{if(!confirm('Confirma a alteração de autorização deste organizador?'))return;let payload={};if(!active){const org=prompt('Identificador do organizador',m.organizadorId||m.id);if(!org)return;payload={organizadorId:org}}b.disabled=true;try{await api('/api/'+encodeURIComponent(m.id)+'/'+(active?'desabilitar':'habilitar'),payload);set('status','Autorização atualizada no servidor.');await load()}catch(err){set('status',err.message)}finally{b.disabled=false}};td.append(b);tr.append(td);mbody.append(tr)}if(!x.members.length){const tr=document.createElement('tr');cell(tr,'Nenhum membro retornado');mbody.append(tr)}
 const apps=$('applicationRows');apps.replaceChildren();if(!x.applications.length){const p=document.createElement('p');p.className='empty';p.textContent='Nenhum cadastro retornado pela consulta.';apps.append(p)}for(const a of x.applications){const p=document.createElement('pre');p.className='empty';p.style.whiteSpace='pre-wrap';p.style.overflowWrap='anywhere';p.textContent=JSON.stringify(a.dados,null,2);apps.append(p)}
 }
 async function load(){set('status','Sincronizando informações...');try{const r=await api('/api/overview');render(r);set('status','Dados atualizados.')}catch(err){$('signin').hidden=true;$('app').hidden=false;set('status','Acesso autorizado. Indicadores temporariamente indisponíveis: '+err.message);}}
