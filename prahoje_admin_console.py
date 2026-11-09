@@ -324,15 +324,40 @@ def likes_batch(payload:MetricBatchRequest):
     metrics=_social_aggregate()
     return {'counts':{eid:metrics.get(eid,{}).get('likes',0) for eid in ids},'source':'persistent-cms-v2'}
 
+
+_SOCIAL_HEALTH={'checked':False,'writeVerified':False,'readVerified':False,'state':'not-tested'}
+
+@APP.on_event('startup')
+def social_smoke_check():
+    """Test authenticated Wix visitor write + read without creating user metrics."""
+    key=str(uuid.uuid5(uuid.NAMESPACE_URL,'pra-hj-social-healthcheck-v2'))
+    body={'dataCollectionId':SOCIAL_COLLECTION,'dataItem':{
+        'id':key,'data':{
+            'eventoId':'test-healthcheck','tipo':'healthcheck','atorHash':'no-user',
+            'ocorridoEm':'2026-11-09T00:00:00Z','origem':'server-selftest','sessao':'test'}}}
+    try:
+        result=_social_request('POST','/wix-data/v2/items',body)
+        _SOCIAL_HEALTH['writeVerified']=bool(result.get('dataItem') or result.get('_duplicate'))
+        _SOCIAL_CACHE['until']=0
+        rows=_social_rows()
+        _SOCIAL_HEALTH['readVerified']=any(x.get('eventoId')=='test-healthcheck' for x in rows)
+        _SOCIAL_HEALTH['state']='ok' if _SOCIAL_HEALTH['writeVerified'] and _SOCIAL_HEALTH['readVerified'] else 'incomplete'
+        print('PRA_HJ_SOCIAL_SELFTEST status='+_SOCIAL_HEALTH['state'])
+    except Exception as exc:
+        _SOCIAL_HEALTH['state']='error'
+        print('PRA_HJ_SOCIAL_SELFTEST status=error type='+type(exc).__name__)
+    finally:
+        _SOCIAL_HEALTH['checked']=True
+
 @APP.get('/admin/api/integration-health')
 def integration_health(_=Depends(auth)):
-    status={'backend':'online','socialCollection':SOCIAL_COLLECTION,'metricsWriteVerified':False}
+    status={'backend':'online','socialCollection':SOCIAL_COLLECTION,'metricsWriteVerified':_SOCIAL_HEALTH['writeVerified'],'smokeTest':dict(_SOCIAL_HEALTH)}
     try:
         status['metricsReadVerified']=True
         status['metricsCount']=len(_social_aggregate())
     except Exception:
         status['metricsReadVerified']=False
-    status['nextAction']='A gravação será marcada homologada após teste real com evento ativo'
+    status['nextAction']='Validar likes e views de eventos reais, remoção de duplicidade e dashboard com o login ADM MASTER'
     return status
 
 @APP.get('/admin/api/overview')
