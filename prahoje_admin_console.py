@@ -1,5 +1,5 @@
 """Pra Hj | isolated protected administrative routes."""
-import os,time,hmac,hashlib,re,json
+import os,time,hmac,hashlib,re,json,uuid,threading
 from urllib.request import Request as HTTPRequest, urlopen
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlsplit
@@ -181,99 +181,159 @@ def public_events_from_media_tech():
     except (HTTPError,URLError,TimeoutError,ValueError,KeyError) as err:
         return None, 'Leitura pública não autorizada ou indisponível'
 
+# Pra Hj interactions v2: Wix CMS persistent log (pseudonymous, append-only).
+SOCIAL_COLLECTION='prahoje_analytics_v2'
+_SOCIAL_TOKEN={'value':None,'until':0.0}
+_SOCIAL_CACHE={'data':None,'until':0.0}
+_SOCIAL_LOCK=threading.RLock()
+_SOCIAL_RATE={}
+_SOCIAL_ALLOWED={'view','click','like'}
+_SOCIAL_PUBLIC_ID=re.compile(r'^(?:public-[0-9a-f]{8}|[0-9a-fA-F-]{36})$')
+
+def _social_token():
+    with _SOCIAL_LOCK:
+        if _SOCIAL_TOKEN['value'] and time.time()<_SOCIAL_TOKEN['until']:
+            return _SOCIAL_TOKEN['value']
+        client=os.getenv('WIX_PUBLIC_CLIENT_ID','')
+        if not client:raise HTTPException(503,'Wix public client ID não configurado')
+        request=HTTPRequest('https://www.wixapis.com/oauth2/token',
+            data=json.dumps({'clientId':client,'grantType':'anonymous'}).encode(),
+            headers={'Content-Type':'application/json'},method='POST')
+        try:
+            with urlopen(request,timeout=12) as response: data=json.load(response)
+        except Exception as exc:
+            raise HTTPException(503,'Falha na autorização de leitura e escrita social') from exc
+        token=data.get('access_token') or data.get('accessToken')
+        if not token:raise HTTPException(503,'A autorização social não retornou token')
+        _SOCIAL_TOKEN.update(value=token,until=time.time()+1200)
+        return token
+
+def _social_request(method,path,body):
+    token=_social_token()
+    request=HTTPRequest('https://www.wixapis.com'+path,data=json.dumps(body).encode(),
+        method=method,headers={'Authorization':token,'Content-Type':'application/json'})
+    try:
+        with urlopen(request,timeout=15) as response:return json.load(response)
+    except HTTPError as exc:
+        if exc.code==409:return {'_duplicate':True}
+        raise HTTPException(503,'Armazenamento de engajamento temporariamente indisponível') from exc
+    except Exception as exc:
+        raise HTTPException(503,'Armazenamento de engajamento temporariamente indisponível') from exc
+
+def _social_rows():
+    with _SOCIAL_LOCK:
+        if _SOCIAL_CACHE['data'] is not None and time.time()<_SOCIAL_CACHE['until']:
+            return _SOCIAL_CACHE['data']
+    rows=[]
+    for page in range(100):
+        result=_social_request('POST','/wix-data/v2/items/query',
+            {'dataCollectionId':SOCIAL_COLLECTION,'query':{'paging':{'limit':100,'offset':page*100}}})
+        items=result.get('dataItems') or []
+        rows.extend((x.get('data') or {}) for x in items)
+        if len(items)<100:break
+    with _SOCIAL_LOCK:_SOCIAL_CACHE.update(data=rows,until=time.time()+20)
+    return rows
+
+def _social_aggregate():
+    by={}
+    liked={}
+    visitors={}
+    for record in _social_rows():
+        eid=str(record.get('eventoId') or '')
+        kind=str(record.get('tipo') or '')
+        actor=str(record.get('atorHash') or '')
+        if not _SOCIAL_PUBLIC_ID.fullmatch(eid) or kind not in _SOCIAL_ALLOWED:continue
+        item=by.setdefault(eid,{'visualizacoes':0,'visualizacoesUnicas':0,'cliques':0,'likes':0,'ctr':0})
+        if kind=='view':
+            item['visualizacoes']+=1
+            if actor:visitors.setdefault(eid,set()).add(actor)
+        if kind=='click':item['cliques']+=1
+        if kind=='like' and actor:liked.setdefault(eid,set()).add(actor)
+    for eid,m in by.items():
+        m['likes']=len(liked.get(eid,set()))
+        m['visualizacoesUnicas']=len(visitors.get(eid,set()))
+        m['ctr']=round(m['cliques']*100/max(1,m['visualizacoes']),2)
+    return by
+
+class SocialEventInput(BaseModel):
+    eventoId:str
+    visitanteId:str|None=None
+
+def _social_event_allowed(event_id):
+    if event_id.startswith('public-'):
+        return any(e.get('id')==event_id for e in radar_active()['events'])
+    # CMS events are protected by the editorial moderation workflow.
+    try:
+        published=[_item_data(x) for x in _query('prahoje_eventos')]
+        return any(str(e.get('_id') or e.get('id'))==event_id and str(e.get('status') or '').upper()=='PUBLICADO' for e in published)
+    except Exception:
+        # Publicly visible subscriber cards may be present even if admin connector is offline;
+        # id format validation still applies, but this is not evidence of editorial approval.
+        return False
+
+@APP.post('/v1/metricas/{kind}')
+def social_event(kind:str,payload:SocialEventInput,req:Request):
+    if kind not in _SOCIAL_ALLOWED:raise HTTPException(404,'Interação desconhecida')
+    eid=payload.eventoId
+    if not _SOCIAL_PUBLIC_ID.fullmatch(eid):raise HTTPException(400,'Evento inválido')
+    if not _social_event_allowed(eid):raise HTTPException(404,'Evento não está publicado')
+    raw=payload.visitanteId or req.cookies.get('ph_visitor_id','')
+    if not re.fullmatch(r'[0-9a-fA-F-]{36}',raw or ''):raw=str(uuid.uuid4())
+    secret=os.getenv('SOCIAL_HASH_SECRET') or PASS
+    if not secret:raise HTTPException(503,'Assinatura de interação não configurada')
+    actor=hmac.new(secret.encode(),(eid+'|'+raw).encode(),hashlib.sha256).hexdigest()[:32]
+    # IP-based quick throttling is supplemental; uniqueness survives server restarts via IDs.
+    host=req.client.host if req.client else 'unknown'
+    key=host+'|'+eid+'|'+kind
+    now=time.time()
+    with _SOCIAL_LOCK:
+        marks=[t for t in _SOCIAL_RATE.get(key,[]) if now-t<60]
+        limit={'view':15,'click':15,'like':8}[kind]
+        if len(marks)>=limit:raise HTTPException(429,'Muitas interações. Tente novamente mais tarde.')
+        marks.append(now)
+        _SOCIAL_RATE[key]=marks
+    if kind=='like':bucket='ever'
+    elif kind=='view':bucket=time.strftime('%Y-%m-%d',time.gmtime(now))
+    else:bucket=str(int(now//60))+'|'+uuid.uuid4().hex[:8]
+    unique=str(uuid.uuid5(uuid.NAMESPACE_URL,eid+'|'+kind+'|'+actor+'|'+bucket))
+    record={'dataCollectionId':SOCIAL_COLLECTION,'dataItem':{
+        'id':unique,'data':{'eventoId':eid,'tipo':kind,'atorHash':actor,
+          'ocorridoEm':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime(now)),
+          'origem':'PRA_HJ_WEB','sessao':'day' if kind=='view' else 'one'}}}
+    result=_social_request('POST','/wix-data/v2/items',record)
+    accepted=not result.get('_duplicate',False)
+    with _SOCIAL_LOCK:_SOCIAL_CACHE['until']=0
+    resp=JSONResponse({'ok':True,'accepted':accepted,'reason':'registered' if accepted else 'already_liked'})
+    resp.set_cookie('ph_visitor_id',raw,httponly=True,secure=True,samesite='none',max_age=31536000,path='/v1/metricas')
+    return resp
+
 @APP.get('/v1/metricas/publicas')
 def public_metricas(eventoId:str):
-    """Public aggregate only. Never expose raw interactions, visitor IDs or management data."""
-    if not re.fullmatch(r'[A-Za-z0-9:_.-]{6,128}',eventoId):
-        raise HTTPException(400,'Identificador do evento inválido')
-    try:
-        data=[_item_data(x) for x in _query('prahoje_metricas_eventos',{'eventoId':eventoId})]
-    except Exception:
-        raise HTTPException(503,'Indicadores centralizados temporariamente indisponíveis')
-    if not data:
-        return {'eventoId':eventoId,'likes':0,'visualizacoes':0,'visualizacoesUnicas':0,'cliques':0}
-    latest=max(data,key=lambda x:str(x.get('atualizadoEm') or ''))
-    result={'eventoId':eventoId}
-    for key in ('likes','visualizacoes','visualizacoesUnicas','cliques'):
-        try:result[key]=max(0,int(float(latest.get(key) or 0)))
-        except (TypeError,ValueError):result[key]=0
-    return result
-
+    if not _SOCIAL_PUBLIC_ID.fullmatch(eventoId):raise HTTPException(400,'Evento inválido')
+    m=_social_aggregate().get(eventoId) or {}
+    return {'eventoId':eventoId,**{k:m.get(k,0) for k in ('likes','visualizacoes','visualizacoesUnicas','cliques')}}
 
 class MetricBatchRequest(BaseModel):
     eventIds:list[str]
 
 @APP.post('/v1/metricas/likes/lote')
 def likes_batch(payload:MetricBatchRequest):
-    """Return only public aggregate likes. One backend request per visible page."""
     ids=list(dict.fromkeys(payload.eventIds))
-    if len(ids)>100 or any(not re.fullmatch(r'[A-Za-z0-9:_.-]{6,128}',str(i)) for i in ids):
+    if len(ids)>100 or any(not _SOCIAL_PUBLIC_ID.fullmatch(str(i)) for i in ids):
         raise HTTPException(400,'Informe até 100 identificadores válidos')
-    if not ids:return {'counts':{},'source':'central'}
-    try:
-        items=[_item_data(x) for x in _query('prahoje_metricas_eventos')]
-    except Exception:
-        raise HTTPException(503,'Contador central temporariamente indisponível')
-    wanted=set(ids)
-    latest={}
-    for m in items:
-        mid=str(m.get('eventoId') or '')
-        if mid in wanted and (mid not in latest or str(m.get('atualizadoEm') or '')>str(latest[mid].get('atualizadoEm') or '')):
-            latest[mid]=m
-    result={}
-    for mid in ids:
-        try:result[mid]=max(0,int(float((latest.get(mid) or {}).get('likes') or 0)))
-        except (TypeError,ValueError):result[mid]=0
-    return {'counts':result,'source':'central'}
+    metrics=_social_aggregate()
+    return {'counts':{eid:metrics.get(eid,{}).get('likes',0) for eid in ids},'source':'persistent-cms-v2'}
 
 @APP.get('/admin/api/integration-health')
 def integration_health(_=Depends(auth)):
-    state={'backend':'online','adminConfigured':bool(USER and PASS),
-           'wixAdminCredentialPresent':bool(os.getenv('WIX_API_KEY') or os.getenv('WIX_TOKEN')),
-           'socialStorage':'wix-private-cms','socialWriteVerified':False,'socialReadVerified':False}
+    status={'backend':'online','socialCollection':SOCIAL_COLLECTION,'metricsWriteVerified':False}
     try:
-        _query('prahoje_metricas_eventos',{'eventoId':'__healthprobe__'})
-        state['socialReadVerified']=True
+        status['metricsReadVerified']=True
+        status['metricsCount']=len(_social_aggregate())
     except Exception:
-        pass
-    state['socialWriteVerified']=False
-    state['nextAction']='Configurar credencial administrativa válida para leitura e gravação no CMS; realizar teste de escrita protegido'
-    return state
-
-
-_RADAR_SNAPSHOT=json.loads("{\"catalogDate\":\"2026-11-09\",\"updatedAt\":\"2026-11-09T12:01:52.883Z\",\"events\":[{\"title\":\"2º Workshop da Agricultura Familiar\",\"category\":\"educacao\",\"price\":\"free\",\"date\":\"09/11\",\"time\":\"9h\",\"place\":\"Piracicaba\",\"teaser\":\"Encontro sobre agricultura familiar paulista.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3623928\",\"validUntil\":\"2026-11-09\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Novembro Azul: Masculinidades e Saúde Integral\",\"category\":\"humano\",\"price\":\"free\",\"date\":\"10/11\",\"time\":\"18h\",\"place\":\"SIMESPI · Rua Samuel Neves, 1601\",\"teaser\":\"Palestra com Fabrício Dorigati sobre saúde integral do homem.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3623346\",\"validUntil\":\"2026-11-10\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Embaixadores da Gentileza\",\"category\":\"humano\",\"price\":\"paid\",\"date\":\"11/11\",\"time\":\"8h30\",\"place\":\"ACIPI\",\"teaser\":\"Encontro sobre gentileza, cultura organizacional e bem-estar.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3620462\",\"validUntil\":\"2026-11-11\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Seminário de Automação Industrial · Pushcorp\",\"category\":\"educacao\",\"price\":\"free\",\"date\":\"12/11\",\"time\":\"10h\",\"place\":\"Piracicaba\",\"teaser\":\"Conteúdo técnico sobre automação industrial.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3580118\",\"validUntil\":\"2026-11-12\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Show Emo + Os Fantasmas de Astorga\",\"category\":\"shows\",\"price\":\"paid\",\"date\":\"13/11\",\"time\":\"17h\",\"place\":\"Piracicaba\",\"teaser\":\"Show e lançamento musical.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3623283\",\"validUntil\":\"2026-11-13\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"7ª Dama Lúdica · Aniversário Camaleão Lúdico\",\"category\":\"cultura\",\"price\":\"paid\",\"date\":\"14/11\",\"time\":\"15h\",\"place\":\"Cervejaria Dama Bier\",\"teaser\":\"Mais de 50 jogos de tabuleiro e celebração de aniversário, até 20h.\",\"link\":\"https://www.sympla.com.br/evento/7a-dama-ludica-especial-halloween/3622479\",\"validUntil\":\"2026-11-14\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Sofrência em Dose Dupla · Milene Gatti e Dri Lima\",\"category\":\"shows\",\"price\":\"paid\",\"date\":\"14/11\",\"time\":\"19h30\",\"place\":\"Vila Real Music Bar\",\"teaser\":\"Música sertaneja com Milene Gatti e Dri Lima.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3607136\",\"validUntil\":\"2026-11-14\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"A Menina e o Vento · Sábado\",\"category\":\"cultura\",\"price\":\"paid\",\"date\":\"14/11\",\"time\":\"20h\",\"place\":\"Floreia Teatro\",\"teaser\":\"Montagem teatral de Maria Clara Machado.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3623730\",\"validUntil\":\"2026-11-14\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"DUSAN Bailin · 3ª Edição\",\"category\":\"festas\",\"price\":\"paid\",\"date\":\"14/11\",\"time\":\"21h\",\"place\":\"Piracicaba\",\"teaser\":\"Festa e música na terceira edição.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3622822\",\"validUntil\":\"2026-11-14\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Latinolovefest Old School\",\"category\":\"festas\",\"price\":\"paid\",\"date\":\"14/11\",\"time\":\"21h\",\"place\":\"Cross · Centro\",\"teaser\":\"Festa de reggaeton clássico em Piracicaba.\",\"link\":\"https://www.sympla.com.br/evento/latinolovefest-old-school/3626592\",\"validUntil\":\"2026-11-14\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Pool do Gois\",\"category\":\"festas\",\"price\":\"paid\",\"date\":\"15/11\",\"time\":\"11h\",\"place\":\"Piracicaba\",\"teaser\":\"Encontro com música e lazer.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3559131\",\"validUntil\":\"2026-11-15\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"A Menina e o Vento · Domingo\",\"category\":\"cultura\",\"price\":\"paid\",\"date\":\"15/11\",\"time\":\"20h\",\"place\":\"Floreia Teatro\",\"teaser\":\"Segunda apresentação da montagem teatral.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3623748\",\"validUntil\":\"2026-11-15\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"O que propõe o fim da escala 6x1?\",\"category\":\"negocios\",\"price\":\"free\",\"date\":\"17/11\",\"time\":\"18h30\",\"place\":\"Piracicaba\",\"teaser\":\"Debate sobre propostas de mudança na jornada de trabalho.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3634113\",\"validUntil\":\"2026-11-17\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"André Santi · Stand-up Comedy\",\"category\":\"cultura\",\"price\":\"paid\",\"date\":\"19/11\",\"time\":\"20h30\",\"place\":\"Palatino Paulista\",\"teaser\":\"Stand-up comedy com ingressos pela Sympla.\",\"link\":\"https://www.sympla.com.br/evento/andre-santi-em-piracicaba-stand-up-comedy/3600205\",\"validUntil\":\"2026-11-19\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Acampamento Imago: O Maior dos Tesouros\",\"category\":\"humano\",\"price\":\"check\",\"date\":\"20/11\",\"time\":\"11h\",\"place\":\"Piracicaba\",\"teaser\":\"Atividade temática de convivência e experiências.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3572253\",\"validUntil\":\"2026-11-20\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Domingueira Agro · Costelada de Chão\",\"category\":\"gastronomia\",\"price\":\"paid\",\"date\":\"22/11\",\"time\":\"10h\",\"place\":\"Piracicaba\",\"teaser\":\"Confraternização com costelada.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3605833\",\"validUntil\":\"2026-11-22\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Arena ND 2026\",\"category\":\"inovacao\",\"price\":\"free\",\"date\":\"26/11\",\"time\":\"13h30\",\"place\":\"Faculdade Pecege · Av. Cezira Giovanoni Moretti, 580\",\"teaser\":\"Conexões, inovação e conteúdo de ecossistema.\",\"link\":\"https://www.linka.la/event/fc7dba32-11bc-432b-bfa8-c83ee6ef8c5d\",\"validUntil\":\"2026-11-26\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"João Suplicy canta Beatles e Elvis\",\"category\":\"shows\",\"price\":\"paid\",\"date\":\"27/11\",\"time\":\"22h\",\"place\":\"Piracicaba\",\"teaser\":\"Show de João Suplicy com repertório de Beatles e Elvis.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3582578\",\"validUntil\":\"2026-11-27\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"A Cidade e as Serras · SESI\",\"category\":\"cultura\",\"price\":\"free\",\"date\":\"26/11 a 28/11\",\"time\":\"20h (26 e 27); 19h (28)\",\"place\":\"Teatro SESI Piracicaba · Av. Luiz Ralph Benatti, 600\",\"teaser\":\"Espetáculo teatral; reservas liberadas a partir de 12/11.\",\"link\":\"https://www.sesisp.org.br/evento/edbf7c89-ad97-49ea-8082-3e06932a2121/a-cidade-e-as-serras-\",\"validUntil\":\"2026-11-28\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Esquadrão Motocycle\",\"category\":\"esportes\",\"price\":\"free\",\"date\":\"28/11\",\"time\":\"13h\",\"place\":\"Piracicaba\",\"teaser\":\"Encontro de motociclismo.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3551063\",\"validUntil\":\"2026-11-28\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Automação com IA · Piracicaba\",\"category\":\"educacao\",\"price\":\"paid\",\"date\":\"26 a 28/11\",\"time\":\"9h\",\"place\":\"Campus Pecege\",\"teaser\":\"Imersão presencial em agentes de IA, automação e aplicações empresariais.\",\"link\":\"https://www.linka.la/event/007e525c-ba9c-4975-95e4-3aef1b8b191f\",\"validUntil\":\"2026-11-28\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Além do que se vê · Mostra de Dança\",\"category\":\"cultura\",\"price\":\"free\",\"date\":\"29/11\",\"time\":\"19h\",\"place\":\"Teatro SESI Piracicaba · Av. Luiz Ralph Benatti, 600\",\"teaser\":\"Mostra dos Núcleos de Dança SESI; novo lote a partir de 22/11.\",\"link\":\"https://www.sesisp.org.br/evento/3f9b3018-3a32-49d0-9808-a83b519c427d/alem-do-que-se-ve\",\"validUntil\":\"2026-11-29\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Pantanal Caipira · Tanquã\",\"category\":\"turismo\",\"price\":\"paid\",\"date\":\"29/11\",\"time\":\"6h30\",\"place\":\"Tanquã\",\"teaser\":\"Natureza, contemplação e experiência turística.\",\"link\":\"https://www.sescsp.org.br/programacao/pantanal-caipira-tanqua-piracicaba-sp-4/\",\"validUntil\":\"2026-11-29\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Serginho Lacerda · Vida de Pai\",\"category\":\"cultura\",\"price\":\"paid\",\"date\":\"03/12\",\"time\":\"20h\",\"place\":\"Piracicaba\",\"teaser\":\"Espetáculo de humor de Serginho Lacerda.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3582573\",\"validUntil\":\"2026-12-03\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"The Black Parade\",\"category\":\"shows\",\"price\":\"paid\",\"date\":\"05/12\",\"time\":\"18h\",\"place\":\"Piracicaba\",\"teaser\":\"Show temático de rock.\",\"link\":\"https://www.sympla.com.br/evento/lgc/3630332\",\"validUntil\":\"2026-12-05\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Festa do Justin · All Eras\",\"category\":\"festas\",\"price\":\"paid\",\"date\":\"11/12\",\"time\":\"21h\",\"place\":\"Benjamim Rock Bar\",\"teaser\":\"Festa pop temática no Benjamim Rock Bar.\",\"link\":\"https://www.sympla.com.br/evento/festa-do-justin-em-piracicaba-sp-all-eras/3587935\",\"validUntil\":\"2026-12-11\",\"origin\":\"RADAR_PRA_HJ\"},{\"title\":\"Seminário Internacional de Aikido\",\"category\":\"esportes\",\"price\":\"paid\",\"date\":\"13 e 14/03/2027\",\"time\":\"consulte programação\",\"place\":\"Sesc Piracicaba\",\"teaser\":\"Seminário internacional com Tsuruzo Miyamoto Shihan.\",\"link\":\"https://www.linka.la/event/fb77b978-0438-4c30-b52d-033441c2610a\",\"validUntil\":\"2027-03-14\",\"origin\":\"RADAR_PRA_HJ\"}]}")
-_RADAR_URL='https://headless-uqcbszqzghi-pedrousinae-140b.wix-site-host.com/radar-eventos.json'
-
-def radar_active():
-    """Segregated catalogue of public Radar events, independently of organizer CMS."""
-    data=_RADAR_SNAPSHOT
-    source='fallback-snapshot'
-    warning='Catálogo de contingência; sincronização da vitrine não confirmada.'
-    try:
-        with urlopen(HTTPRequest(_RADAR_URL,headers={'Accept':'application/json','User-Agent':'PraHj-Command/1.0'}),timeout=7) as response:
-            fresh=json.load(response)
-        if isinstance(fresh.get('events'),list):
-            data=fresh
-            source='public-feed'
-            warning=None
-    except Exception:
-        pass
-    from datetime import datetime
-    from zoneinfo import ZoneInfo
-    day=datetime.now(ZoneInfo('America/Sao_Paulo')).date().isoformat()
-    events=[]
-    seen=set()
-    for item in data.get('events',[]):
-        if not isinstance(item,dict) or str(item.get('validUntil') or '')<day:continue
-        link=str(item.get('link') or '')
-        if not link.startswith('https://') or not item.get('title') or link.lower() in seen:continue
-        seen.add(link.lower())
-        h=2166136261
-        for char in link.lower():
-            h=((h ^ ord(char))*16777619)&0xffffffff
-        events.append({**item,'id':f'public-{h:08x}','origin':'RADAR_PRA_HJ','trackingSource':'agenda_publica'})
-    return {'events':events,'count':len(events),'source':source,'warning':warning,
-            'updatedAt':data.get('updatedAt'),'catalogDate':data.get('catalogDate')}
+        status['metricsReadVerified']=False
+    status['nextAction']='A gravação será marcada homologada após teste real com evento ativo'
+    return status
 
 @APP.get('/admin/api/overview')
 def overview(_=Depends(auth)):
@@ -291,19 +351,12 @@ def overview(_=Depends(auth)):
         else:
             events=public_events
             event_source='visitor-read-only'
-    metrics=[]
     metrics_error=None
     try:
-        metrics=[_item_data(x) for x in _query('prahoje_metricas_eventos')]
+        by_event=_social_aggregate()
     except Exception:
-        metrics_error='Métricas indisponíveis: conector de dados administrativo não autorizado.'
-    by_event={}
-    for m in metrics:
-        event_id=str(m.get('eventoId') or '').strip()
-        if not event_id:continue
-        prev=by_event.get(event_id)
-        if not prev or str(m.get('atualizadoEm') or '')>=str(prev.get('atualizadoEm') or ''):
-            by_event[event_id]=m
+        by_event={}
+        metrics_error='Métricas sociais indisponíveis: verifique a conexão com o CMS de interações V2.'
     management_available=True
     try:
         registrations=listing()
@@ -412,6 +465,18 @@ api('/api/session').then(()=>load()).catch(()=>{});
 def admin_page():
     return HTMLResponse(PAGE,headers={'Cache-Control':'no-store','X-Frame-Options':'DENY','Content-Security-Policy':"default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' https://headless-jzeufymuejv-pedrousinae-140b.wix-site-host.com; connect-src 'self'; frame-ancestors 'none'"})
 
+# The legacy package may register /v1/metricas/{kind} first. Prefer the secured
+# persistent CMS-based routes while leaving unrelated app routes untouched.
+_modern_metrics_paths = {
+    r.path for r in APP.router.routes
+    if getattr(r,'path','').startswith('/v1/metricas/')
+    and getattr(getattr(r,'endpoint',None),'__module__','') == __name__
+}
+APP.router.routes[:] = [
+    r for r in APP.router.routes
+    if not (getattr(r,'path','').startswith('/v1/metricas/')
+            and getattr(getattr(r,'endpoint',None),'__module__','') != __name__)
+]
 # The packaged legacy backend registers /admin before this module is imported.
 # Starlette resolves the FIRST matching route, so remove those legacy routes
 # when their paths are replaced by this protected, modern admin console.
