@@ -225,6 +225,39 @@ def login(data:Login):
         c.commit()
         return {"access_token":token,"token_type":"bearer","expires_in":28800}
 
+class CommandCenterLogin(BaseModel):
+    username:str=Field(min_length=1,max_length=32)
+    password:str=Field(min_length=1,max_length=128)
+
+@app.post("/auth/command-center-login")
+async def command_center_login(req:Request):
+    """Server-only shared administrative sign-in, scoped to the institutional PTP account."""
+    try:
+        data=CommandCenterLogin.model_validate(await req.json())
+    except Exception:
+        raise HTTPException(422,"Informe usuário e senha válidos")
+    expected_user=os.getenv("PTP_COMMAND_USER","").strip()
+    expected_hash=os.getenv("PTP_COMMAND_PASSWORD_HASH","").strip()
+    if not expected_user or not expected_hash:
+        raise HTTPException(503,"Acesso simplificado ainda não configurado no servidor")
+    # Match both fields without short-circuiting the password hash check.
+    valid_user=hmac.compare_digest(data.username.upper().encode(),expected_user.upper().encode())
+    valid_password=check_password(data.password,expected_hash)
+    if not (valid_user and valid_password):
+        raise HTTPException(401,"Usuário ou senha incorretos")
+    with db() as c:
+        account=c.execute("""select id,role,active from ptp_users
+          where email='parquetecnologicopiracicaba@gmail.com'""").fetchone()
+        if not account or not account["active"] or account["role"]!="admin":
+            raise HTTPException(403,"Conta institucional não habilitada")
+        token=secrets.token_urlsafe(48)
+        c.execute("insert into ptp_sessions(user_id,token_hash,expires_at) values (%s,%s,now()+interval '8 hours')",
+                  (account["id"],digest(token)))
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
+                  (account["id"],"command_center_authenticated","institutional_ptp"))
+        c.commit()
+    return {"access_token":token,"token_type":"bearer","expires_in":28800}
+
 @app.post("/auth/login-direct")
 async def login_direct(req:Request):
     """Equivalent credential validation using a simple browser POST without CORS preflight."""
