@@ -1167,12 +1167,12 @@ def provider_checkins(u=Depends(require("provider","admin"))):
     return {"checkins":[dict(x) for x in rows]}
 @app.get("/manager/redemptions")
 def manager_redemptions(u=Depends(require("manager","admin"))):
-    if not u["company_id"]:raise HTTPException(422,"Empresa não vinculada")
+    company_id=scoped_company_id(u)
     with db() as c:
         rows=c.execute("""select r.id,r.benefit_id,b.title,r.status,r.confirmed_at,
             us.name as beneficiary from ptp_redemptions r join ptp_users us on us.id=r.user_id
             join ptp_benefits b on b.id=r.benefit_id where r.company_id=%s
-            order by r.requested_at desc limit 200""",(u["company_id"],)).fetchall()
+            order by r.requested_at desc limit 200""",(company_id,)).fetchall()
     return {"redemptions":[dict(x) for x in rows]}
 
 
