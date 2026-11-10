@@ -181,6 +181,46 @@ def public_events_from_media_tech():
     except (HTTPError,URLError,TimeoutError,ValueError,KeyError) as err:
         return None, 'Leitura pública não autorizada ou indisponível'
 
+
+# Catalogo oficial gerenciado no próprio site Pra Hj. IDs são estáveis pelo link, não pelo título.
+from datetime import datetime
+from zoneinfo import ZoneInfo
+_RADAR_FEED_URL='https://headless-uqcbszqzghi-pedrousinae-140b.wix-site-host.com/radar-eventos.json'
+_RADAR_CACHE={'until':0.0,'data':None}
+_RADAR_LOCK=threading.RLock()
+def _public_event_id(link):
+    h=2166136261
+    for char in str(link or '').lower():
+        h=((h ^ ord(char))*16777619)&0xffffffff
+    return 'public-'+format(h,'08x')
+
+def radar_active():
+    now=time.time()
+    with _RADAR_LOCK:
+        if _RADAR_CACHE['data'] is not None and now<_RADAR_CACHE['until']:
+            return _RADAR_CACHE['data']
+    try:
+        request=HTTPRequest(_RADAR_FEED_URL,headers={'Accept':'application/json','User-Agent':'PraHj-Engajamento/1'})
+        with urlopen(request,timeout=10) as response:
+            feed=json.loads(response.read(1000000))
+        if not isinstance(feed,dict) or not isinstance(feed.get('events'),list):raise ValueError('Catálogo inválido')
+        today=datetime.now(ZoneInfo('America/Sao_Paulo')).date().isoformat()
+        events=[]
+        for item in feed['events'][:3000]:
+            if not isinstance(item,dict):continue
+            link=str(item.get('link') or '')
+            if not link.startswith('https://') or not item.get('title'):continue
+            if str(item.get('validUntil') or '0000-00-00')<today:continue
+            events.append({**item,'id':_public_event_id(link)})
+        data={'events':events,'count':len(events),'source':'Radar Pra Hj | catálogo oficial público','warning':'','catalogDate':feed.get('catalogDate'),'updatedAt':feed.get('updatedAt')}
+        with _RADAR_LOCK:_RADAR_CACHE.update(data=data,until=now+90)
+        return data
+    except Exception:
+        with _RADAR_LOCK:
+            if _RADAR_CACHE['data'] is not None:
+                return {**_RADAR_CACHE['data'],'warning':'Fonte temporariamente indisponível. Exibindo último catálogo confirmado.'}
+        raise HTTPException(503,'Catálogo do Radar temporariamente indisponível. Curtidas não foram alteradas.')
+
 # Pra Hj interactions v2: Wix CMS persistent log (pseudonymous, append-only).
 SOCIAL_COLLECTION='prahoje_analytics_v2'
 _SOCIAL_TOKEN={'value':None,'until':0.0}
@@ -258,6 +298,8 @@ def _social_aggregate():
 class SocialEventInput(BaseModel):
     eventoId:str
     visitanteId:str|None=None
+    nomePublico:str|None=None
+    publicarNome:bool=False
 
 def _social_event_allowed(event_id):
     if event_id.startswith('public-'):
@@ -296,16 +338,41 @@ def social_event(kind:str,payload:SocialEventInput,req:Request):
     elif kind=='view':bucket=time.strftime('%Y-%m-%d',time.gmtime(now))
     else:bucket=str(int(now//60))+'|'+uuid.uuid4().hex[:8]
     unique=str(uuid.uuid5(uuid.NAMESPACE_URL,eid+'|'+kind+'|'+actor+'|'+bucket))
-    record={'dataCollectionId':SOCIAL_COLLECTION,'dataItem':{
-        'id':unique,'data':{'eventoId':eid,'tipo':kind,'atorHash':actor,
+    item_data={'eventoId':eid,'tipo':kind,'atorHash':actor,
           'ocorridoEm':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime(now)),
-          'origem':'PRA_HJ_WEB','sessao':'day' if kind=='view' else 'one'}}}
+          'origem':'PRA_HJ_WEB','sessao':'day' if kind=='view' else 'one'}
+    if kind=='like' and payload.publicarNome:
+        alias=str(payload.nomePublico or '').strip()
+        if not (2<=len(alias)<=32 and re.fullmatch(r"[\wÀ-ÿ .'-]+",alias,re.UNICODE)
+                and not re.search(r"\b(?:https?|www|gmail|hotmail|outlook)\b",alias,re.IGNORECASE)):
+            raise HTTPException(422,'Informe um apelido público válido (2 a 32 caracteres) ou curta sem identificação.')
+        item_data.update(nomePublico=alias,consentimentoPublico=True)
+    record={'dataCollectionId':SOCIAL_COLLECTION,'dataItem':{'id':unique,'data':item_data}}
     result=_social_request('POST','/wix-data/v2/items',record)
     accepted=not result.get('_duplicate',False)
     with _SOCIAL_LOCK:_SOCIAL_CACHE['until']=0
     resp=JSONResponse({'ok':True,'accepted':accepted,'reason':'registered' if accepted else 'already_liked'})
     resp.set_cookie('ph_visitor_id',raw,httponly=True,secure=True,samesite='none',max_age=31536000,path='/v1/metricas')
     return resp
+
+@APP.get('/v1/metricas/curtidores')
+def public_curtidores(eventoId:str):
+    """Apenas apelidos publicados com consentimento; identificadores internos nunca são divulgados."""
+    if not _SOCIAL_PUBLIC_ID.fullmatch(eventoId):raise HTTPException(400,'Evento inválido')
+    names=[]
+    seen=set()
+    for row in _social_rows():
+        if str(row.get('eventoId') or '')!=eventoId or row.get('tipo')!='like':
+            continue
+        if row.get('consentimentoPublico') is not True:continue
+        name=str(row.get('nomePublico') or '').strip()
+        actor=str(row.get('atorHash') or '')
+        if not (2<=len(name)<=32 and actor and actor not in seen):continue
+        seen.add(actor)
+        names.append(name)
+    return {'eventoId':eventoId,'likes':_social_aggregate().get(eventoId,{}).get('likes',0),
+            'apelidosPublicos':names[:60],'totalApelidosPublicos':len(names),
+            'observacao':'Apelidos informados voluntariamente; identidades não verificadas.'}
 
 @APP.get('/v1/metricas/publicas')
 def public_metricas(eventoId:str):
