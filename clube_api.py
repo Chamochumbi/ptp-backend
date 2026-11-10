@@ -225,6 +225,8 @@ def login(data:Login):
         c.commit()
         return {"access_token":token,"token_type":"bearer","expires_in":28800}
 
+_command_login_attempts={}  # process-local, per-connection throttling without storing credentials
+
 class CommandCenterLogin(BaseModel):
     username:str=Field(min_length=1,max_length=32)
     password:str=Field(min_length=1,max_length=128)
@@ -240,11 +242,20 @@ async def command_center_login(req:Request):
     expected_hash=os.getenv("PTP_COMMAND_PASSWORD_HASH","").strip()
     if not expected_user or not expected_hash:
         raise HTTPException(503,"Acesso simplificado ainda não configurado no servidor")
+    # Limit repeated authentication attempts without collecting passwords.
+    source=str(req.client.host if req.client else "unknown")
+    now=utc().timestamp()
+    recent=[t for t in _command_login_attempts.get(source,[]) if now-t<600]
+    if len(recent)>=10:
+        raise HTTPException(429,"Muitas tentativas. Aguarde antes de tentar novamente")
     # Match both fields without short-circuiting the password hash check.
     valid_user=hmac.compare_digest(data.username.upper().encode(),expected_user.upper().encode())
     valid_password=check_password(data.password,expected_hash)
     if not (valid_user and valid_password):
+        recent.append(now)
+        _command_login_attempts[source]=recent
         raise HTTPException(401,"Usuário ou senha incorretos")
+    _command_login_attempts.pop(source,None)
     with db() as c:
         account=c.execute("""select id,role,active from ptp_users
           where email='parquetecnologicopiracicaba@gmail.com'""").fetchone()
