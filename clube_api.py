@@ -264,7 +264,11 @@ def change_password(data:PasswordChange,u=Depends(principal),authorization:str|N
 
 @app.get("/me")
 def me(u=Depends(principal)):
-    return {k:v for k,v in u.items() if k!="company_active"}
+    profile={}
+    with db() as c:
+        p=c.execute("select phone,photo_ref from ptp_person_profiles where user_id=%s",(u["id"],)).fetchone()
+        if p:profile=dict(p)
+    return {**{k:v for k,v in u.items() if k!="company_active"},**profile}
 class PersonalProfileUpdate(BaseModel):
     name:str=Field(min_length=2,max_length=180)
     email:str
