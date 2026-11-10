@@ -265,6 +265,43 @@ def change_password(data:PasswordChange,u=Depends(principal),authorization:str|N
 @app.get("/me")
 def me(u=Depends(principal)):
     return {k:v for k,v in u.items() if k!="company_active"}
+class PersonalProfileUpdate(BaseModel):
+    name:str=Field(min_length=2,max_length=180)
+    email:str
+    company_id:str|int|None=None
+    cpf:str|None=None
+    phone:str=Field(default="",max_length=40)
+    photo_ref:str=Field(default="",max_length=1000)
+
+@app.get("/me/profile")
+def my_personal_profile(u=Depends(principal)):
+    with db() as c:
+        profile=c.execute("select phone,photo_ref from ptp_person_profiles where user_id=%s",(u["id"],)).fetchone()
+    return {"name":u["name"],"email":u["email"],"company_id":u["company_id"],
+        "phone":profile["phone"] if profile else "",
+        "photo_ref":profile["photo_ref"] if profile else "",
+        "cpf_verification_status":"not_implemented"}
+
+@app.put("/me/profile")
+def update_personal_profile(data:PersonalProfileUpdate,u=Depends(principal)):
+    if valid_email(data.email)!=u["email"]:
+        raise HTTPException(403,"E-mail de acesso não pode ser alterado neste formulário")
+    if data.company_id not in (None,"",str(u["company_id"]),u["company_id"]):
+        raise HTTPException(403,"Vínculo empresarial não pode ser modificado pelo próprio usuário")
+    if data.photo_ref and not data.photo_ref.startswith("https://"):
+        raise HTTPException(422,"Foto de perfil deve usar endereço HTTPS")
+    with db() as c:
+        c.execute("update ptp_users set name=%s where id=%s",(data.name.strip(),u["id"]))
+        c.execute("""insert into ptp_person_profiles(user_id,phone,photo_ref)
+          values(%s,%s,%s) on conflict(user_id) do update set
+          phone=excluded.phone,photo_ref=excluded.photo_ref,updated_at=now()""",
+          (u["id"],data.phone.strip(),data.photo_ref.strip()))
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
+          (u["id"],"member_profile_updated",str(u["id"])))
+        c.commit()
+    return {"status":"updated","message":"Nome, telefone e foto atualizados. CPF ainda não possui validação no sistema.",
+            "cpf_verified":False}
+
 @app.get("/admin/summary")
 def admin_summary(u=Depends(require("admin"))):
     with db() as c:
