@@ -639,6 +639,27 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 .review-card .checkbox{display:inline-flex;gap:8px;align-items:center;font-size:12px;color:#e9dbe8}
 .review-card input[type=checkbox]{accent-color:#eb1871}
 @media(max-width:600px){.editorial-filter{flex-direction:column;align-items:stretch}.editorial-filter select,.editorial-filter input{width:100%}.review-card{padding:14px}}
+
+/* Admin Master: all actionable indicators and controls are explicitly keyboard-accessible. */
+.kpi[data-open]{cursor:pointer;transition:transform .16s ease,border-color .16s ease,background .16s ease}
+.kpi[data-open]:hover,.kpi[data-open]:focus-visible{border-color:#f95b91;background:#302135;transform:translateY(-2px)}
+.kpi[data-open]::after{content:"Abrir área →";display:block;margin-top:9px;font-size:11px;color:#fca0c9;font-weight:780}
+.kpi[data-open]:focus-visible,.action-tile:focus-visible,.menu:focus-visible{outline:3px solid #ff89be;outline-offset:3px}
+.quick-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.action-tile{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:9px;min-height:124px;border-radius:16px;border:1px solid #59405c;background:linear-gradient(130deg,#312039,#231b30);color:#fff;padding:17px;text-align:left;font:inherit;cursor:pointer}
+.action-tile strong{font-size:15px;line-height:1.35;color:#fff}
+.action-tile small{line-height:1.4;color:#d9bfd4;font-size:12px}
+.action-tile:hover{border-color:#ff5c92;background:#3c2540}
+.action-tile.primary{background:linear-gradient(118deg,#ad084e,#e73050);border-color:#ff6790}
+.action-tile.primary small{color:#fff}
+.admin-session-chip{padding:8px 12px;border:1px solid #79556c;border-radius:999px;background:#281c2b;color:#ffe1ef;font-size:12px;font-weight:850}
+.admin-ops-status{margin:8px 0;border-left:3px solid #f23a72;padding:10px 13px;background:#261b2b;border-radius:7px;color:#e7d3e1;font-size:13px}
+.admin-ops-status.ok{border-color:#48bc86;background:#172b23}
+.admin-ops-status.blocked{border-color:#ffae55}
+.editorial-card-target{cursor:pointer;text-decoration:underline dotted #f59fc5;text-underline-offset:4px}
+.review-card button,.btn,.menu{min-height:42px}
+@media(max-width:960px){.quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.quick-actions{grid-template-columns:1fr}.action-tile{min-height:96px}.admin-session-chip{font-size:11px}}
 </style></head>
 <body>
 <section id="signin" class="login">
@@ -656,15 +677,27 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 <div class="bottom">ADMIN MASTER · ADMPRAHJ<br>Powered by Run b.o.</div>
 </aside>
 <main>
-<div class="top"><div><div class="eyebrow">Pra Hj / inteligência de gestão</div><h1 id="heading">Visão executiva</h1><div class="muted" id="stamp">Dados administrativos protegidos</div></div><div class="actions"><a class="btn" target="_blank" rel="noopener noreferrer" href="https://headless-uqcbszqzghi-pedrousinae-140b.wix-site-host.com/">↗ Vitrine pública</a><button class="btn" id="refresh">↻ Atualizar</button><button class="btn" id="logout">Sair</button></div></div>
+<div class="top"><div><div class="eyebrow">Pra Hj / inteligência de gestão</div><h1 id="heading">Visão executiva</h1><div class="muted" id="stamp">Dados administrativos protegidos</div><div style="margin-top:12px"><span id="adminRoleBadge" class="admin-session-chip">ADMIN MASTER · Sessão protegida</span></div></div><div class="actions"><a class="btn" target="_blank" rel="noopener noreferrer" href="https://headless-uqcbszqzghi-pedrousinae-140b.wix-site-host.com/">↗ Vitrine pública</a><button class="btn" id="refresh">↻ Atualizar</button><button class="btn" id="logout">Sair</button></div></div>
 <div class="view" id="view-overview">
+<section class="surface" style="margin-top:0">
+<div class="eyebrow">Gestão à vista · Decida sem sair da plataforma</div><h2 style="margin-top:7px">Ações rápidas do administrador</h2>
+<p class="muted">Os indicadores e atalhos abrem diretamente sua área de trabalho. Nenhuma decisão editorial é executada apenas pela navegação.</p>
+<div class="quick-actions">
+<button type="button" class="action-tile primary" data-open="editorial"><strong>✓ Aprovar eventos pendentes</strong><small>Analise, publique, solicite ajustes ou rejeite — sempre com confirmação</small></button>
+<button type="button" class="action-tile" data-open="events"><strong>▦ Todos os eventos</strong><small>Radar, eventos publicados, engajamento e desempenho</small></button>
+<button type="button" class="action-tile" data-open="people"><strong>♧ Habilitar organizadores</strong><small>Permissões vinculadas à verificação de assinatura e pagamento</small></button>
+<button type="button" class="action-tile" data-open="applications"><strong>≡ Conferir cadastros</strong><small>Examine solicitações e identifique pendências</small></button>
+<button type="button" class="action-tile" data-open="finance"><strong>◉ Assinaturas e finanças</strong><small>Informações verificadas, sem estimativas de receita</small></button>
+<button type="button" class="action-tile" data-open="operations"><strong>⚙ Operação e integração</strong><small>Serviços, páginas operacionais e disponibilidade dos dados</small></button>
+</div><div id="adminOpsStatus" class="admin-ops-status" role="status">Verificando permissões de operação...</div>
+</section>
 <div class="grid">
-<div class="kpi"><small>Eventos do Radar Pra Hj</small><strong id="k-radar">—</strong><em>Rastreados e ativos na vitrine</em></div>
-<div class="kpi"><small>Eventos dos organizadores</small><strong id="k-events">—</strong><em>Cadastros enviados pelos usuários</em></div>
-<div class="kpi"><small>Eventos de usuários aprovados</small><strong id="k-approved">—</strong><em>Conforme status editorial</em></div>
-<div class="kpi"><small>Organizadores habilitados</small><strong id="k-active">—</strong><em>Acessos autorizados</em></div>
-<div class="kpi"><small>Cadastros recebidos</small><strong id="k-applications">—</strong><em>Solicitações registradas</em></div><div class="kpi"><small>Fila editorial pendente</small><strong id="k-pending">—</strong><em>Eventos aguardando decisão</em></div></div>
-<section class="surface"><h2>Engajamento de eventos · Indicadores consolidados</h2><div class="grid"><div class="kpi"><small>Visualizações totais</small><strong id="m-views">—</strong></div><div class="kpi"><small>Visualizações únicas</small><strong id="m-unique">—</strong></div><div class="kpi"><small>Cliques de interesse</small><strong id="m-clicks">—</strong></div><div class="kpi"><small>Likes recebidos</small><strong id="m-likes">—</strong></div></div><p class="muted" id="metricsSummaryStatus">Métricas privadas, sem valores estimados.</p></section><div class="twocol"><section class="surface"><h2>Funil editorial</h2><p class="muted">Situação dos eventos registrados na base. Registros sem status identificado não são tratados como aprovados.</p><div class="strip"><div id="approvalbar"></div></div><div class="muted" id="editorialText">Aguardando dados...</div></section>
+<div class="kpi" data-open="events"><small>Eventos do Radar Pra Hj</small><strong id="k-radar">—</strong><em>Rastreados e ativos na vitrine</em></div>
+<div class="kpi" data-open="events"><small>Eventos dos organizadores</small><strong id="k-events">—</strong><em>Cadastros enviados pelos usuários</em></div>
+<div class="kpi" data-open="events"><small>Eventos de usuários aprovados</small><strong id="k-approved">—</strong><em>Conforme status editorial</em></div>
+<div class="kpi" data-open="people"><small>Organizadores habilitados</small><strong id="k-active">—</strong><em>Acessos autorizados</em></div>
+<div class="kpi" data-open="applications"><small>Cadastros recebidos</small><strong id="k-applications">—</strong><em>Solicitações registradas</em></div><div class="kpi" data-open="editorial"><small>Fila editorial pendente</small><strong id="k-pending">—</strong><em>Eventos aguardando decisão</em></div></div>
+<section class="surface"><h2>Engajamento de eventos · Indicadores consolidados</h2><div class="grid"><div class="kpi" data-open="events"><small>Visualizações totais</small><strong id="m-views">—</strong></div><div class="kpi" data-open="events"><small>Visualizações únicas</small><strong id="m-unique">—</strong></div><div class="kpi" data-open="events"><small>Cliques de interesse</small><strong id="m-clicks">—</strong></div><div class="kpi" data-open="events"><small>Likes recebidos</small><strong id="m-likes">—</strong></div></div><p class="muted" id="metricsSummaryStatus">Métricas privadas, sem valores estimados.</p></section><div class="twocol"><section class="surface"><h2>Funil editorial</h2><p class="muted">Situação dos eventos registrados na base. Registros sem status identificado não são tratados como aprovados.</p><div class="strip"><div id="approvalbar"></div></div><div class="muted" id="editorialText">Aguardando dados...</div></section>
 <section class="surface"><h2>Condição operacional</h2><div class="tag">Dados internos</div><p class="muted" id="dataHealth">Carregando...</p><p class="muted">A apuração de faturamento só será exibida quando houver integração transacional verificada.</p></section></div>
 <section class="surface"><div class="top"><div><h2>Curadoria editorial · Decisões pendentes</h2><p class="muted">Aprovação individual, parecer e publicação supervisionada, com registros no Media Tech.</p></div><button class="btn hot" type="button" id="openEditorial">✓ Abrir fila editorial</button></div></section>
 <section class="surface"><h2>Prioridades de gestão</h2><div class="twocol"><p class="muted">1. Avaliar cadastros e habilitar perfis válidos.<br>2. Revisar agenda editorial e qualidade dos eventos.<br>3. Conferir assinaturas e pagamentos antes da liberação comercial.</p><p class="muted">4. Monitorar desempenho e conversão com dados auditáveis.<br>5. Consolidar relatórios gerenciais por período.<br>6. Revisar consistência entre Media Tech e vitrine.</p></div></section></div>
@@ -697,7 +730,14 @@ const $=id=>document.getElementById(id), api=async(path,obj)=>{const opts={crede
 const set=(id,value)=>$(id).textContent=value;let state=null;
 function cell(tr,v){const td=document.createElement('td');td.textContent=String(v??'—');tr.append(td)}
 function show(view){if(!document.getElementById('view-'+view))view='overview';if(location.hash.slice(1)!==view)history.replaceState(null,'','#'+view);document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!=='view-'+view);document.querySelectorAll('.menu').forEach(x=>x.classList.toggle('active',x.dataset.view===view));set('heading',({overview:'Visão executiva',editorial:'Curadoria e aprovação',events:'Gestão de eventos',people:'Organizadores',applications:'Credenciamento',finance:'Assinaturas & finanças',operations:'Operação'})[view]);}
-document.querySelectorAll('.menu').forEach(b=>b.onclick=()=>show(b.dataset.view));window.addEventListener('hashchange',()=>show(location.hash.slice(1)||'overview'));
+document.querySelectorAll('.menu').forEach(b=>b.onclick=()=>show(b.dataset.view));
+document.querySelectorAll('[data-open]').forEach(el=>{
+ const target=el.dataset.open;
+ if(!target)return;
+ if(!['BUTTON','A'].includes(el.tagName)){el.setAttribute('role','button');el.setAttribute('tabindex','0');el.setAttribute('aria-label','Abrir '+target)}
+ el.addEventListener('click',()=>show(target));
+ el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();show(target)}})
+});window.addEventListener('hashchange',()=>show(location.hash.slice(1)||'overview'));
 function rows(id){$(id).replaceChildren();return $(id)}
 function render(x){
 state=x;$('signin').hidden=true;$('app').hidden=false;
@@ -705,6 +745,10 @@ set('k-pending',x.editorial?.pendentes??x.pendingEvents??'—');set('pendingMenu
 set('k-radar',x.radarCount??'—');set('k-events',x.eventQueryError?'Indisponível':x.totalEvents);set('k-approved',x.eventQueryError?'—':x.approvedEvents);set('k-active',x.activeMembers);set('k-applications',x.applications.length);
 set('stamp','Última consulta: '+new Date(x.generatedAt*1000).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}));
 set('dataHealth',x.eventQueryError?x.eventQueryError:(x.eventSource==='visitor-read-only'?'Leitura pública da base Media Tech ativa. Operações administrativas de escrita exigem credenciais de servidor.':'Consulta administrativa realizada. Acurácia depende da integridade da base de origem.'));
+const canDecide=x.editorialWriteAvailable===true;
+const ops=$('adminOpsStatus');
+ops.className='admin-ops-status '+(canDecide?'ok':'blocked');
+ops.textContent=canDecide?'✓ Operação administrativa habilitada: autenticação ADMIN MASTER e conexão editorial disponíveis.':'⚠ ADMIN MASTER autenticado; decisões de publicação só serão liberadas quando a conexão de escrita do CMS estiver validada no servidor. O painel permanece disponível para análise.';
 $('approvalbar').style.width=x.totalEvents?Math.round(x.approvedEvents/x.totalEvents*100)+'%':'0%';
 set('editorialText',x.approvedEvents+' aprovados · '+x.pendingEvents+' pendentes · '+(x.totalEvents-x.approvedEvents-x.pendingEvents)+' outros/sem classificação');
 const totals=x.metricsTotals||{};for(const [id,key] of [['m-views','visualizacoes'],['m-unique','visualizacoesUnicas'],['m-clicks','cliques'],['m-likes','likes']])set(id,x.metricsQueryError?'—':(totals[key]??0).toLocaleString('pt-BR'));set('metricsSummaryStatus',x.metricsQueryError||('Eventos com indicadores: '+x.metricsEventCount+' · Fonte: registros de interação persistentes no Media Tech.'));set('metricsHealth',x.metricsQueryError||'Indicadores consolidados a partir de registros persistentes de likes, visualizações e cliques.');
@@ -801,7 +845,11 @@ $('editorialSearch').addEventListener('input',renderEditorial);
 async function load(){set('status','Sincronizando informações...');try{const r=await api('/api/overview');render(r);await loadEditorial();show(location.hash.slice(1)||'overview');set('status','Dados atualizados.')}catch(err){$('signin').hidden=true;$('app').hidden=false;set('status','Acesso autorizado. Indicadores temporariamente indisponíveis: '+err.message);}}
 $('login').onsubmit=async ev=>{ev.preventDefault();const msg=$('loginStatus');msg.hidden=false;msg.textContent='Validando acesso...';try{await api('/login',{usuario:$('usr').value,senha:$('pwd').value});$('pwd').value='';$('signin').hidden=true;$('app').hidden=false;msg.hidden=true;await load()}catch(err){msg.textContent=err.message}};
 $('refresh').onclick=()=>load().catch(err=>set('status',err.message));$('logout').onclick=async()=>{await api('/logout',{});location.reload()};
-api('/api/session').then(()=>load()).catch(()=>{});
+api('/api/session').then(session=>{
+const badge=$('adminRoleBadge');
+if(badge)badge.textContent=(session.role||'ADMIN MASTER')+' · '+(session.user||'Administrador')+' · Sessão protegida';
+return load()
+}).catch(()=>{});
 </script></body></html>'''
 @APP.get('/admin',response_class=HTMLResponse)
 def admin_page():
