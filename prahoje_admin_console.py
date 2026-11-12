@@ -513,6 +513,31 @@ def _editorial_summary(records):
         'total':len(statuses),
     }
 
+
+@APP.get('/admin/api/capabilities')
+def admin_capabilities(_=Depends(auth)):
+    """Diagnóstico protegido. Nunca retorna credenciais ou dados de autenticação."""
+    credential_present=bool(os.getenv('WIX_API_KEY') or os.getenv('WIX_TOKEN'))
+    read_ok=False
+    failure=None
+    if credential_present:
+        try:
+            read_ok=isinstance(_query('prahoje_eventos'),list)
+        except Exception:
+            failure='Conexão administrativa do CMS indisponível. Verifique a integração do servidor com a conta Wix do Media Tech.'
+    else:
+        failure='O servidor não possui credencial de serviço Wix habilitada para administrar a coleção de eventos.'
+    return {
+        'role':'ADMIN_MASTER',
+        'sessionAuthenticated':True,
+        'singleLogin':True,
+        'editorialReadAvailable':read_ok,
+        'editorialWriteAvailable':credential_present and read_ok,
+        'requiresSeparateEditorLogin':False,
+        'reason':failure,
+        'serverPermissionRequired':not (credential_present and read_ok),
+    }
+
 @APP.get('/admin/api/editorial')
 def editorial_queue(_=Depends(auth)):
     """Fila somente leitura protegida, sem permitir escrita pela identidade do visitante."""
@@ -689,7 +714,7 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 <button type="button" class="action-tile" data-open="applications"><strong>≡ Conferir cadastros</strong><small>Examine solicitações e identifique pendências</small></button>
 <button type="button" class="action-tile" data-open="finance"><strong>◉ Assinaturas e finanças</strong><small>Informações verificadas, sem estimativas de receita</small></button>
 <button type="button" class="action-tile" data-open="operations"><strong>⚙ Operação e integração</strong><small>Serviços, páginas operacionais e disponibilidade dos dados</small></button>
-</div><div id="adminOpsStatus" class="admin-ops-status" role="status">Verificando permissões de operação...</div>
+</div><div class="admin-ops-status" role="status"><span id="adminConnectionStatus">Verificando CMS...</span> <button class="btn" id="adminConnectionCheck" type="button" style="margin-left:10px">↻ Verificar conexão</button></div><div id="adminOpsStatus" class="admin-ops-status" role="status">Verificando permissões de operação...</div>
 </section>
 <div class="grid">
 <div class="kpi" data-open="events"><small>Eventos do Radar Pra Hj</small><strong id="k-radar">—</strong><em>Rastreados e ativos na vitrine</em></div>
@@ -836,13 +861,35 @@ async function loadEditorial(){
  try{editorialState=await api('/api/editorial');renderEditorial();set('pendingMenuCount',editorialState.counts?.pendentes??'—');set('k-pending',editorialState.counts?.pendentes??'—')}
  catch(err){editorialState=null;$('editorialCards').replaceChildren();set('editorialMessage','Falha na consulta editorial: '+err.message)}
 }
-$('editorialReload').addEventListener('click',loadEditorial);
+
+async function checkAdminAccess(){
+ const status=$('adminOpsStatus');
+ try{
+  const result=await api('/api/capabilities');
+  const available=result.editorialWriteAvailable===true;
+  const badge=$('adminRoleBadge');
+  if(badge)badge.textContent='ADMIN MASTER · Sessão única autenticada';
+  if(status){
+   status.className='admin-ops-status '+(available?'ok':'blocked');
+   status.textContent=available?
+    '✓ Sua sessão ADMIN MASTER está autorizada e o servidor confirmou a conexão administrativa de dados. Você pode decidir na Curadoria sem outro login.':
+    'ADMIN MASTER reconhecido. A consulta da fila está disponível quando a fonte pública responde, mas a publicação permanece bloqueada até regularizar a permissão de escrita do servidor. '+(result.reason||'');
+  }
+  const msg=$('adminConnectionStatus');if(msg)msg.textContent=available?'✓ CMS administrativo conectado':'⚠ Integração de escrita pendente';
+  const button=$('adminConnectionCheck');if(button)button.disabled=false;
+ }catch(error){
+  if(status){status.className='admin-ops-status blocked';status.textContent='Não foi possível validar a integração administrativa: '+error.message}
+ }
+}
+
+$('editorialReload').addEventListener('click',async()=>{await loadEditorial();await checkAdminAccess()});
 $('openEditorial').addEventListener('click',()=>show('editorial'));
+$('adminConnectionCheck').addEventListener('click',checkAdminAccess);
 
 $('editorialFilter').addEventListener('change',renderEditorial);
 $('editorialSearch').addEventListener('input',renderEditorial);
 
-async function load(){set('status','Sincronizando informações...');try{const r=await api('/api/overview');render(r);await loadEditorial();show(location.hash.slice(1)||'overview');set('status','Dados atualizados.')}catch(err){$('signin').hidden=true;$('app').hidden=false;set('status','Acesso autorizado. Indicadores temporariamente indisponíveis: '+err.message);}}
+async function load(){set('status','Sincronizando informações...');try{const r=await api('/api/overview');render(r);await loadEditorial();await checkAdminAccess();show(location.hash.slice(1)||'overview');set('status','Dados atualizados.')}catch(err){$('signin').hidden=true;$('app').hidden=false;set('status','Acesso autorizado. Indicadores temporariamente indisponíveis: '+err.message);}}
 $('login').onsubmit=async ev=>{ev.preventDefault();const msg=$('loginStatus');msg.hidden=false;msg.textContent='Validando acesso...';try{await api('/login',{usuario:$('usr').value,senha:$('pwd').value});$('pwd').value='';$('signin').hidden=true;$('app').hidden=false;msg.hidden=true;await load()}catch(err){msg.textContent=err.message}};
 $('refresh').onclick=()=>load().catch(err=>set('status',err.message));$('logout').onclick=async()=>{await api('/logout',{});location.reload()};
 api('/api/session').then(session=>{
