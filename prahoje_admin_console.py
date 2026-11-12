@@ -310,11 +310,17 @@ def _social_event_allowed(event_id):
     # CMS events are protected by the editorial moderation workflow.
     try:
         published=[_item_data(x) for x in _query('prahoje_eventos')]
-        return any(str(e.get('_id') or e.get('id'))==event_id and str(e.get('status') or '').upper()=='PUBLICADO' for e in published)
+        if any(str(e.get('_id') or e.get('id'))==event_id and str(e.get('status') or '').upper()=='PUBLICADO' for e in published):
+            return True
     except Exception:
-        # Publicly visible subscriber cards may be present even if admin connector is offline;
-        # id format validation still applies, but this is not evidence of editorial approval.
+        pass
+    # Read-only fallback: the same public collection used by the events vitrine.
+    # Fail closed if the publication state cannot be confirmed.
+    public_events,public_error=public_events_from_media_tech()
+    if public_events is None:
         return False
+    return any(str(e.get('_id') or e.get('id'))==event_id and str(e.get('status') or '').upper()=='PUBLICADO'
+               for e in public_events)
 
 @APP.post('/v1/metricas/{kind}')
 def social_event(kind:str,payload:SocialEventInput,req:Request):
