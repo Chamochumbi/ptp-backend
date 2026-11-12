@@ -177,7 +177,7 @@ def public_events_from_media_tech():
         )
         with urlopen(query_req,timeout=12) as response:
             data=json.load(response)
-        return [x.get('data') or {} for x in data.get('dataItems',[])],None
+        return [{**(x.get('data') or {}),'_id':str(x.get('id') or (x.get('data') or {}).get('_id') or '')} for x in data.get('dataItems',[])],None
     except (HTTPError,URLError,TimeoutError,ValueError,KeyError) as err:
         return None, 'Leitura pública não autorizada ou indisponível'
 
