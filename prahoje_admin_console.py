@@ -473,12 +473,138 @@ def overview(_=Depends(auth)):
     pending=sum('PEND' in label(e) or 'REVIS' in label(e) for e in events)
     return {'radarEvents':radar['events'],'radarCount':radar['count'],'radarSource':radar['source'],'radarWarning':radar['warning'],'radarCatalogDate':radar['catalogDate'],'radarUpdatedAt':radar['updatedAt'],
             'events':events[:300],'totalEvents':len(events),
+            'editorial':_editorial_summary(events),'editorialWriteAvailable':bool(os.getenv('WIX_API_KEY') or os.getenv('WIX_TOKEN')) and event_source=='admin-api',
             'approvedEvents':approved,'pendingEvents':pending,
             'members':people,'applications':applications,
             'activeMembers':sum(x.get('habilitacao')=='HABILITADO' for x in people),
             'eventQueryError':error, 'eventSource':event_source,'metricsQueryError':metrics_error,'metricsByEvent':by_event,'metricsEventCount':len(by_event),
             'metricsTotals':{k:sum(max(0,int(float(m.get(k) or 0))) for m in by_event.values() if str(m.get(k) or '0').replace('.','',1).isdigit()) for k in ('visualizacoes','visualizacoesUnicas','cliques','likes')},'managementAvailable':management_available, 'integration':{'adminWixConfigured':bool(os.getenv('WIX_API_KEY') or os.getenv('WIX_TOKEN')),'publicRead':event_source=='visitor-read-only','writeOperations':'Dependem de API administrativa válida'}, 'socialStorageStatus':'Falha ao consultar interações persistentes' if metrics_error else 'Consulta da base persistente de interações disponível; teste de escrita: '+_SOCIAL_HEALTH['state'],'financeStatus':'Não integrado: receita e pagamentos exigem confirmação transacional',
             'generatedAt':int(time.time())}
+
+
+class EditorialDecision(BaseModel):
+    acao:str
+    parecer:str=''
+    expectedStatus:str|None=None
+    destaque:bool|None=None
+
+_PENDING_STATES={'PENDENTE','EM_ANALISE','EM_AJUSTES','AJUSTES_SOLICITADOS'}
+_PUBLIC_STATES={'PUBLICADO','APROVADO'}
+_REJECTED_STATES={'REJEITADO','ARQUIVADO'}
+_ACTION_TO_STATE={
+    'ANALISAR':'EM_ANALISE',
+    'PUBLICAR':'PUBLICADO',
+    'AJUSTES':'EM_AJUSTES',
+    'REJEITAR':'REJEITADO',
+    'DESPUBLICAR':'PENDENTE',
+}
+def _editorial_status(item):
+    return str(item.get('status') or item.get('statusEditorial') or 'PENDENTE').upper().strip()
+def _editorial_record(item):
+    data=_item_data(item)
+    return {**data,'_id':str(item.get('id') or data.get('_id') or data.get('id') or '')}
+def _editorial_summary(records):
+    statuses=[_editorial_status(x) for x in records]
+    return {
+        'pendentes':sum(x in _PENDING_STATES for x in statuses),
+        'publicados':sum(x in _PUBLIC_STATES for x in statuses),
+        'rejeitados':sum(x in _REJECTED_STATES for x in statuses),
+        'semClassificacao':sum(x not in (_PENDING_STATES|_PUBLIC_STATES|_REJECTED_STATES) for x in statuses),
+        'total':len(statuses),
+    }
+
+@APP.get('/admin/api/editorial')
+def editorial_queue(_=Depends(auth)):
+    """Fila somente leitura protegida, sem permitir escrita pela identidade do visitante."""
+    source='admin-api'
+    writable=bool(os.getenv('WIX_API_KEY') or os.getenv('WIX_TOKEN'))
+    try:
+        records=[_editorial_record(x) for x in _query('prahoje_eventos')]
+    except Exception:
+        entries,error=public_events_from_media_tech()
+        if entries is None:
+            raise HTTPException(503,'Fila editorial indisponível: leitura administrativa e leitura pública sem acesso.')
+        records=entries
+        source='visitor-read-only'
+        writable=False
+    records.sort(key=lambda x: (
+        0 if _editorial_status(x) in _PENDING_STATES else 1,
+        str(x.get('_createdDate') or x.get('dataInicio') or '')
+    ))
+    return {'events':records[:300], 'counts':_editorial_summary(records),
+            'source':source, 'writeAvailable':writable and source=='admin-api',
+            'writableReason':'Operações de aprovação exigem credenciais administrativas Wix configuradas no servidor.'
+                            if not (writable and source=='admin-api') else '',
+            'readOnly':not (writable and source=='admin-api'),'generatedAt':int(time.time())}
+
+@APP.post('/admin/api/editorial/{event_id}/review')
+def editorial_review(event_id:str,body:EditorialDecision,_=Depends(auth)):
+    """Decisões explícitas ADMIN MASTER. Publicar depende de curadoria e validação comercial."""
+    if not re.fullmatch(r'[a-fA-F0-9-]{36}',event_id):
+        raise HTTPException(400,'Identificador inválido')
+    action=str(body.acao or '').upper().strip()
+    if action not in _ACTION_TO_STATE:
+        raise HTTPException(400,'Ação editorial inválida')
+    note=str(body.parecer or '').strip()
+    if len(note)>1000:raise HTTPException(422,'Parecer limitado a 1.000 caracteres')
+    if action in ('AJUSTES','REJEITAR') and len(note)<8:
+        raise HTTPException(422,'Informe um parecer de pelo menos 8 caracteres')
+    if not (os.getenv('WIX_API_KEY') or os.getenv('WIX_TOKEN')):
+        raise HTTPException(503,'Escrita editorial indisponível: configure credencial administrativa Wix no servidor')
+    try:
+        items=_query('prahoje_eventos')
+    except Exception:
+        raise HTTPException(503,'Banco administrativo indisponível; nenhuma alteração foi realizada')
+    original=next((x for x in items
+                   if str(x.get('id') or _item_data(x).get('_id') or '')==event_id),None)
+    if original is None:raise HTTPException(404,'Evento não encontrado na base editorial')
+    data=dict(_item_data(original))
+    old_status=_editorial_status(data)
+    if body.expectedStatus is not None and old_status!=str(body.expectedStatus).upper().strip():
+        raise HTTPException(409,'O status mudou desde sua última consulta; atualize a fila antes de decidir.')
+    if old_status==_ACTION_TO_STATE[action]:
+        raise HTTPException(409,'O evento já está neste estado editorial')
+    if action=='PUBLICAR':
+        city=str(data.get('cidadeId') or data.get('cidade') or '').lower().strip()
+        if city not in ('piracicaba','piracicaba-sp','piracicaba sp'):
+            raise HTTPException(422,'Somente eventos em Piracicaba podem ser publicados')
+        if not all([str(data.get('titulo') or '').strip(),str(data.get('local') or '').strip(),
+                    data.get('dataInicio')]):
+            raise HTTPException(422,'Título, local e data de início são obrigatórios')
+        event_url=str(data.get('url') or '').strip()
+        if not event_url.startswith('https://'):
+            raise HTTPException(422,'Link de referência HTTPS obrigatório antes da publicação')
+        origin=str(data.get('origem') or '').lower()
+        if not origin.startswith('radar'):
+            mid=str(data.get('enviadoPorMemberId') or '').strip()
+            if not re.fullmatch(r'[a-fA-F0-9-]{36}',mid):
+                raise HTTPException(403,'Evento de organizador exige conta vinculada e assinatura confirmada')
+            verify_paid_subscription(mid)
+    next_status=_ACTION_TO_STATE[action]
+    updated={k:v for k,v in data.items() if not k.startswith('_')}
+    updated.update({
+        'status':next_status,'parecerEditorial':note,
+        'revisadoEm':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
+        'revisadoPor':USER,
+    })
+    if body.destaque is not None and action=='PUBLICAR':
+        updated['destaque']=body.destaque
+    payload={'dataCollectionId':'prahoje_eventos',
+             'dataItem':{'id':event_id,'data':updated}}
+    try:
+        saved=_wix('POST','/wix-data/v2/items/save',payload)
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(503,'Falha ao gravar parecer no CMS. Nenhuma confirmação de aprovação foi obtida.')
+    record=saved.get('dataItem') or {}
+    saved_data=record.get('data') or {}
+    # A aprovação só é comunicada como concluída após confirmação de escrita.
+    if not record:
+        raise HTTPException(503,'CMS não confirmou atualização; consulte o evento antes de repetir')
+    return {'ok':True,'id':event_id,'previousStatus':old_status,
+            'status':str(saved_data.get('status') or next_status).upper(),
+            'action':action, 'revisadoEm':updated['revisadoEm']}
 
 PAGE='''<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -491,6 +617,28 @@ aside{padding:28px 17px;background:#14121d;border-right:1px solid var(--stroke);
 aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{padding:31px clamp(20px,3.7vw,57px) 65px;min-width:0}.top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:15px;margin-bottom:30px}.eyebrow{color:#fc62af;font-size:11px;font-weight:850;letter-spacing:2px;text-transform:uppercase}h1{font-size:clamp(26px,3vw,43px);letter-spacing:-1.3px;margin:9px 0}h2{font-size:18px;margin:0 0 16px}.muted{color:var(--muted);line-height:1.55}.actions{display:flex;gap:9px;flex-wrap:wrap}.btn{border:1px solid #48414e;background:#26222e;padding:11px 15px;color:#fff;border-radius:11px;font-weight:760}.btn.hot{background:linear-gradient(110deg,#e6007e,#f85a38);border-color:transparent}.btn:disabled{opacity:.45}
 .grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}.kpi{border:1px solid var(--stroke);background:#1a1722;border-radius:18px;padding:22px;min-height:133px}.kpi small{color:#c7bdcd;font-size:12px}.kpi strong{font-size:36px;display:block;letter-spacing:-1px;margin:12px 0 2px}.kpi em{font-style:normal;font-size:11px;color:#aaa1b1}.surface{margin-top:18px;border:1px solid var(--stroke);background:#18151f;border-radius:20px;padding:23px}.twocol{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}.tag{border-radius:30px;padding:5px 9px;border:1px solid #61415a;color:#ffd2ed;font-size:11px}.tbl{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:600px}th,td{text-align:left;border-bottom:1px solid #34303c;padding:13px 8px;font-size:12px}th{font-size:10px;letter-spacing:.9px;text-transform:uppercase;color:#a9a2b4}td{color:#ede9f1}.strip{height:10px;background:#38303e;border-radius:12px;overflow:hidden;margin:20px 0 10px}.strip div{height:100%;background:linear-gradient(90deg,#ed087e,#ff8517);width:0}.login{max-width:455px;margin:10vh auto;padding:36px;border-radius:24px;background:#1c1925;border:1px solid #504054;box-shadow:0 18px 70px #0007}.login h1{font-size:34px}.login label{display:block;color:#ddd5e3;font-size:12px;font-weight:720;margin:17px 0 6px}.login input{width:100%;border:1px solid #51445a;background:#0f0d16;color:white;border-radius:12px;padding:15px}.login input:focus{outline:2px solid var(--pink)}.login button{width:100%;margin-top:21px}.notice{padding:12px;border:1px solid #553349;border-radius:11px;background:#241924;color:#fec5d9;margin-top:15px}.empty{padding:18px;color:#b7acbb;background:#231d2a;border-radius:11px}.view[hidden],.shell[hidden],#signin[hidden]{display:none!important}
 @media(max-width:1050px){.grid{grid-template-columns:repeat(2,1fr)}.twocol{grid-template-columns:1fr}}@media(max-width:760px){.shell{display:block}aside{position:static;height:auto;padding:13px}.brand{font-size:27px}.sub{margin-bottom:12px}.nav{display:flex;overflow-x:auto;gap:4px}.menu{white-space:nowrap;width:auto}aside .bottom{display:none}main{padding:22px 15px}.grid{gap:9px}.kpi{padding:15px}.kpi strong{font-size:27px}}
+
+.editorial-filter{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0;align-items:center}
+.editorial-filter select,.editorial-filter input{border-radius:12px;border:1px solid #4d4051;background:#18151f;color:#fff;padding:11px 12px;min-width:130px}
+.editorial-filter input{flex:1 1 220px}
+.editorial-list{display:grid;gap:14px}
+.review-card{border-radius:16px;border:1px solid #504052;padding:19px;background:linear-gradient(135deg,#26202d,#191620)}
+.review-card .review-head{display:flex;justify-content:space-between;gap:14px;align-items:start;flex-wrap:wrap}
+.review-card h3{margin:0 0 7px;font-size:17px}
+.review-card .meta{color:#cfc4d3;font-size:12px;line-height:1.8}
+.review-card .review-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.review-card textarea{background:#11101b;color:#fff;border:1px solid #6c5268;border-radius:10px;padding:11px;min-height:68px;width:100%;resize:vertical;font:inherit}
+.review-card .source-link{color:#ffaacb;text-decoration:underline;font-size:12px}
+.review-card .description{white-space:pre-wrap;color:#d7cbd9;font-size:13px;line-height:1.55}
+.review-card .btn{font-size:12px;padding:9px 12px}
+.review-card .btn.publish{background:#18593f;border-color:#279366}
+.review-card .btn.warn{background:#633c16;border-color:#a66c2d}
+.review-card .btn.reject{background:#60222d;border-color:#b44762}
+.review-card .btn:disabled{opacity:.4;cursor:not-allowed}
+.editorial-help{border:1px solid #64435c;background:#291c2b;border-radius:12px;padding:12px 15px;color:#eacbdc}
+.review-card .checkbox{display:inline-flex;gap:8px;align-items:center;font-size:12px;color:#e9dbe8}
+.review-card input[type=checkbox]{accent-color:#eb1871}
+@media(max-width:600px){.editorial-filter{flex-direction:column;align-items:stretch}.editorial-filter select,.editorial-filter input{width:100%}.review-card{padding:14px}}
 </style></head>
 <body>
 <section id="signin" class="login">
@@ -504,7 +652,7 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 </section>
 <div class="shell" id="app" hidden>
 <aside><div class="brand"><img src="https://headless-jzeufymuejv-pedrousinae-140b.wix-site-host.com/logo-pra-hj.svg" alt="Pra Hj" class="brand-image"></div><div class="sub">CENTRO DE COMANDO</div><div class="nav">
-<button class="menu active" data-view="overview">◈ Visão executiva</button><button class="menu" data-view="events">▦ Eventos</button><button class="menu" data-view="people">♧ Organizadores</button><button class="menu" data-view="applications">≡ Credenciamento</button><button class="menu" data-view="finance">◉ Assinaturas & finanças</button><button class="menu" data-view="operations">⚙ Operação</button></div>
+<button class="menu active" data-view="overview">◈ Visão executiva</button><button class="menu" data-view="editorial" id="editorialMenu">✓ Curadoria <span id="pendingMenuCount"></span></button><button class="menu" data-view="events">▦ Eventos</button><button class="menu" data-view="people">♧ Organizadores</button><button class="menu" data-view="applications">≡ Credenciamento</button><button class="menu" data-view="finance">◉ Assinaturas & finanças</button><button class="menu" data-view="operations">⚙ Operação</button></div>
 <div class="bottom">ADMIN MASTER · ADMPRAHJ<br>Powered by Run b.o.</div>
 </aside>
 <main>
@@ -515,10 +663,25 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 <div class="kpi"><small>Eventos dos organizadores</small><strong id="k-events">—</strong><em>Cadastros enviados pelos usuários</em></div>
 <div class="kpi"><small>Eventos de usuários aprovados</small><strong id="k-approved">—</strong><em>Conforme status editorial</em></div>
 <div class="kpi"><small>Organizadores habilitados</small><strong id="k-active">—</strong><em>Acessos autorizados</em></div>
-<div class="kpi"><small>Cadastros recebidos</small><strong id="k-applications">—</strong><em>Solicitações registradas</em></div></div>
+<div class="kpi"><small>Cadastros recebidos</small><strong id="k-applications">—</strong><em>Solicitações registradas</em></div><div class="kpi"><small>Fila editorial pendente</small><strong id="k-pending">—</strong><em>Eventos aguardando decisão</em></div></div>
 <section class="surface"><h2>Engajamento de eventos · Indicadores consolidados</h2><div class="grid"><div class="kpi"><small>Visualizações totais</small><strong id="m-views">—</strong></div><div class="kpi"><small>Visualizações únicas</small><strong id="m-unique">—</strong></div><div class="kpi"><small>Cliques de interesse</small><strong id="m-clicks">—</strong></div><div class="kpi"><small>Likes recebidos</small><strong id="m-likes">—</strong></div></div><p class="muted" id="metricsSummaryStatus">Métricas privadas, sem valores estimados.</p></section><div class="twocol"><section class="surface"><h2>Funil editorial</h2><p class="muted">Situação dos eventos registrados na base. Registros sem status identificado não são tratados como aprovados.</p><div class="strip"><div id="approvalbar"></div></div><div class="muted" id="editorialText">Aguardando dados...</div></section>
 <section class="surface"><h2>Condição operacional</h2><div class="tag">Dados internos</div><p class="muted" id="dataHealth">Carregando...</p><p class="muted">A apuração de faturamento só será exibida quando houver integração transacional verificada.</p></section></div>
 <section class="surface"><h2>Prioridades de gestão</h2><div class="twocol"><p class="muted">1. Avaliar cadastros e habilitar perfis válidos.<br>2. Revisar agenda editorial e qualidade dos eventos.<br>3. Conferir assinaturas e pagamentos antes da liberação comercial.</p><p class="muted">4. Monitorar desempenho e conversão com dados auditáveis.<br>5. Consolidar relatórios gerenciais por período.<br>6. Revisar consistência entre Media Tech e vitrine.</p></div></section></div>
+<div class="view" id="view-editorial" hidden>
+<section class="surface">
+<div class="top" style="margin-bottom:12px">
+ <div><div class="eyebrow">MODERAÇÃO RESTRITA · PIRACICABA</div><h2>Fila de aprovação de eventos</h2><p class="muted">Analise cada evento e sua fonte antes de publicar. Eventos Radar exigem curadoria; eventos de organizadores exigem também assinatura e pagamento verificados no servidor.</p></div>
+ <div class="actions"><button class="btn" id="editorialReload" type="button">↻ Atualizar fila</button></div>
+</div>
+<div class="grid"><div class="kpi"><small>Pendentes / em análise</small><strong id="eq-pending">—</strong></div><div class="kpi"><small>Publicados</small><strong id="eq-published">—</strong></div><div class="kpi"><small>Rejeitados</small><strong id="eq-rejected">—</strong></div><div class="kpi"><small>Total no CMS</small><strong id="eq-total">—</strong></div></div>
+<div class="editorial-help" id="editorialMessage" role="status" style="margin-top:16px">Aguardando consulta da fila.</div>
+<div class="editorial-filter">
+<label for="editorialFilter">Status</label><select id="editorialFilter"><option value="pending">Aguardando decisão</option><option value="all">Todos os registros</option><option value="PUBLICADO">Publicados</option><option value="EM_AJUSTES">Solicitaram ajustes</option><option value="REJEITADO">Rejeitados</option></select>
+<label for="editorialSearch">Pesquisar</label><input id="editorialSearch" type="search" placeholder="Título, local, fonte ou organizador">
+</div>
+<div id="editorialCards" class="editorial-list" aria-live="polite"></div>
+</section>
+</div>
 <div class="view" id="view-events" hidden>
 <section class="surface"><h2>◈ Radar Pra Hj · Eventos rastreados</h2><p class="muted">Eventos ativos do catálogo da vitrine pública, rastreados e reunidos pelo Radar Pra Hj. Fonte e última data do catálogo indicadas abaixo. Essa lista não inclui cadastros submetidos por organizadores.</p><div class="tag" id="radarCount">—</div><p class="muted" id="radarStatus"></p><div class="tbl"><table><thead><tr><th>Evento rastreado</th><th>Data e horário</th><th>Local</th><th>Categoria</th><th>Fonte</th><th>Visualizações</th><th>Visitantes únicos</th><th>Cliques</th><th>Likes</th><th>CTR (%)</th></tr></thead><tbody id="radarRows"></tbody></table></div></section>
 <section class="surface"><h2>♧ Eventos publicados por usuários</h2><p class="muted">Eventos submetidos por organizadores da plataforma, sujeitos à habilitação comercial e aprovação editorial.</p><div class="tbl"><table><thead><tr><th>Evento</th><th>Data</th><th>Local</th><th>Status</th><th>Visualizações</th><th>Únicas</th><th>Cliques</th><th>Likes</th><th>CTR</th></tr></thead><tbody id="eventRows"></tbody></table></div><p class="muted" id="metricsHealth" role="status">Indicadores consultados diretamente na base privada.</p></section></div>
@@ -532,11 +695,12 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 const $=id=>document.getElementById(id), api=async(path,obj)=>{const opts={credentials:'same-origin'};if(obj!==undefined){opts.method='POST';opts.headers={'Content-Type':'application/json'};opts.body=JSON.stringify(obj)}const r=await fetch('/admin'+path,opts),j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.detail||'Falha na operação: HTTP '+r.status);return j};
 const set=(id,value)=>$(id).textContent=value;let state=null;
 function cell(tr,v){const td=document.createElement('td');td.textContent=String(v??'—');tr.append(td)}
-function show(view){document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!=='view-'+view);document.querySelectorAll('.menu').forEach(x=>x.classList.toggle('active',x.dataset.view===view));set('heading',({overview:'Visão executiva',events:'Gestão de eventos',people:'Organizadores',applications:'Credenciamento',finance:'Assinaturas & finanças',operations:'Operação'})[view]);}
+function show(view){document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!=='view-'+view);document.querySelectorAll('.menu').forEach(x=>x.classList.toggle('active',x.dataset.view===view));set('heading',({overview:'Visão executiva',editorial:'Curadoria e aprovação',events:'Gestão de eventos',people:'Organizadores',applications:'Credenciamento',finance:'Assinaturas & finanças',operations:'Operação'})[view]);}
 document.querySelectorAll('.menu').forEach(b=>b.onclick=()=>show(b.dataset.view));
 function rows(id){$(id).replaceChildren();return $(id)}
 function render(x){
 state=x;$('signin').hidden=true;$('app').hidden=false;
+set('k-pending',x.editorial?.pendentes??x.pendingEvents??'—');set('pendingMenuCount',x.editorial?.pendentes??x.pendingEvents??'—');
 set('k-radar',x.radarCount??'—');set('k-events',x.eventQueryError?'Indisponível':x.totalEvents);set('k-approved',x.eventQueryError?'—':x.approvedEvents);set('k-active',x.activeMembers);set('k-applications',x.applications.length);
 set('stamp','Última consulta: '+new Date(x.generatedAt*1000).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}));
 set('dataHealth',x.eventQueryError?x.eventQueryError:(x.eventSource==='visitor-read-only'?'Leitura pública da base Media Tech ativa. Operações administrativas de escrita exigem credenciais de servidor.':'Consulta administrativa realizada. Acurácia depende da integridade da base de origem.'));
@@ -557,7 +721,81 @@ const ebody=rows('eventRows');for(const e of x.events){const tr=document.createE
 const mbody=rows('memberRows');for(const m of x.members){const tr=document.createElement('tr');cell(tr,m.nome||m.email||'Organizador');cell(tr,m.statusConta);cell(tr,m.habilitacao);const td=document.createElement('td'),b=document.createElement('button');b.className='btn';const active=m.habilitacao==='HABILITADO';b.textContent=active?'Suspender':'Validar plano e habilitar';b.disabled=!x.managementAvailable;b.title=x.managementAvailable?'Alterar autorização':'Integração administrativa não configurada';b.onclick=async()=>{if(!confirm('Confirma a alteração de autorização deste organizador?'))return;let payload={};if(!active){const org=prompt('Identificador do organizador',m.organizadorId||m.id);if(!org)return;payload={organizadorId:org}}b.disabled=true;try{await api('/api/'+encodeURIComponent(m.id)+'/'+(active?'desabilitar':'habilitar'),payload);set('status','Autorização atualizada no servidor.');await load()}catch(err){set('status',err.message)}finally{b.disabled=false}};td.append(b);tr.append(td);mbody.append(tr)}if(!x.members.length){const tr=document.createElement('tr');cell(tr,'Nenhum membro retornado');mbody.append(tr)}
 const apps=$('applicationRows');apps.replaceChildren();if(!x.applications.length){const p=document.createElement('p');p.className='empty';p.textContent='Nenhum cadastro retornado pela consulta.';apps.append(p)}for(const a of x.applications){const p=document.createElement('pre');p.className='empty';p.style.whiteSpace='pre-wrap';p.style.overflowWrap='anywhere';p.textContent=JSON.stringify(a.dados,null,2);apps.append(p)}
 }
-async function load(){set('status','Sincronizando informações...');try{const r=await api('/api/overview');render(r);set('status','Dados atualizados.')}catch(err){$('signin').hidden=true;$('app').hidden=false;set('status','Acesso autorizado. Indicadores temporariamente indisponíveis: '+err.message);}}
+
+let editorialState=null;
+const pendingStatuses=new Set(['PENDENTE','EM_ANALISE','EM_AJUSTES','AJUSTES_SOLICITADOS']);
+const normalizeText=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const statusOf=e=>String(e.status||e.statusEditorial||'PENDENTE').toUpperCase().trim();
+const dateText=v=>{const raw=v?.$date||v;if(!raw)return 'Não informado';const dt=new Date(raw);return Number.isFinite(dt.getTime())?dt.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',dateStyle:'short',timeStyle:'short'}):String(raw)};
+const isRadar=e=>normalizeText(e.origem).startsWith('radar');
+function addNode(parent,tag,value,cls){
+ const el=document.createElement(tag);if(cls)el.className=cls;
+ el.textContent=String(value??'');parent.append(el);return el;
+}
+function safeHTTPS(value){try{const url=new URL(value);return url.protocol==='https:'?url.href:null}catch{return null}}
+function renderEditorial(){
+ const records=editorialState?.events||[];
+ const filter=$('editorialFilter').value,query=normalizeText($('editorialSearch').value.trim());
+ const pending=editorialState?.counts||{};
+ for(const [id,key] of [['eq-pending','pendentes'],['eq-published','publicados'],['eq-rejected','rejeitados'],['eq-total','total']])set(id,pending[key]??'—');
+ const canWrite=editorialState?.writeAvailable===true;
+ $('editorialMessage').textContent=canWrite?
+   'Ações de curadoria disponíveis. Nenhum registro será aprovado automaticamente. A decisão é gravada no CMS com parecer, data e usuário administrativo.':
+   (editorialState?.writableReason||'Consulta somente leitura. Configure a integração administrativa para habilitar decisões.');
+ const items=records.filter(e=>(filter==='all'||(filter==='pending'?pendingStatuses.has(statusOf(e)):statusOf(e)===filter))&&(!query||normalizeText([e.titulo,e.local,e.origem,e.organizadorId,e.descricao].join(' ')).includes(query)));
+ $('editorialCards').replaceChildren();
+ if(!items.length){addNode($('editorialCards'),'p','Nenhum evento corresponde aos filtros.','empty');return}
+ for(const event of items){
+  const wrap=document.createElement('article');wrap.className='review-card';
+  const top=document.createElement('div');top.className='review-head';wrap.append(top);
+  const left=document.createElement('div');top.append(left);
+  addNode(left,'h3',event.titulo||'Evento sem título');
+  addNode(left,'span',statusOf(event),'tag');
+  addNode(top,'span',isRadar(event)?'Radar institucional':'Organizador associado','tag');
+  addNode(wrap,'div','📅 '+dateText(event.dataInicio)+' · Término: '+dateText(event.dataFim),'meta');
+  addNode(wrap,'div','📍 '+(event.local||'Local não cadastrado')+' · '+(event.cidadeId||'Município não informado'),'meta');
+  addNode(wrap,'div','Origem: '+(event.origem||'Não informada')+' · Categoria: '+(event.categoria||'Não informada'),'meta');
+  addNode(wrap,'div','Valor: '+(event.tipoAcesso||'A consultar')+' · Organizador: '+(event.organizadorId||event.enviadoPorMemberId||'Não informado'),'meta');
+  if(event.descricao)addNode(wrap,'p',event.descricao,'description');
+  const link=safeHTTPS(event.url);if(link){const a=addNode(wrap,'a','↗ Conferir fonte e inscrições','source-link');a.href=link;a.target='_blank';a.rel='noopener noreferrer'}
+  const note=document.createElement('textarea');note.maxLength=1000;note.placeholder='Parecer editorial. Obrigatório para solicitar ajustes ou rejeitar; recomendado para toda decisão.';note.setAttribute('aria-label','Parecer para '+(event.titulo||'evento'));note.value=event.parecerEditorial||'';wrap.append(note);
+  const actions=document.createElement('div');actions.className='review-actions';wrap.append(actions);
+  const highlight=document.createElement('label');highlight.className='checkbox';
+  const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=event.destaque===true;
+  highlight.append(checkbox,document.createTextNode(' Destacar na vitrine'));actions.append(highlight);
+  const operations=[['ANALISAR','Em análise',''],['PUBLICAR','✓ Aprovar e publicar','publish'],['AJUSTES','Solicitar ajustes','warn'],['REJEITAR','Rejeitar','reject']];
+  if(statusOf(event)==='PUBLICADO')operations.push(['DESPUBLICAR','Retirar da vitrine','warn']);
+  for(const [action,label,cls] of operations){
+   const button=addNode(actions,'button',label,'btn '+cls);
+   button.type='button';button.disabled=!canWrite||statusOf(event)===({'ANALISAR':'EM_ANALISE','PUBLICAR':'PUBLICADO','AJUSTES':'EM_AJUSTES','REJEITAR':'REJEITADO','DESPUBLICAR':'PENDENTE'}[action]);
+   button.title=!canWrite?'Escrita administrativa indisponível':label;
+   button.addEventListener('click',async()=>{
+    const observation=note.value.trim();
+    if(['AJUSTES','REJEITAR'].includes(action)&&observation.length<8){note.focus();set('editorialMessage','Informe um parecer de pelo menos 8 caracteres.');return}
+    if(!confirm('Confirma "'+label+'" para "'+(event.titulo||'Evento')+'"? A decisão ficará registrada.'))return;
+    actions.querySelectorAll('button').forEach(x=>x.disabled=true);
+    set('editorialMessage','Registrando decisão no servidor…');
+    try{
+      const result=await api('/api/editorial/'+encodeURIComponent(event._id||event.id)+'/review',{
+       acao:action,parecer:observation,expectedStatus:statusOf(event),destaque:checkbox.checked
+      });
+      set('editorialMessage','Decisão registrada: '+result.status+' · '+(event.titulo||'Evento'));
+      await loadEditorial();await load();
+    }catch(err){set('editorialMessage','Não foi possível concluir: '+err.message);actions.querySelectorAll('button').forEach(x=>x.disabled=!canWrite)}
+   });
+  }
+  $('editorialCards').append(wrap);
+ }
+}
+async function loadEditorial(){
+ try{editorialState=await api('/api/editorial');renderEditorial();set('pendingMenuCount',editorialState.counts?.pendentes??'—');set('k-pending',editorialState.counts?.pendentes??'—')}
+ catch(err){editorialState=null;$('editorialCards').replaceChildren();set('editorialMessage','Falha na consulta editorial: '+err.message)}
+}
+$('editorialReload').addEventListener('click',loadEditorial);
+$('editorialFilter').addEventListener('change',renderEditorial);
+$('editorialSearch').addEventListener('input',renderEditorial);
+
+async function load(){set('status','Sincronizando informações...');try{const r=await api('/api/overview');render(r);await loadEditorial();set('status','Dados atualizados.')}catch(err){$('signin').hidden=true;$('app').hidden=false;set('status','Acesso autorizado. Indicadores temporariamente indisponíveis: '+err.message);}}
 $('login').onsubmit=async ev=>{ev.preventDefault();const msg=$('loginStatus');msg.hidden=false;msg.textContent='Validando acesso...';try{await api('/login',{usuario:$('usr').value,senha:$('pwd').value});$('pwd').value='';$('signin').hidden=true;$('app').hidden=false;msg.hidden=true;await load()}catch(err){msg.textContent=err.message}};
 $('refresh').onclick=()=>load().catch(err=>set('status',err.message));$('logout').onclick=async()=>{await api('/logout',{});location.reload()};
 api('/api/session').then(()=>load()).catch(()=>{});
