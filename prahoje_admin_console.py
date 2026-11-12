@@ -206,13 +206,16 @@ def radar_active():
         if not isinstance(feed,dict) or not isinstance(feed.get('events'),list):raise ValueError('Catálogo inválido')
         today=datetime.now(ZoneInfo('America/Sao_Paulo')).date().isoformat()
         events=[]
+        published_ids=set()
         for item in feed['events'][:3000]:
             if not isinstance(item,dict):continue
             link=str(item.get('link') or '')
             if not link.startswith('https://') or not item.get('title'):continue
+            event_id=_public_event_id(link)
+            published_ids.add(event_id)
             if str(item.get('validUntil') or '0000-00-00')<today:continue
-            events.append({**item,'id':_public_event_id(link)})
-        data={'events':events,'count':len(events),'source':'Radar Pra Hj | catálogo oficial público','warning':'','catalogDate':feed.get('catalogDate'),'updatedAt':feed.get('updatedAt')}
+            events.append({**item,'id':event_id})
+        data={'events':events,'allPublishedIds':sorted(published_ids),'count':len(events),'source':'Radar Pra Hj | catálogo oficial público','warning':'','catalogDate':feed.get('catalogDate'),'updatedAt':feed.get('updatedAt')}
         with _RADAR_LOCK:_RADAR_CACHE.update(data=data,until=now+90)
         return data
     except Exception:
@@ -303,7 +306,7 @@ class SocialEventInput(BaseModel):
 
 def _social_event_allowed(event_id):
     if event_id.startswith('public-'):
-        return any(e.get('id')==event_id for e in radar_active()['events'])
+        return event_id in radar_active().get('allPublishedIds',[])
     # CMS events are protected by the editorial moderation workflow.
     try:
         published=[_item_data(x) for x in _query('prahoje_eventos')]
