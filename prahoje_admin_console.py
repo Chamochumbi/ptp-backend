@@ -666,6 +666,7 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 <div class="kpi"><small>Cadastros recebidos</small><strong id="k-applications">—</strong><em>Solicitações registradas</em></div><div class="kpi"><small>Fila editorial pendente</small><strong id="k-pending">—</strong><em>Eventos aguardando decisão</em></div></div>
 <section class="surface"><h2>Engajamento de eventos · Indicadores consolidados</h2><div class="grid"><div class="kpi"><small>Visualizações totais</small><strong id="m-views">—</strong></div><div class="kpi"><small>Visualizações únicas</small><strong id="m-unique">—</strong></div><div class="kpi"><small>Cliques de interesse</small><strong id="m-clicks">—</strong></div><div class="kpi"><small>Likes recebidos</small><strong id="m-likes">—</strong></div></div><p class="muted" id="metricsSummaryStatus">Métricas privadas, sem valores estimados.</p></section><div class="twocol"><section class="surface"><h2>Funil editorial</h2><p class="muted">Situação dos eventos registrados na base. Registros sem status identificado não são tratados como aprovados.</p><div class="strip"><div id="approvalbar"></div></div><div class="muted" id="editorialText">Aguardando dados...</div></section>
 <section class="surface"><h2>Condição operacional</h2><div class="tag">Dados internos</div><p class="muted" id="dataHealth">Carregando...</p><p class="muted">A apuração de faturamento só será exibida quando houver integração transacional verificada.</p></section></div>
+<section class="surface"><div class="top"><div><h2>Curadoria editorial · Decisões pendentes</h2><p class="muted">Aprovação individual, parecer e publicação supervisionada, com registros no Media Tech.</p></div><button class="btn hot" type="button" id="openEditorial">✓ Abrir fila editorial</button></div></section>
 <section class="surface"><h2>Prioridades de gestão</h2><div class="twocol"><p class="muted">1. Avaliar cadastros e habilitar perfis válidos.<br>2. Revisar agenda editorial e qualidade dos eventos.<br>3. Conferir assinaturas e pagamentos antes da liberação comercial.</p><p class="muted">4. Monitorar desempenho e conversão com dados auditáveis.<br>5. Consolidar relatórios gerenciais por período.<br>6. Revisar consistência entre Media Tech e vitrine.</p></div></section></div>
 <div class="view" id="view-editorial" hidden>
 <section class="surface">
@@ -695,8 +696,8 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 const $=id=>document.getElementById(id), api=async(path,obj)=>{const opts={credentials:'same-origin'};if(obj!==undefined){opts.method='POST';opts.headers={'Content-Type':'application/json'};opts.body=JSON.stringify(obj)}const r=await fetch('/admin'+path,opts),j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.detail||'Falha na operação: HTTP '+r.status);return j};
 const set=(id,value)=>$(id).textContent=value;let state=null;
 function cell(tr,v){const td=document.createElement('td');td.textContent=String(v??'—');tr.append(td)}
-function show(view){document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!=='view-'+view);document.querySelectorAll('.menu').forEach(x=>x.classList.toggle('active',x.dataset.view===view));set('heading',({overview:'Visão executiva',editorial:'Curadoria e aprovação',events:'Gestão de eventos',people:'Organizadores',applications:'Credenciamento',finance:'Assinaturas & finanças',operations:'Operação'})[view]);}
-document.querySelectorAll('.menu').forEach(b=>b.onclick=()=>show(b.dataset.view));
+function show(view){if(!document.getElementById('view-'+view))view='overview';if(location.hash.slice(1)!==view)history.replaceState(null,'','#'+view);document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!=='view-'+view);document.querySelectorAll('.menu').forEach(x=>x.classList.toggle('active',x.dataset.view===view));set('heading',({overview:'Visão executiva',editorial:'Curadoria e aprovação',events:'Gestão de eventos',people:'Organizadores',applications:'Credenciamento',finance:'Assinaturas & finanças',operations:'Operação'})[view]);}
+document.querySelectorAll('.menu').forEach(b=>b.onclick=()=>show(b.dataset.view));window.addEventListener('hashchange',()=>show(location.hash.slice(1)||'overview'));
 function rows(id){$(id).replaceChildren();return $(id)}
 function render(x){
 state=x;$('signin').hidden=true;$('app').hidden=false;
@@ -792,10 +793,12 @@ async function loadEditorial(){
  catch(err){editorialState=null;$('editorialCards').replaceChildren();set('editorialMessage','Falha na consulta editorial: '+err.message)}
 }
 $('editorialReload').addEventListener('click',loadEditorial);
+$('openEditorial').addEventListener('click',()=>show('editorial'));
+
 $('editorialFilter').addEventListener('change',renderEditorial);
 $('editorialSearch').addEventListener('input',renderEditorial);
 
-async function load(){set('status','Sincronizando informações...');try{const r=await api('/api/overview');render(r);await loadEditorial();set('status','Dados atualizados.')}catch(err){$('signin').hidden=true;$('app').hidden=false;set('status','Acesso autorizado. Indicadores temporariamente indisponíveis: '+err.message);}}
+async function load(){set('status','Sincronizando informações...');try{const r=await api('/api/overview');render(r);await loadEditorial();show(location.hash.slice(1)||'overview');set('status','Dados atualizados.')}catch(err){$('signin').hidden=true;$('app').hidden=false;set('status','Acesso autorizado. Indicadores temporariamente indisponíveis: '+err.message);}}
 $('login').onsubmit=async ev=>{ev.preventDefault();const msg=$('loginStatus');msg.hidden=false;msg.textContent='Validando acesso...';try{await api('/login',{usuario:$('usr').value,senha:$('pwd').value});$('pwd').value='';$('signin').hidden=true;$('app').hidden=false;msg.hidden=true;await load()}catch(err){msg.textContent=err.message}};
 $('refresh').onclick=()=>load().catch(err=>set('status',err.message));$('logout').onclick=async()=>{await api('/logout',{});location.reload()};
 api('/api/session').then(()=>load()).catch(()=>{});
