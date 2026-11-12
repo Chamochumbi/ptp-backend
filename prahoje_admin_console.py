@@ -640,7 +640,7 @@ body{margin:0;background:radial-gradient(ellipse at 90% -20%,#4b1241 0,transpare
 aside{padding:28px 17px;background:#14121d;border-right:1px solid var(--stroke);position:sticky;top:0;height:100vh}.brand{font-size:33px;font-weight:950;letter-spacing:-2px;color:#fff}.brand span{color:var(--pink)}.brand-image{width:168px;height:72px;max-width:100%;object-fit:contain;object-position:left center;display:block}.sub{font-size:10px;letter-spacing:2.4px;font-weight:800;color:#bcb2bf;margin-bottom:35px}
 .menu{width:100%;display:block;text-align:left;border:0;border-radius:13px;padding:14px 15px;color:#bfbac9;background:transparent;margin:4px 0;font-weight:740}.menu.active,.menu:hover{background:#332133;color:white}.menu.active{box-shadow:inset 3px 0 #f9168a}
 aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{padding:31px clamp(20px,3.7vw,57px) 65px;min-width:0}.top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:15px;margin-bottom:30px}.eyebrow{color:#fc62af;font-size:11px;font-weight:850;letter-spacing:2px;text-transform:uppercase}h1{font-size:clamp(26px,3vw,43px);letter-spacing:-1.3px;margin:9px 0}h2{font-size:18px;margin:0 0 16px}.muted{color:var(--muted);line-height:1.55}.actions{display:flex;gap:9px;flex-wrap:wrap}.btn{border:1px solid #48414e;background:#26222e;padding:11px 15px;color:#fff;border-radius:11px;font-weight:760}.btn.hot{background:linear-gradient(110deg,#e6007e,#f85a38);border-color:transparent}.btn:disabled{opacity:.45}
-.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}.kpi{border:1px solid var(--stroke);background:#1a1722;border-radius:18px;padding:22px;min-height:133px}.kpi small{color:#c7bdcd;font-size:12px}.kpi strong{font-size:36px;display:block;letter-spacing:-1px;margin:12px 0 2px}.kpi em{font-style:normal;font-size:11px;color:#aaa1b1}.surface{margin-top:18px;border:1px solid var(--stroke);background:#18151f;border-radius:20px;padding:23px}.twocol{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}.tag{border-radius:30px;padding:5px 9px;border:1px solid #61415a;color:#ffd2ed;font-size:11px}.tbl{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:600px}th,td{text-align:left;border-bottom:1px solid #34303c;padding:13px 8px;font-size:12px}th{font-size:10px;letter-spacing:.9px;text-transform:uppercase;color:#a9a2b4}td{color:#ede9f1}.strip{height:10px;background:#38303e;border-radius:12px;overflow:hidden;margin:20px 0 10px}.strip div{height:100%;background:linear-gradient(90deg,#ed087e,#ff8517);width:0}.login{max-width:455px;margin:10vh auto;padding:36px;border-radius:24px;background:#1c1925;border:1px solid #504054;box-shadow:0 18px 70px #0007}.login h1{font-size:34px}.login label{display:block;color:#ddd5e3;font-size:12px;font-weight:720;margin:17px 0 6px}.login input{width:100%;border:1px solid #51445a;background:#0f0d16;color:white;border-radius:12px;padding:15px}.login input:focus{outline:2px solid var(--pink)}.login button{width:100%;margin-top:21px}.notice{padding:12px;border:1px solid #553349;border-radius:11px;background:#241924;color:#fec5d9;margin-top:15px}.empty{padding:18px;color:#b7acbb;background:#231d2a;border-radius:11px}.view[hidden],.shell[hidden],#signin[hidden]{display:none!important}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}.kpi{border:1px solid var(--stroke);background:#1a1722;border-radius:18px;padding:22px;min-height:133px}.kpi small{color:#c7bdcd;font-size:12px}.kpi strong{font-size:36px;display:block;letter-spacing:-1px;margin:12px 0 2px}.kpi em{font-style:normal;font-size:11px;color:#aaa1b1}.surface{margin-top:18px;border:1px solid var(--stroke);background:#18151f;border-radius:20px;padding:23px}.twocol{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}.tag{border-radius:30px;padding:5px 9px;border:1px solid #61415a;color:#ffd2ed;font-size:11px}.tbl{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:600px}th,td{text-align:left;border-bottom:1px solid #34303c;padding:13px 8px;font-size:12px}th{font-size:10px;letter-spacing:.9px;text-transform:uppercase;color:#a9a2b4}td{color:#ede9f1}.strip{height:10px;background:#38303e;border-radius:12px;overflow:hidden;margin:20px 0 10px}.strip div{height:100%;background:linear-gradient(90deg,#ed087e,#ff8517);width:0}.login{max-width:455px;margin:10vh auto;padding:36px;border-radius:24px;background:#1c1925;border:1px solid #504054;box-shadow:0 18px 70px #0007}.login h1{font-size:34px}.login label{display:block;color:#ddd5e3;font-size:12px;font-weight:720;margin:17px 0 6px}.login input{width:100%;border:1px solid #51445a;background:#0f0d16;color:white;border-radius:12px;padding:15px}.login input:focus{outline:2px solid var(--pink)}.login button{width:100%;margin-top:21px}.notice{padding:12px;border:1px solid #553349;border-radius:11px;background:#241924;color:#fec5d9;margin-top:15px}.empty{padding:18px;color:#b7acbb;background:#231d2a;border-radius:11px}.view[hidden],.shell[hidden],#signin[hidden],#cmsApprovalSetup[hidden]{display:none!important}
 @media(max-width:1050px){.grid{grid-template-columns:repeat(2,1fr)}.twocol{grid-template-columns:1fr}}@media(max-width:760px){.shell{display:block}aside{position:static;height:auto;padding:13px}.brand{font-size:27px}.sub{margin-bottom:12px}.nav{display:flex;overflow-x:auto;gap:4px}.menu{white-space:nowrap;width:auto}aside .bottom{display:none}main{padding:22px 15px}.grid{gap:9px}.kpi{padding:15px}.kpi strong{font-size:27px}}
 
 .editorial-filter{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0;align-items:center}
@@ -734,6 +734,17 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 </div>
 <div class="grid"><div class="kpi"><small>Pendentes / em análise</small><strong id="eq-pending">—</strong></div><div class="kpi"><small>Publicados</small><strong id="eq-published">—</strong></div><div class="kpi"><small>Rejeitados</small><strong id="eq-rejected">—</strong></div><div class="kpi"><small>Total no CMS</small><strong id="eq-total">—</strong></div></div>
 <div class="editorial-help" id="editorialMessage" role="status" style="margin-top:16px">Aguardando consulta da fila.</div>
+<div id="cmsApprovalSetup" class="surface" style="border-color:#784457">
+  <h2>Conexão de publicação · CMS Media Tech</h2>
+  <p class="muted">Sua sessão ADMIN MASTER já autoriza a operação deste painel. Se o servidor ainda não possui credencial administrativa própria, os botões apresentam o motivo do bloqueio sem descartar sua análise.</p>
+  <div class="actions">
+    <a class="btn" href="https://manage.wix.com/account/api-keys" target="_blank" rel="noopener noreferrer">1. Gerenciar chave de integração</a>
+    <a class="btn" href="https://dashboard.render.com/web/srv-dbl1lufb9u1s738nbong" target="_blank" rel="noopener noreferrer">2. Configurar segredo no servidor</a>
+    <button class="btn hot" type="button" id="recheckEditorial" style="background:#a5225b">3. Revalidar permissões</button>
+  </div>
+  <p class="muted" style="font-size:12px">Conceda somente leitura e escrita da coleção de eventos do Media Tech e guarde a chave exclusivamente em <code>WIX_API_KEY</code> no servidor. Nunca informe chaves em chats ou campos públicos.</p>
+</div>
+
 <div class="editorial-filter">
 <label for="editorialFilter">Status</label><select id="editorialFilter"><option value="pending">Aguardando decisão</option><option value="all">Todos os registros</option><option value="PUBLICADO">Publicados</option><option value="EM_AJUSTES">Solicitaram ajustes</option><option value="REJEITADO">Rejeitados</option></select>
 <label for="editorialSearch">Pesquisar</label><input id="editorialSearch" type="search" placeholder="Título, local, fonte ou organizador">
@@ -809,6 +820,7 @@ function renderEditorial(){
  const pending=editorialState?.counts||{};
  for(const [id,key] of [['eq-pending','pendentes'],['eq-published','publicados'],['eq-rejected','rejeitados'],['eq-total','total']])set(id,pending[key]??'—');
  const canWrite=editorialState?.writeAvailable===true;
+ const setup=$('cmsApprovalSetup');if(setup)setup.hidden=canWrite;
  $('editorialMessage').textContent=canWrite?
    'Ações de curadoria disponíveis. Nenhum registro será aprovado automaticamente. A decisão é gravada no CMS com parecer, data e usuário administrativo.':
    (editorialState?.writableReason||'Consulta somente leitura. Configure a integração administrativa para habilitar decisões.');
@@ -837,9 +849,15 @@ function renderEditorial(){
   if(statusOf(event)==='PUBLICADO')operations.push(['DESPUBLICAR','Retirar da vitrine','warn']);
   for(const [action,label,cls] of operations){
    const button=addNode(actions,'button',label,'btn '+cls);
-   button.type='button';button.disabled=!canWrite||statusOf(event)===({'ANALISAR':'EM_ANALISE','PUBLICAR':'PUBLICADO','AJUSTES':'EM_AJUSTES','REJEITAR':'REJEITADO','DESPUBLICAR':'PENDENTE'}[action]);
-   button.title=!canWrite?'Escrita administrativa indisponível':label;
+   button.type='button';button.disabled=statusOf(event)===({'ANALISAR':'EM_ANALISE','PUBLICAR':'PUBLICADO','AJUSTES':'EM_AJUSTES','REJEITAR':'REJEITADO','DESPUBLICAR':'PENDENTE'}[action]);
+   button.title=canWrite?label:'Clique para identificar a autorização pendente no CMS';
    button.addEventListener('click',async()=>{
+    if(!canWrite){
+      const reason=editorialState?.writableReason||'Integração administrativa indisponível.';
+      set('editorialMessage','O comando foi recebido, mas o CMS não pode gravá-lo: '+reason+' Consulte a Conexão de publicação e revalide as permissões.');
+      $('cmsApprovalSetup')?.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
     const observation=note.value.trim();
     if(['AJUSTES','REJEITAR'].includes(action)&&observation.length<8){note.focus();set('editorialMessage','Informe um parecer de pelo menos 8 caracteres.');return}
     if(!confirm('Confirma "'+label+'" para "'+(event.titulo||'Evento')+'"? A decisão ficará registrada.'))return;
@@ -883,6 +901,7 @@ async function checkAdminAccess(){
 }
 
 $('editorialReload').addEventListener('click',async()=>{await loadEditorial();await checkAdminAccess()});
+$('recheckEditorial').addEventListener('click',async()=>{await loadEditorial();await checkAdminAccess()});
 $('openEditorial').addEventListener('click',()=>show('editorial'));
 $('adminConnectionCheck').addEventListener('click',checkAdminAccess);
 
