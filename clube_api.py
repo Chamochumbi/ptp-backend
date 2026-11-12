@@ -916,6 +916,24 @@ def my_redemptions(u=Depends(principal)):
            where r.user_id=%s order by r.requested_at desc limit 200""",(u["id"],)).fetchall()
     return {"redemptions":[dict(x) for x in rows]}
 
+@app.get("/admin/redemptions")
+def admin_redemptions(u=Depends(require("admin"))):
+    with db() as c:
+        summary=c.execute("""select count(*) as total,
+            count(*) filter(where r.status='requested') as pending,
+            count(*) filter(where r.status='confirmed') as confirmed,
+            count(*) filter(where r.status='cancelled') as cancelled
+            from ptp_redemptions r""").fetchone()
+        rows=c.execute("""select r.id,r.status,r.requested_at,r.confirmed_at,
+            b.title as benefit_title,b.provider as provider_name,
+            p.name as beneficiary_name,p.email as beneficiary_email,
+            co.name as company_name
+            from ptp_redemptions r join ptp_benefits b on b.id=r.benefit_id
+            join ptp_users p on p.id=r.user_id
+            join ptp_companies co on co.id=r.company_id
+            order by r.requested_at desc limit 200""").fetchall()
+    return {"summary":dict(summary),"redemptions":[dict(r) for r in rows],"limit":200}
+
 @app.get("/admin/benefits")
 def admin_benefits(u=Depends(require("admin"))):
     with db() as c:
