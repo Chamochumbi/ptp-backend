@@ -27,6 +27,16 @@ test('cancellation stops scheduling remaining sources and ignores later progress
  await dataModule.loadSources(Array.from({length:21},(_,i)=>String(i)),{isCurrent:()=>current,onProgress:()=>progress++,query:async()=>{calls++;current=false;return empty;}});
  assert.equal(calls,1);assert.equal(progress,0);
 });
+test('expired or revoked access stops the query queue, while source-specific denials remain isolated',async()=>{
+ for(const error of [{status:401},{status:403,code:'owner_required'},{status:403,code:'OWNER_REQUIRED'}]){
+  let calls=0;
+  const results=await dataModule.loadSources(Array.from({length:21},(_,i)=>String(i)),{query:async()=>{calls++;throw Object.assign(new Error('denied'),error);}});
+  assert.ok(calls<=4);assert.ok(results.some(r=>dataModule.accessRevoked(r?.reason)));
+ }
+ let calls=0;
+ await dataModule.loadSources(['a','b','c','d','e'],{query:async()=>{calls++;throw Object.assign(new Error('denied'),{status:403,code:'collection_denied'});}});
+ assert.equal(calls,5);
+});
 test('partial public data cannot classify entries as unpublished',()=>{
  assert.equal(dataModule.publicationIndex({complete:false,items:[{id:'a',data:{status:'Publicado'}}]}),null);
  assert.deepEqual([...dataModule.publicationIndex({complete:true,items:[{id:'a',data:{status:'Publicado'}},{id:'b',data:{status:'Rascunho'}}]})],['a']);
@@ -40,12 +50,12 @@ class Element{
  addEventListener(k,fn){this.listeners[k]=fn;}
  showModal(){this.open=true;}close(){this.open=false;}remove(){}click(){this.onclick?.();}
 }
-async function mount({member=good,failSource=null,hold=null,records=[]}={}){
+async function mount({member=good,failSource=null,failError={status:503},hold=null,records=[]}={}){
  const nodes=new Map();for(const id of [...fs.readFileSync(new URL('../frontend/admin360.html',import.meta.url),'utf8').matchAll(/id="([^"]+)"/g)].map(x=>x[1]))nodes.set(id,new Element(/Filter$/.test(id)?'select':'div'));
  nodes.get('dashboard').hidden=true;nodes.get('periodFilter').value='0';
  const calls=[],downloads=[];let currentMember=member,failed=failSource;
  const context=vm.createContext({console,Intl,Date,Map,Set,Promise,Blob,URL:{createObjectURL:blob=>{downloads.push(blob);return 'blob:test';},revokeObjectURL(){}},Option:class extends Element{constructor(text,value){super('option',text,value);}},document:{hidden:false,body:new Element('body'),getElementById:id=>{assert.ok(nodes.has(id),id);return nodes.get(id);},createElement:tag=>new Element(tag),addEventListener(){}},window:{addEventListener(){}},sessionStorage:{setItem(){},removeItem(){}},setInterval(){},setTimeout(){}});
- const api={completeOAuth:async()=>false,loginAccount:async()=>{},myMember:async()=>currentMember,memberToken:()=>currentMember?'test':'',validMemberToken:async()=>currentMember?'test':'',logout:()=>{currentMember=null;},commandRequest:async(path,body)=>{calls.push({path,body});if(path==='status')return {authorized:true,memberId:currentMember?.id};const source=body.collection;if(source===failed)throw Object.assign(new Error('offline'),{status:503});if(path==='query'&&hold)await hold;if(source==='PTPEnviosEcossistema')return {dataItems:records,pagingMetadata:{total:records.length,hasNext:false}};return empty;}};
+ const api={completeOAuth:async()=>false,loginAccount:async()=>{},myMember:async()=>currentMember,memberToken:()=>currentMember?'test':'',validMemberToken:async()=>currentMember?'test':'',logout:()=>{currentMember=null;},commandRequest:async(path,body)=>{calls.push({path,body});if(path==='status')return {authorized:true,memberId:currentMember?.id};const source=body.collection;if(source===failed)throw Object.assign(new Error('offline'),failError);if(path==='query'&&hold)await hold;if(source==='PTPEnviosEcossistema')return {dataItems:records,pagingMetadata:{total:records.length,hasNext:false}};return empty;}};
  const adapter=new vm.SyntheticModule(['createCommandAPI'],function(){this.setExport('createCommandAPI',()=>api.commandRequest);},{context});
  const wix=new vm.SyntheticModule(Object.keys(api),function(){for(const[k,v]of Object.entries(api))this.setExport(k,v);},{context});
  const modelVM=new vm.SourceTextModule(modelCode,{context});await modelVM.link(()=>{});
@@ -67,6 +77,15 @@ test('logout while data requests are in flight cannot restore dashboard data',as
  let release;const hold=new Promise(resolve=>{release=resolve;});const app=await mount({hold});await app.settle();
  app.nodes.get('logout').onclick();release();await app.settle();
  assert.equal(app.nodes.get('dashboard').hidden,true);assert.equal(app.nodes.get('kpis').children.length,0);assert.equal(app.nodes.get('rows').children.length,0);
+});
+test('revoked access hides the dashboard immediately even while other sources are pending',async()=>{
+ for(const failError of [{status:401},{status:403,code:'owner_required'}]){
+  let release;const hold=new Promise(resolve=>{release=resolve;});
+  const app=await mount({failSource:'PTPEnviosEcossistema',failError,hold});await app.settle();
+  assert.equal(app.nodes.get('dashboard').hidden,true);assert.equal(app.nodes.get('export').disabled,true);
+  assert.ok(app.calls.filter(c=>c.path==='query').length<=4);
+  release();await app.settle();assert.equal(app.nodes.get('rows').children.length,0);
+ }
 });
 test('JSON export revalidates access and contains the filtered records with metadata',async()=>{
  const records=[{id:'a',data:{name:'Alpha',email:'a@example.invalid'}},{id:'b',data:{name:'Beta'}}];const app=await mount({records});await app.settle();

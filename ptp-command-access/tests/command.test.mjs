@@ -4,12 +4,15 @@ import http from 'node:http';
 import {createCommandHandler, OWNER_ID, OWNER_EMAIL, ORIGIN, SITE_ID, COLLECTIONS} from '../backend/command.mjs';
 
 const good = {id:OWNER_ID,loginEmail:OWNER_EMAIL,loginEmailVerified:true,status:'APPROVED'};
-async function fixture(t, {member=good, key='server-test-secret', deny=0, broken=false}={}) {
+async function fixture(t, {member=good, key='server-test-secret', deny=0, broken=false, memberStatus=200}={}) {
   const calls=[];
-  const state={member,key,deny,broken};
-  const handle=createCommandHandler({apiKey:()=>state.key,fetchImpl:async(url,options)=>{
+  const state={member,key,deny,broken,memberStatus,time:0};
+  const handle=createCommandHandler({now:()=>state.time,apiKey:()=>state.key,fetchImpl:async(url,options)=>{
     calls.push({url,options});
-    if(url.includes('/members/'))return Response.json({member:state.member});
+    // Match the documented REST contract, including the identity fieldset.
+    // A permissive /members/ mock hides bugs that omit the private owner fields.
+    if(url==='https://www.wixapis.com/members/v1/members/my?fieldsets=FULL')return Response.json({member:state.member},{status:state.memberStatus});
+    if(url!=='https://www.wixapis.com/data/v2/items/query')return Response.json({error:'invalid_test_contract'},{status:404});
     if(state.deny)return Response.json({message:'DO-NOT-LEAK-server-test-secret'},{status:state.deny});
     return Response.json(state.broken?{}:{dataItems:[],pagingMetadata:{total:0}});
   }});
@@ -25,6 +28,7 @@ async function fixture(t, {member=good, key='server-test-secret', deny=0, broken
 test('owner access succeeds on an empty CMS and separates member and service credentials',async t=>{
  const f=await fixture(t);const r=await f.send();assert.equal(r.status,200);assert.equal(r.body.memberId,OWNER_ID);
  assert.equal(f.calls[0].options.headers.Authorization,'member-test-token');assert.equal(f.calls[1].options.headers.Authorization,'server-test-secret');
+ assert.equal(f.calls[0].options.method,'GET');assert.equal(f.calls[1].options.method,'POST');
  assert.equal(f.calls[1].options.headers['wix-site-id'],SITE_ID);assert.equal(f.calls[1].options.redirect,'error');
  assert.equal(r.headers.get('access-control-allow-origin'),ORIGIN);assert.match(r.headers.get('cache-control'),/no-store/);
  assert.equal(JSON.stringify(r.body).includes('secret'),false);
@@ -51,3 +55,20 @@ test('absent or revoked service credential never reports authorization success',
 test('malformed CMS response cannot authorize access',async t=>{const f=await fixture(t,{broken:true});assert.equal((await f.send()).status,502);});
 test('CORS denies foreign origins and preflight requires no credentials',async t=>{const f=await fixture(t);const denied=await f.send('status',{}, {Origin:'https://other.example'});assert.equal(denied.status,403);assert.equal(denied.headers.get('access-control-allow-origin'),null);assert.equal((await f.send('status',undefined,{Authorization:''},'OPTIONS')).status,204);assert.equal(f.calls.length,0);});
 test('invalid JSON and arrays are rejected; mutating commands do not exist',async t=>{const f=await fixture(t);for(const body of ['{','[]','null'])assert.equal((await f.send('status',body)).status,400);assert.equal((await f.send('delete')).status,404);assert.equal((await f.send('status',{}, {},'GET')).status,405);assert.equal(f.calls.length,0);});
+
+test('expired member authorization is not confused with a CMS service credential failure',async t=>{
+ const f=await fixture(t,{memberStatus:401});const r=await f.send();
+ assert.equal(r.status,401);assert.equal(f.calls.length,1);
+});
+test('oversized requests return a usable error without contacting Wix',async t=>{
+ const f=await fixture(t);const r=await f.send('status',JSON.stringify({padding:'x'.repeat(4096)}));
+ assert.equal(r.status,413);assert.equal(r.body.error,'payload_too_large');assert.equal(f.calls.length,0);
+ assert.equal((await f.send()).status,200);
+});
+test('rate limit blocks further upstream calls and resets after one minute',async t=>{
+ const f=await fixture(t);
+ for(let i=0;i<360;i++)assert.equal((await f.send()).status,200);
+ const before=f.calls.length;const limited=await f.send();
+ assert.equal(limited.status,429);assert.equal(f.calls.length,before);
+ f.state.time=60000;assert.equal((await f.send()).status,200);
+});

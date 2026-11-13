@@ -9,20 +9,24 @@ export async function verifyOwnerAccess(api) {
   return member;
 }
 
+export function accessRevoked(error) {
+  return error?.status===401 || (error?.status===403 && ['owner_required','OWNER_REQUIRED'].includes(error.code));
+}
+
 export async function loadSources(ids,{query,isCurrent=()=>true,onProgress=()=>{},concurrency=4}) {
   const results=new Array(ids.length);
-  let next=0,completed=0;
+  let next=0,completed=0,revoked=false;
   async function worker() {
-    while(isCurrent()) {
+    while(!revoked&&isCurrent()) {
       const index=next++;
       if(index>=ids.length)return;
       try {
         const value=await readPages(async(...args)=>{
-          if(!isCurrent())throw Object.assign(new Error('Consulta cancelada'),{code:'CANCELLED'});
+          if(revoked||!isCurrent())throw Object.assign(new Error('Consulta cancelada'),{code:'CANCELLED'});
           return query(...args);
         },ids[index]);
         results[index]={status:'fulfilled',value:{...value,checkedAt:Date.now()}};
-      }catch(reason){results[index]={status:'rejected',reason};}
+      }catch(reason){results[index]={status:'rejected',reason};if(accessRevoked(reason))revoked=true;}
       if(!isCurrent())return;
       completed++;
       onProgress({completed,total:ids.length,id:ids[index],result:results[index]});

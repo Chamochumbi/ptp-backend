@@ -26,7 +26,7 @@ export function createCommandHandler({fetchImpl = fetch, apiKey = () => process.
     try { return await response.json(); } catch { throw failure(502, 'invalid_upstream_response'); }
   }
   async function owner(token) {
-    const result = await wix('/members/v1/members/my?fieldSet=FULL', token);
+    const result = await wix('/members/v1/members/my?fieldsets=FULL', token);
     if (!isOwner(result.member)) throw failure(403, 'owner_required');
     return result.member;
   }
@@ -35,7 +35,7 @@ export function createCommandHandler({fetchImpl = fetch, apiKey = () => process.
     if (!key) throw failure(503, 'service_not_configured');
     let result;
     try {
-      result = await wix('/wix-data/v2/items/query', key, {
+      result = await wix('/data/v2/items/query', key, {
         dataCollectionId:collection, query:{paging:{limit, offset}}, returnTotalCount:true
       });
     } catch (error) {

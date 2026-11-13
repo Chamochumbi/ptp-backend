@@ -2,7 +2,25 @@
 
 O proprietário autentica corretamente, mas a versão publicada consulta coleções privadas com um token de membro e recebe 403. Esta alteração transfere as consultas gerenciais para o servidor: o Wix confirma o membro a cada pedido; só o ID e o e-mail institucional verificados e aprovados podem utilizar a credencial de serviço.
 
-**Estado: implementado e testado localmente; não implantado em produção.** O serviço ativo `ptp-api` informa `adminBackendEnabled:false`. Sua versão 3.2.0 difere do código 2.0.0 na branch `main`. A fonte/configuração efetiva precisa ser recuperada antes de incorporar o módulo ao servidor existente.
+**Estado em 13/11/2026: backend implementado e testado localmente; não implantado em produção.** O serviço ativo `ptp-api` informa `adminBackendEnabled:false`. Sua versão 3.2.0 difere do código 2.0.0 na branch `main`. A fonte/configuração efetiva precisa ser recuperada antes de incorporar o módulo ao servidor existente. Uma correção independente de sessão foi publicada; os detalhes estão abaixo.
+
+## Entrega publicada em 13/11/2026
+
+`production-hotfix/` contém somente os três arquivos publicados no site existente. Quando uma consulta acusa sessão expirada, o painel limpa os dados visíveis imediatamente e interrompe o agendamento das fontes restantes, inclusive se outras consultas ainda estão pendentes. Falhas isoladas de fontes continuam permitindo repetição seletiva.
+
+- Publicação: `df217141-ae8a-45a2-86d3-4d8808f4a462`; versão dos scripts `20261113-session5`.
+- Os três arquivos foram relidos e conferidos; os 70 arquivos foram mantidos. A página inicial, o CSS do painel e o módulo compartilhado de autenticação permanecem iguais.
+- A página de acesso foi aberta no navegador após a publicação: foto, marcas institucionais, botão de acesso e mensagem de login renderizaram. Não havia sessão institucional ativa; o fluxo gerencial autenticado não foi homologado nessa inspeção.
+- Essa publicação preserva o design de acesso e não modifica permissões ou registros do CMS. Ela **não resolve o bloqueio gerencial 403 do proprietário**.
+- Não confundir `production-hotfix/`, já publicado, com `frontend/`, que depende do novo backend e aguarda implantação.
+
+## Validação em 13/11/2026
+
+44 testes locais aprovados: 33 para backend/cliente/painel em preparação e 11 para a correção publicada. Passaram também os 65 testes da regressão anterior. Os testes de identidade institucional usam respostas Wix simuladas.
+
+Teste real, sem login institucional, usando sessão de visitante emitida pelo cliente público do site: vitrine pública respondeu 200 e zero registros; histórico de membros e mensagens privadas responderam 403. Nenhum registro foi alterado e nenhum token foi salvo. Esses resultados comprovam somente as três consultas realizadas; não comprovam o acesso do proprietário.
+
+Contrato oficial conferido: `GET /members/v1/members/my?fieldsets=FULL` para obter os campos completos de identidade e `POST /data/v2/items/query` para consultar dados. O backend foi corrigido, e os testes rejeitam URLs ou parâmetros diferentes. O esquema de permissões especiais do CMS não apresenta um campo próprio para ID de membro do site; não foi utilizado para ampliar o acesso das coleções.
 
 ## Entregas
 

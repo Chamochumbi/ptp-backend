@@ -1,6 +1,6 @@
 import {completeOAuth,loginAccount,myMember,memberToken,logout,validMemberToken} from './js/wix.js?v=ptp-20261028-final';
 import {SOURCES,authorized,dateValue,created,parseJSON,nameOf,statusOf,groupCount,filterRows,csvCell,trend,readPages} from './ptp_command_model.js?v=20261109-command4';
-import {verifyOwnerAccess,loadSources,publicationIndex} from './ptp_command_data.js?v=20261109-command4';
+import {verifyOwnerAccess,loadSources,publicationIndex,accessRevoked} from './ptp_command_data.js?v=20261109-command4';
 import {createCommandAPI} from './ptp_command_api.js?v=20261109-command4';
 const commandRequest=createCommandAPI({validMemberToken});
 const api={myMember,commandRequest};
@@ -42,7 +42,11 @@ async function refresh({failedOnly=false,verified=false}={}){
  try{
   if(!verified)await verifyOwnerAccess(api);
   if(epoch!==generation)return;
-  const results=await loadSources(ids,{query,isCurrent:()=>epoch===generation&&!!owner,onProgress:({completed,total})=>{
+  const results=await loadSources(ids,{query,isCurrent:()=>epoch===generation&&!!owner,onProgress:({completed,total,result})=>{
+   if(result.status==='rejected'&&accessRevoked(result.reason)){
+    locked(result.reason.status===401?'Sua sessão expirou. Entre novamente.':'Sua conta não tem mais autorização para acessar este painel.',result.reason.status===401);
+    return;
+   }
    $('loadProgress').value=completed;
    $('syncStatus').textContent='Consultando fontes: '+completed+' de '+total+' concluídas…';
   }});
