@@ -470,7 +470,7 @@ def overview(_=Depends(auth)):
     def label(e):
         return str(e.get('statusEditorial') or e.get('status') or e.get('situacao') or '').upper()
     approved=sum(label(e) in ('APROVADO','APROVADA','PUBLICADO','PUBLICADA','ACTIVE') for e in events)
-    pending=sum('PEND' in label(e) or 'REVIS' in label(e) for e in events)
+    pending=sum(('PEND' in label(e) or 'REVIS' in label(e)) and not str(e.get('origem') or '').lower().startswith('radar') for e in events)
     return {'radarEvents':radar['events'],'radarCount':radar['count'],'radarSource':radar['source'],'radarWarning':radar['warning'],'radarCatalogDate':radar['catalogDate'],'radarUpdatedAt':radar['updatedAt'],
             'events':events[:300],'totalEvents':len(events),
             'editorial':_editorial_summary(events),'editorialWriteAvailable':bool(os.getenv('WIX_API_KEY') or os.getenv('WIX_TOKEN')) and event_source=='admin-api',
@@ -552,6 +552,7 @@ def editorial_queue(_=Depends(auth)):
         records=entries
         source='visitor-read-only'
         writable=False
+    records=[x for x in records if not str(x.get('origem') or '').lower().startswith('radar')]
     records.sort(key=lambda x: (
         0 if _editorial_status(x) in _PENDING_STATES else 1,
         str(x.get('_createdDate') or x.get('dataInicio') or '')
@@ -708,7 +709,7 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 <div class="eyebrow">Gestão à vista · Decida sem sair da plataforma</div><h2 style="margin-top:7px">Ações rápidas do administrador</h2>
 <p class="muted">Os indicadores e atalhos abrem diretamente sua área de trabalho. Nenhuma decisão editorial é executada apenas pela navegação.</p>
 <div class="quick-actions">
-<button type="button" class="action-tile primary" data-open="editorial"><strong>✓ Aprovar eventos pendentes</strong><small>Analise, publique, solicite ajustes ou rejeite — sempre com confirmação</small></button>
+<button type="button" class="action-tile primary" data-open="editorial"><strong>✓ Revisar exceções editoriais</strong><small>Analise, publique, solicite ajustes ou rejeite — sempre com confirmação</small></button>
 <button type="button" class="action-tile" data-open="events"><strong>▦ Todos os eventos</strong><small>Radar, eventos publicados, engajamento e desempenho</small></button>
 <button type="button" class="action-tile" data-open="people"><strong>♧ Habilitar organizadores</strong><small>Permissões vinculadas à verificação de assinatura e pagamento</small></button>
 <button type="button" class="action-tile" data-open="applications"><strong>≡ Conferir cadastros</strong><small>Examine solicitações e identifique pendências</small></button>
@@ -724,12 +725,12 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 <div class="kpi" data-open="applications"><small>Cadastros recebidos</small><strong id="k-applications">—</strong><em>Solicitações registradas</em></div><div class="kpi" data-open="editorial"><small>Fila editorial pendente</small><strong id="k-pending">—</strong><em>Eventos aguardando decisão</em></div></div>
 <section class="surface"><h2>Engajamento de eventos · Indicadores consolidados</h2><div class="grid"><div class="kpi" data-open="events"><small>Visualizações totais</small><strong id="m-views">—</strong></div><div class="kpi" data-open="events"><small>Visualizações únicas</small><strong id="m-unique">—</strong></div><div class="kpi" data-open="events"><small>Cliques de interesse</small><strong id="m-clicks">—</strong></div><div class="kpi" data-open="events"><small>Likes recebidos</small><strong id="m-likes">—</strong></div></div><p class="muted" id="metricsSummaryStatus">Métricas privadas, sem valores estimados.</p></section><div class="twocol"><section class="surface"><h2>Funil editorial</h2><p class="muted">Situação dos eventos registrados na base. Registros sem status identificado não são tratados como aprovados.</p><div class="strip"><div id="approvalbar"></div></div><div class="muted" id="editorialText">Aguardando dados...</div></section>
 <section class="surface"><h2>Condição operacional</h2><div class="tag">Dados internos</div><p class="muted" id="dataHealth">Carregando...</p><p class="muted">A apuração de faturamento só será exibida quando houver integração transacional verificada.</p></section></div>
-<section class="surface"><div class="top"><div><h2>Curadoria editorial · Decisões pendentes</h2><p class="muted">Aprovação individual, parecer e publicação supervisionada, com registros no Media Tech.</p></div><button class="btn hot" type="button" id="openEditorial">✓ Abrir fila editorial</button></div></section>
+<section class="surface"><div class="top"><div><h2>Curadoria editorial · Decisões pendentes</h2><p class="muted">Gestão por exceção: eventos dos assinantes pagos são publicados diretamente; a revisão corrige ou retira conteúdos já publicados.</p></div><button class="btn hot" type="button" id="openEditorial">✓ Abrir fila editorial</button></div></section>
 <section class="surface"><h2>Prioridades de gestão</h2><div class="twocol"><p class="muted">1. Avaliar cadastros e habilitar perfis válidos.<br>2. Revisar agenda editorial e qualidade dos eventos.<br>3. Conferir assinaturas e pagamentos antes da liberação comercial.</p><p class="muted">4. Monitorar desempenho e conversão com dados auditáveis.<br>5. Consolidar relatórios gerenciais por período.<br>6. Revisar consistência entre Media Tech e vitrine.</p></div></section></div>
 <div class="view" id="view-editorial" hidden>
 <section class="surface">
 <div class="top" style="margin-bottom:12px">
- <div><div class="eyebrow">MODERAÇÃO RESTRITA · PIRACICABA</div><h2>Fila de aprovação de eventos</h2><p class="muted">Analise cada evento e sua fonte antes de publicar. Eventos Radar exigem curadoria; eventos de organizadores exigem também assinatura e pagamento verificados no servidor.</p></div>
+ <div><div class="eyebrow">MODERAÇÃO RESTRITA · PIRACICABA</div><h2>Gestão editorial por exceção</h2><p class="muted">Eventos do Radar não exigem aprovação. A publicação de assinantes com plano ativo deve ser imediata; use esta área para revisar ocorrências, solicitar correções ou retirar conteúdo.</p></div>
  <div class="actions"><button class="btn" id="editorialReload" type="button">↻ Atualizar fila</button></div>
 </div>
 <div class="grid"><div class="kpi"><small>Pendentes / em análise</small><strong id="eq-pending">—</strong></div><div class="kpi"><small>Publicados</small><strong id="eq-published">—</strong></div><div class="kpi"><small>Rejeitados</small><strong id="eq-rejected">—</strong></div><div class="kpi"><small>Total no CMS</small><strong id="eq-total">—</strong></div></div>
