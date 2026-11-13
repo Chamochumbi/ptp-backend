@@ -473,7 +473,7 @@ def overview(_=Depends(auth)):
     pending=sum(('PEND' in label(e) or 'REVIS' in label(e)) and not str(e.get('origem') or '').lower().startswith('radar') for e in events)
     return {'radarEvents':radar['events'],'radarCount':radar['count'],'radarSource':radar['source'],'radarWarning':radar['warning'],'radarCatalogDate':radar['catalogDate'],'radarUpdatedAt':radar['updatedAt'],
             'events':events[:300],'totalEvents':len(events),
-            'editorial':_editorial_summary(events),'editorialWriteAvailable':bool(os.getenv('WIX_API_KEY') or os.getenv('WIX_TOKEN')) and event_source=='admin-api',
+            'editorial':_editorial_summary([e for e in events if not str(e.get('origem') or '').lower().startswith('radar')]),'editorialWriteAvailable':bool(os.getenv('WIX_API_KEY') or os.getenv('WIX_TOKEN')) and event_source=='admin-api',
             'approvedEvents':approved,'pendingEvents':pending,
             'members':people,'applications':applications,
             'activeMembers':sum(x.get('habilitacao')=='HABILITADO' for x in people),
