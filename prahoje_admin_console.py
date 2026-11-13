@@ -751,7 +751,7 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 <p class="muted" id="status" role="status"></p>
 </main></div>
 <script>
-const $=id=>document.getElementById(id), api=async(path,obj)=>{const opts={credentials:'same-origin'};if(obj!==undefined){opts.method='POST';opts.headers={'Content-Type':'application/json'};opts.body=JSON.stringify(obj)}const r=await fetch('/admin'+path,opts),j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.detail||'Falha na operação: HTTP '+r.status);return j};
+const $=id=>document.getElementById(id), api=async(path,obj)=>{const opts={credentials:'same-origin',cache:'no-store'};if(obj!==undefined){opts.method='POST';opts.headers={'Content-Type':'application/json'};opts.body=JSON.stringify(obj)}const r=await fetch('/admin'+path,opts),j=await r.json().catch(()=>({}));if(r.status===401){$('signin').hidden=false;$('app').hidden=true;throw Error('Sua sessão expirou. Entre novamente para continuar.')}if(!r.ok)throw Error(j.detail||'Falha na operação: HTTP '+r.status);return j};
 const set=(id,value)=>$(id).textContent=value;let state=null;
 function cell(tr,v){const td=document.createElement('td');td.textContent=String(v??'—');tr.append(td)}
 function show(view){if(!document.getElementById('view-'+view))view='overview';if(location.hash.slice(1)!==view)history.replaceState(null,'','#'+view);document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!=='view-'+view);document.querySelectorAll('.menu').forEach(x=>x.classList.toggle('active',x.dataset.view===view));set('heading',({overview:'Visão executiva',editorial:'Curadoria e aprovação',events:'Gestão de eventos',people:'Organizadores',applications:'Credenciamento',finance:'Assinaturas & finanças',operations:'Operação'})[view]);}
@@ -841,7 +841,7 @@ function renderEditorial(){
    button.title=canWrite?label:'Clique para identificar a autorização pendente no CMS';
    button.addEventListener('click',async()=>{
     if(!canWrite){
-      set('editorialMessage','Não foi possível registrar esta decisão. A conexão administrativa de publicação está indisponível; a equipe técnica precisa corrigir essa integração. Nenhum evento foi alterado.');
+      set('editorialMessage','Decisão não registrada: o servidor não possui autorização de gravação no banco de eventos. A sessão ADMIN MASTER é válida, mas a integração CMS requer credencial de serviço. Nenhum evento foi alterado.');
       return;
     }
     const observation=note.value.trim();
@@ -893,14 +893,14 @@ $('adminConnectionCheck').addEventListener('click',checkAdminAccess);
 $('editorialFilter').addEventListener('change',renderEditorial);
 $('editorialSearch').addEventListener('input',renderEditorial);
 
-async function load(){set('status','Sincronizando informações...');try{const r=await api('/api/overview');render(r);await loadEditorial();await checkAdminAccess();show(location.hash.slice(1)||'overview');set('status','Dados atualizados.')}catch(err){$('signin').hidden=true;$('app').hidden=false;set('status','Acesso autorizado. Indicadores temporariamente indisponíveis: '+err.message);}}
+async function load(){set('status','Sincronizando informações...');try{const r=await api('/api/overview');render(r);await loadEditorial();await checkAdminAccess();show(location.hash.slice(1)||'overview');set('status','Dados atualizados.')}catch(err){if($('signin').hidden){set('status','Erro ao sincronizar informações: '+err.message)}else{const box=$('loginStatus');box.hidden=false;box.textContent=err.message;}}}
 $('login').onsubmit=async ev=>{ev.preventDefault();const msg=$('loginStatus');msg.hidden=false;msg.textContent='Validando acesso...';try{await api('/login',{usuario:$('usr').value,senha:$('pwd').value});$('pwd').value='';$('signin').hidden=true;$('app').hidden=false;msg.hidden=true;await load()}catch(err){msg.textContent=err.message}};
 $('refresh').onclick=()=>load().catch(err=>set('status',err.message));$('logout').onclick=async()=>{await api('/logout',{});location.reload()};
 api('/api/session').then(session=>{
 const badge=$('adminRoleBadge');
 if(badge)badge.textContent=(session.role||'ADMIN MASTER')+' · '+(session.user||'Administrador')+' · Sessão protegida';
 return load()
-}).catch(()=>{});
+}).catch(err=>{const msg=$('loginStatus');msg.hidden=false;msg.textContent=err.message.includes('expirou')?'Entre com suas credenciais para continuar.':'Acesso administrativo protegido. Faça login para continuar.'});
 </script></body></html>'''
 @APP.get('/admin',response_class=HTMLResponse)
 def admin_page():
