@@ -734,17 +734,6 @@ aside .bottom{margin-top:45px;color:#8b8598;font-size:12px;line-height:1.8}main{
 </div>
 <div class="grid"><div class="kpi"><small>Pendentes / em análise</small><strong id="eq-pending">—</strong></div><div class="kpi"><small>Publicados</small><strong id="eq-published">—</strong></div><div class="kpi"><small>Rejeitados</small><strong id="eq-rejected">—</strong></div><div class="kpi"><small>Total no CMS</small><strong id="eq-total">—</strong></div></div>
 <div class="editorial-help" id="editorialMessage" role="status" style="margin-top:16px">Aguardando consulta da fila.</div>
-<div id="cmsApprovalSetup" class="surface" style="border-color:#784457">
-  <h2>Conexão de publicação · CMS Media Tech</h2>
-  <p class="muted">Sua sessão ADMIN MASTER já autoriza a operação deste painel. Se o servidor ainda não possui credencial administrativa própria, os botões apresentam o motivo do bloqueio sem descartar sua análise.</p>
-  <div class="actions">
-    <a class="btn" href="https://manage.wix.com/account/api-keys" target="_blank" rel="noopener noreferrer">1. Gerenciar chave de integração</a>
-    <a class="btn" href="https://dashboard.render.com/web/srv-dbl1lufb9u1s738nbong" target="_blank" rel="noopener noreferrer">2. Configurar segredo no servidor</a>
-    <button class="btn hot" type="button" id="recheckEditorial" style="background:#a5225b">3. Revalidar permissões</button>
-  </div>
-  <p class="muted" style="font-size:12px">Conceda somente leitura e escrita da coleção de eventos do Media Tech e guarde a chave exclusivamente em <code>WIX_API_KEY</code> no servidor. Nunca informe chaves em chats ou campos públicos.</p>
-</div>
-
 <div class="editorial-filter">
 <label for="editorialFilter">Status</label><select id="editorialFilter"><option value="pending">Aguardando decisão</option><option value="all">Todos os registros</option><option value="PUBLICADO">Publicados</option><option value="EM_AJUSTES">Solicitaram ajustes</option><option value="REJEITADO">Rejeitados</option></select>
 <label for="editorialSearch">Pesquisar</label><input id="editorialSearch" type="search" placeholder="Título, local, fonte ou organizador">
@@ -820,10 +809,9 @@ function renderEditorial(){
  const pending=editorialState?.counts||{};
  for(const [id,key] of [['eq-pending','pendentes'],['eq-published','publicados'],['eq-rejected','rejeitados'],['eq-total','total']])set(id,pending[key]??'—');
  const canWrite=editorialState?.writeAvailable===true;
- const setup=$('cmsApprovalSetup');if(setup)setup.hidden=canWrite;
  $('editorialMessage').textContent=canWrite?
    'Ações de curadoria disponíveis. Nenhum registro será aprovado automaticamente. A decisão é gravada no CMS com parecer, data e usuário administrativo.':
-   (editorialState?.writableReason||'Consulta somente leitura. Configure a integração administrativa para habilitar decisões.');
+   'A fila pode ser consultada, mas o registro de decisões está temporariamente indisponível. Nenhum evento será alterado sem confirmação de gravação.';
  const items=records.filter(e=>(filter==='all'||(filter==='pending'?pendingStatuses.has(statusOf(e)):statusOf(e)===filter))&&(!query||normalizeText([e.titulo,e.local,e.origem,e.organizadorId,e.descricao].join(' ')).includes(query)));
  $('editorialCards').replaceChildren();
  if(!items.length){addNode($('editorialCards'),'p','Nenhum evento corresponde aos filtros.','empty');return}
@@ -853,9 +841,7 @@ function renderEditorial(){
    button.title=canWrite?label:'Clique para identificar a autorização pendente no CMS';
    button.addEventListener('click',async()=>{
     if(!canWrite){
-      const reason=editorialState?.writableReason||'Integração administrativa indisponível.';
-      set('editorialMessage','O comando foi recebido, mas o CMS não pode gravá-lo: '+reason+' Consulte a Conexão de publicação e revalide as permissões.');
-      $('cmsApprovalSetup')?.scrollIntoView({behavior:'smooth',block:'center'});
+      set('editorialMessage','Não foi possível registrar esta decisão. A conexão administrativa de publicação está indisponível; a equipe técnica precisa corrigir essa integração. Nenhum evento foi alterado.');
       return;
     }
     const observation=note.value.trim();
@@ -901,7 +887,6 @@ async function checkAdminAccess(){
 }
 
 $('editorialReload').addEventListener('click',async()=>{await loadEditorial();await checkAdminAccess()});
-$('recheckEditorial').addEventListener('click',async()=>{await loadEditorial();await checkAdminAccess()});
 $('openEditorial').addEventListener('click',()=>show('editorial'));
 $('adminConnectionCheck').addEventListener('click',checkAdminAccess);
 
