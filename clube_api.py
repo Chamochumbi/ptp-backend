@@ -1082,6 +1082,42 @@ def submit_offer(data:OfferSubmission,u=Depends(require("provider"))):
                   (u["id"],"offer_submitted",str(row["id"])))
         c.commit()
     return dict(row)
+@app.get("/provider/profile")
+def provider_profile(u=Depends(require("provider"))):
+    if u["company_id"] is None:
+        raise HTTPException(403,"Empresa ofertante ainda não vinculada")
+    with db() as c:
+        co=c.execute("select id,name,active from ptp_companies where id=%s",(u["company_id"],)).fetchone()
+        row=c.execute("select display_name,logo_url,segment,city,website,description from ptp_company_profiles where company_id=%s",(u["company_id"],)).fetchone()
+    if not co or not co["active"]:
+        raise HTTPException(403,"Empresa ofertante não habilitada")
+    d=dict(row) if row else {"display_name":co["name"],"logo_url":"","segment":"","city":"","website":"","description":""}
+    return {"company_id":co["id"],"name":co["name"],"active":True,**d}
+
+@app.put("/provider/profile")
+def update_provider_profile(data:CompanyPresentation,u=Depends(require("provider"))):
+    if u["company_id"] is None:
+        raise HTTPException(403,"Empresa ofertante ainda não vinculada")
+    for value in (data.logo_url,data.website):
+        if value and not value.strip().lower().startswith("https://"):
+            raise HTTPException(422,"URLs devem utilizar HTTPS")
+    with db() as c:
+        co=c.execute("select active from ptp_companies where id=%s for update",(u["company_id"],)).fetchone()
+        if not co or not co["active"]:
+            raise HTTPException(403,"Empresa ofertante não habilitada")
+        c.execute("""insert into ptp_company_profiles(company_id,display_name,logo_url,segment,city,website,description,updated_by)
+          values (%s,%s,%s,%s,%s,%s,%s,%s)
+          on conflict(company_id) do update set display_name=excluded.display_name,
+          logo_url=excluded.logo_url,segment=excluded.segment,city=excluded.city,
+          website=excluded.website,description=excluded.description,
+          updated_by=excluded.updated_by,updated_at=now()""",
+          (u["company_id"],data.display_name.strip(),data.logo_url.strip(),data.segment.strip(),
+           data.city.strip(),data.website.strip(),data.description.strip(),u["id"]))
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
+          (u["id"],"provider_profile_updated",str(u["company_id"])))
+        c.commit()
+    return {"status":"updated","company_id":u["company_id"]}
+
 @app.get("/provider/offers")
 def my_offers(u=Depends(require("provider"))):
     with db() as c:
