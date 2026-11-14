@@ -1,4 +1,24 @@
-# Biblioteca e Orientações NEXT — correção publicada em 14/11/2026
+# Biblioteca e Mentoria NEXT — atualizações de 14/11/2026
+
+## Estado atual: ciclos profissionais de mentoria
+
+Publicação `0b53b825-8561-4c05-9c97-3fa6aca620ec`, hash de conteúdo `424356612`: substituição somente de `ptp_mentor_next.js`, preservando os 71 arquivos do site. Esta entrega substitui a interface de orientação simples descrita no histórico abaixo.
+
+- Quatro etapas: diagnóstico, hipótese e teste, plano de ação, revisão.
+- Contexto de projeto, responsável, estágio, foco, público, evidências e decisão pretendida; perguntas específicas por foco.
+- Experimento com hipótese, métrica, linha de base, meta, prazo, critério de decisão e limites.
+- Plano sugerido editável, responsáveis e prazos; conclusão de uma ação exige entrega ou evidência registrada.
+- Revisões preservadas em histórico, decisão e próximo passo. Conclusão exige os dados essenciais e ações concluídas; encerramento antecipado explícito exige resultados e aprendizado. Reabertura disponível.
+- Referências temáticas do acervo e curadoria externa; acesso ao diretório de mentores. Não há atribuição automática de mentor ou agendamento nesta entrega.
+- Relatório HTML imprimível, backup JSON e importação validada sem sobrescrever ciclos existentes.
+
+Persistência apenas neste navegador, chave `ptp.mentoria.workspace.v1`. Não há sincronização de conta, armazenamento de mentoria no servidor ou IA conversacional. A interface informa essa condição e orienta evitar dados confidenciais. Tratamento de armazenamento indisponível, conteúdo corrompido e conflitos entre abas evita sinalizar salvamento indevido. Limites: 30 ciclos, 12 ações por ciclo e 20 revisões por ciclo. O indicador de preenchimento não é nota de maturidade nem validação do negócio.
+
+Fontes: `ptp_mentor_library_core.js` preserva catálogo e curadoria; `ptp_mentor_workspace.js` implementa a jornada. Executar `python3 mentor-library/build-mentor.py` a partir de `ptp-command-access/` antes de publicar o bundle `ptp_mentor_next.js`.
+
+Validação: 129 testes automatizados passaram, incluindo 18 da nova jornada. No site publicado, um ciclo fictício de MVP percorreu as quatro etapas; o bloqueio de conclusão sem evidência foi confirmado; quatro ações foram concluídas; uma revisão foi registrada e o ciclo encerrado sem duplicar o histórico. Recarregar preservou os dados e o estado concluído. Downloads de relatório HTML e backup JSON foram concluídos e seus conteúdos conferidos. Verificação visual desktop realizada; mobile e colaboração entre contas não homologados nesta entrega.
+
+## Histórico de correções
 
 Site: `11bfcf84-d1f4-4604-bfcf-82c08b20f0d4`.
 Publicação: `2fe044bb-fed7-48d6-91be-4aab2b49569d`.

@@ -125,3 +125,7 @@ Correção publicada no arquivo `ptp_mentor_next.js`, upload `2fe044bb-fed7-48d6
 ### Curadoria externa e retirada de links restritos — 14/11/2026
 
 Upload `5364edac-087f-4337-8501-f79d7ca8829c`: a Biblioteca NEXT exibe 102 itens do acervo e 15 referências externas; os 13 links privados/não confirmados saíram da vitrine e das recomendações. Filtro por origem, busca por fonte/tema e seleção externa na orientação NEXT implementados e conferidos em produção. 111 testes passaram.
+
+### Mentoria NEXT com ciclos de desenvolvimento — 14/11/2026
+
+Upload `0b53b825-8561-4c05-9c97-3fa6aca620ec`: a mentoria passa a organizar diagnóstico, hipótese e teste, plano de ação e revisão. Responsáveis, prazos, evidências de entrega, histórico de decisões, relatório HTML e backup JSON implementados. A jornada permanece local ao navegador, sem IA conversacional, sincronização ou atribuição automática de mentor. 129 testes passaram; ciclo completo, bloqueio sem evidência, conclusão, persistência após recarregar e downloads verificados no site publicado. Detalhes e limites em `mentor-library/README.md`. Os demais módulos e o backend não foram alterados por esta publicação.
