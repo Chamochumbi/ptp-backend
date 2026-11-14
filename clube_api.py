@@ -921,6 +921,25 @@ def member_offers(u=Depends(require("employee","manager","admin"))):
         "provider_name":x["provider"],"method":"Solicitação sujeita a validação",
         "category":x["category"],"description":x["description"]} for x in rows]}
 
+@app.get("/benefits/{offer_id}/redemption-channel")
+def benefit_redemption_channel(offer_id: int, u=Depends(require("employee","manager","admin","provider"))):
+    """Confidential partner coupon and contractual booking links, released only to logged-in club accounts."""
+    privileged = {
+        7: {"url": "https://mbauspesalq.com/?poloId=66"},
+        8: {"coupon": "PECEGEPTP10"},
+        9: {"coupon": "PECEGEPTP"},
+        10: {"coupon": "PECEGEPTP"},
+        13: {"coupon": "PQT10"},
+        15: {"coupon": "ROCKENSINAPTP"},
+        16: {"coupon": "PECEIROSPTP"},
+        18: {"url": "https://businesstravel.accor.com/pt/booking/advanced-search.html?identification.reserverType=SC&identification.reserverId=SCP4610750&identification.reserverContract=PA554BR357",
+             "coupon": "PA554BR357"},
+        25: {"coupon": "ANNYPTP"}
+    }
+    if offer_id < 1 or offer_id > 25:
+        raise HTTPException(404,"Oferta não encontrada")
+    return privileged.get(offer_id,{})
+
 @app.get("/offers/{offer_id}/benefit")
 def member_offer_detail(offer_id:str,u=Depends(require("employee","manager","admin"))):
     with db() as c:
