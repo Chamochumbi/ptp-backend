@@ -681,6 +681,31 @@ def admin_overview(u=Depends(require("admin"))):
             "offers":None,"redemptions":None,"financial":None}
 
 
+@app.get("/admin/operations/pulse")
+def admin_operations_pulse(u=Depends(require("admin"))):
+    """Read-only operational control: real records, with no estimated indicators."""
+    with db() as c:
+        applications=c.execute("""select status,count(*) as amount from ptp_applications
+            group by status""").fetchall()
+        invites=c.execute("""select
+            count(*) as total,
+            count(*) filter(where consumed_at is not null) as accepted,
+            count(*) filter(where consumed_at is null and expires_at>now()) as waiting,
+            count(*) filter(where consumed_at is null and expires_at<=now()) as expired
+            from ptp_invites""").fetchone()
+        offers=c.execute("""select status,count(*) as amount from ptp_offer_submissions
+            group by status""").fetchall()
+        redemptions=c.execute("""select status,count(*) as amount from ptp_redemptions
+            group by status""").fetchall()
+        audits=c.execute("""select count(*) as total from ptp_audit
+            where created_at>=now()-interval '7 days'""").fetchone()
+    return {"applications":{r["status"]:r["amount"] for r in applications},
+            "invitations":dict(invites),
+            "offers":{r["status"]:r["amount"] for r in offers},
+            "redemptions":{r["status"]:r["amount"] for r in redemptions},
+            "audit_events_last_7_days":audits["total"],
+            "basis":"registros transacionais reais; consulta somente leitura"}
+
 @app.get("/me/eligibility")
 def account_eligibility(u=Depends(principal)):
     company_verified=u["role"]=="admin"
