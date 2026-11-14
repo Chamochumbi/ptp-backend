@@ -1,8 +1,8 @@
 """Clube PTP — identidade isolada. Requer PostgreSQL, segredos e homologação antes de uso público."""
-import os, re, secrets, hashlib, hmac, datetime, smtplib, ssl
+import os, re, secrets, hashlib, hmac, datetime, smtplib, ssl, base64
 from email.message import EmailMessage
 from contextlib import contextmanager
-from fastapi import FastAPI, HTTPException, Depends, Header, Request
+from fastapi import FastAPI, HTTPException, Depends, Header, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import psycopg
@@ -768,6 +768,55 @@ def corporate_profile_update(data:CompanyPresentation,u=Depends(require("manager
           (u["id"],"company_presentation_updated",str(cid)))
         c.commit()
     return {"status":"updated","company_id":row["company_id"]}
+
+class CompanyLogoUpload(BaseModel):
+    content_base64: str = Field(min_length=100, max_length=1500000)
+    content_type: str = Field(max_length=40)
+
+@app.post("/company/logo")
+def upload_company_logo(data: CompanyLogoUpload, u=Depends(require("manager","admin"))):
+    cid = scoped_company_id(u)
+    media = data.content_type.strip().lower()
+    if media not in ("image/png", "image/jpeg", "image/webp"):
+        raise HTTPException(422, "Envie uma imagem PNG, JPG ou WebP")
+    try:
+        raw = base64.b64decode(data.content_base64, validate=True)
+    except (ValueError, base64.binascii.Error):
+        raise HTTPException(422, "Arquivo de imagem inválido")
+    if len(raw) > 1024*1024 or len(raw) < 40:
+        raise HTTPException(413, "A imagem deve ter até 1 MB")
+    png = raw.startswith(bytes.fromhex("89504e470d0a1a0a"))
+    jpg = raw.startswith(bytes.fromhex("ffd8ff")) and raw.endswith(bytes.fromhex("ffd9"))
+    webp = raw[:4] == b"RIFF" and raw[8:12] == b"WEBP"
+    if not ((media == "image/png" and png) or (media == "image/jpeg" and jpg) or (media == "image/webp" and webp)):
+        raise HTTPException(422, "Formato do arquivo não corresponde à imagem")
+    url = "https://clube-ptp-identidade-staging-s52.onrender.com/company/logo/" + str(cid)
+    with db() as c:
+        c.execute("""create table if not exists ptp_company_logo_images (
+          company_id bigint primary key references ptp_companies(id) on delete cascade,
+          image_data bytea not null, content_type text not null,
+          updated_at timestamptz not null default now())""")
+        c.execute("""insert into ptp_company_logo_images(company_id,image_data,content_type)
+          values (%s,%s,%s) on conflict(company_id) do update set
+          image_data=excluded.image_data,content_type=excluded.content_type,updated_at=now()""",
+          (cid,raw,media))
+        c.execute("""insert into ptp_company_profiles(company_id,display_name,logo_url,updated_by,updated_at)
+          values (%s,'',%s,%s,now())
+          on conflict(company_id) do update set logo_url=excluded.logo_url,
+          updated_by=excluded.updated_by,updated_at=now()""",(cid,url,u["id"]))
+        c.execute("insert into ptp_audit(actor_id,action,target) values (%s,%s,%s)",
+          (u["id"],"company_logo_uploaded",str(cid)))
+        c.commit()
+    return {"status":"uploaded","logo_url":url}
+
+@app.get("/company/logo/{company_id}")
+def get_company_logo(company_id:int):
+    with db() as c:
+        row=c.execute("""select image_data,content_type from ptp_company_logo_images
+          where company_id=%s""",(company_id,)).fetchone()
+    if not row: raise HTTPException(404,"Logomarca não encontrada")
+    return Response(content=bytes(row["image_data"]),media_type=row["content_type"],
+                    headers={"Cache-Control":"public,max-age=300","X-Content-Type-Options":"nosniff"})
 
 @app.get("/company/members")
 def company_members(u=Depends(require("manager","admin"))):
