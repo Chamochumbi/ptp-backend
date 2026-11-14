@@ -110,3 +110,8 @@ A vitrine apresenta 27 eventos/atividades confirmados, filtros dos cinco eixos, 
 Validação: 97 testes passaram, incluindo 17 do radar. No navegador real, catálogo de 27 eventos carregado; formato Online + Gratuito retornou o webinar da ESALQ; limpeza retornou 27 cartões; diretório e referência ao conselho ausentes no DOM. Verificação visual desktop concluída. A data de revisão em cada registro é preservada; mudanças na programação dos organizadores exigem nova conferência.
 
 Para recompilar após editar `ptp_radar.js`: `python3 radar/build-radar.py`. Para renovar conteúdo, atualizar somente o JSON conforme o contrato de `ingestCatalog`, revalidar e publicar pelo patch de arquivos Wix. Nunca apagar eventos futuros somente porque uma fonte está temporariamente indisponível; cancelamento exige evidência.
+
+
+### Bloqueio efetivo do agendamento
+
+A tentativa de criar a tarefa diária `PTP | Vitrine de eventos` retornou `too_many_active_automations`: 5 tarefas ativas, limite do plano 5. Nenhuma automação foi criada ou ativada. O monitoramento das 32 entidades está preparado em `radar/monitor-task.internal.txt`, mas NÃO está ativo. As cinco rotinas existentes foram preservadas. É necessária decisão do usuário para incorporar esta coleta a uma rotina existente ou liberar uma vaga. A consulta do catálogo pelo navegador a cada 30 minutos não substitui a pesquisa recorrente: somente lê o JSON já publicado.
