@@ -24,6 +24,24 @@ Contrato oficial conferido: `GET /members/v1/members/my?fieldsets=FULL` para obt
 
 ## Entregas
 
+### Acesso de participantes — segunda publicação de 13/11/2026
+
+`participant-access/` contém `js/wix.js` e `ptp_account.js` publicados na revisão `bea4a638-d17e-405b-bac6-0b3584c00d9a`. A página inicial, o acesso ao Centro de Comando e seu CSS foram preservados; o site mantém 70 arquivos.
+
+- Códigos atuais de CAPTCHA agora encaminham para a verificação de segurança já existente, sem remover o desafio.
+- Credenciais inválidas e conta inexistente recebem a mesma orientação, sem indicar qual informação está incorreta.
+- Cadastro com e-mail existente e excesso de tentativas recebem orientações específicas.
+- Código de confirmação incorreto ou expirado informa como corrigir; a tentativa seguinte preserva o estado pendente, sem criar sessão antes da confirmação.
+- O servidor publica esses módulos com `Cache-Control: public,max-age=0,must-revalidate`; as referências compartilhadas foram mantidas para não criar instâncias duplicadas do cliente de autenticação.
+
+Validação: 80 testes locais aprovados no pacote, incluindo 36 testes de autenticação. Uma tentativa real de login com dados sintéticos de uma conta inexistente recebeu 404/código `-19999`, sem sessão. Na consulta real das 21 coleções com sessão de visitante, as 18 fontes privadas responderam 403 e as três públicas responderam 200, todas sem itens retornados. Nenhum cadastro, envio de e-mail ou alteração de dados foi realizado nesses testes.
+
+As telas de login, cadastro e recuperação foram abertas e conferidas no navegador. Não foi concluído novo cadastro, entrega de código, recuperação de senha ou login com credenciais reais nesta rodada. O acesso do proprietário continua dependente da implantação do backend e da configuração protegida do Render. As solicitações anteriores de autenticação no Render foram encerradas sem conclusão; não há sessão administrativa disponível para recuperar a configuração efetiva do serviço.
+
+Referências: [Login V2](https://dev.wix.com/docs/api-reference/business-management/headless/authentication/login-v-2), [Register V2](https://dev.wix.com/docs/api-reference/business-management/headless/authentication/register-v-2), [Verify During Authentication](https://dev.wix.com/docs/api-reference/business-management/headless/verification/verify-during-authentication).
+
+### Módulo gerencial em preparação
+
 - `backend/command.mjs`: handler independente para `/api/command/status` e `/api/command/query`. Retorna `false` para rotas não relacionadas, permitindo integração no servidor ativo sem substituir os demais serviços.
 - `backend/server.mjs`: servidor isolado para homologação; não substitui a API 3.2.0.
 - `frontend/ptp_command_api.js`: cliente com token renovado, timeout, origem fixa, mensagens de erro e validação das respostas.

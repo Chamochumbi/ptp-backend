@@ -122,13 +122,26 @@ async function finishAccount(response){
   location.assign(target.href);
   return {state:'SUCCESS'};
 }
-const accountErrorCodes={'-19971':'missingCaptchaToken','-19970':'invalidCaptchaToken','-19995':'emailAlreadyExists','-19976':'invalidPassword','-19973':'resetPassword'};
+const accountErrorCodes=Object.freeze({
+  '-19971':'missingCaptchaToken','-19970':'invalidCaptchaToken',
+  '-19995':'emailAlreadyExists','-19976':'invalidCredentials',
+  '-19999':'invalidCredentials','-19973':'resetPassword',
+  CAPTCHA_TOKEN_REQUIRED:'missingCaptchaToken',
+  MISSING_CAPTCHA_TOKEN:'missingCaptchaToken',
+  RECAPTCHA_REQUIRED:'missingCaptchaToken',
+  INVALID_CAPTCHA_TOKEN:'invalidCaptchaToken',
+  RECAPTCHA_FAILED:'invalidCaptchaToken',
+  DUPLICATE_EMAIL:'emailAlreadyExists',
+  VERIFICATION_FAILED:'invalidVerification',
+  THROTTLED_FEATURE:'tooManyAttempts',
+  REENROLLMENT_REQUIRED_BY_ADMIN:'additionalVerification'
+});
 async function accountCall(path,body){
   try{
     const token=await visitorToken();
     return await request(path,{method:'POST',token,body});
   }catch(error){
-    const code=accountErrorCodes[String(error.code)];
+    const code=Object.hasOwn(accountErrorCodes,String(error.code))?accountErrorCodes[String(error.code)]:undefined;
     if(code)return {accountError:code};
     if(error.status===429)return {accountError:'tooManyAttempts'};
     if(error.status===0)return {accountError:'connectionUnavailable'};
@@ -242,5 +255,3 @@ export function fileThumbnail(file){
     img.onerror=()=>{URL.revokeObjectURL(u);reject(Error('Não foi possível abrir a imagem.'));};img.src=u;
   });
 }
-
-
