@@ -1,0 +1,538 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-11-14T01:48:28.059Z",
+  "items": [
+    {
+      "id": "boas-praticas-2026",
+      "title": "Boas práticas na manipulação de alimentos",
+      "partnerId": "esalq",
+      "start": "2026-11-17",
+      "end": "2026-11-18",
+      "time": "18h às 22h, nos dois dias",
+      "location": "Auditório do Prédio I · Ciência e Tecnologia de Alimentos · ESALQ",
+      "topics": [
+        "ciencia",
+        "empregabilidade",
+        "universidades"
+      ],
+      "description": "Capacitação para profissionais do setor de alimentos. Certificado condicionado à frequência integral.",
+      "url": "https://www.esalq.usp.br/boletim/treinamento-aborda-boas-pr%C3%A1ticas-na-manipula%C3%A7%C3%A3o-de-alimentos-na-esalqusp",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "modality": "Presencial"
+    },
+    {
+      "id": "carreira-2026",
+      "title": "Gestão de carreira: da vida acadêmica ao ambiente corporativo",
+      "partnerId": "fealq",
+      "start": "2026-11-18",
+      "location": "Local e horário: confirmar com a FEALQ",
+      "topics": [
+        "empregabilidade",
+        "universidades"
+      ],
+      "price": "Gratuito",
+      "description": "Segundo encontro do curso para pós-graduandos, iniciado em 11/11. Confirme a possibilidade de participação nesta etapa; o certificado exige os dois encontros.",
+      "url": "https://fealq.org.br/cursos/gestao-de-carreira-da-vida-academica-ao-ambiente-corporativo/",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "modality": "Presencial"
+    },
+    {
+      "id": "conecta-sp-2026",
+      "title": "Piracicaba em Transformação — Conecta SP / Anamid",
+      "partnerId": "ptp",
+      "start": "2026-11-25",
+      "time": "14h às 17h",
+      "location": "ACIPI · Rua Prudente de Morais, 459",
+      "topics": [
+        "tecnologia",
+        "inovacao"
+      ],
+      "description": "Debate sobre desafios de negócios e soluções digitais para empresas da região.",
+      "url": "https://parquetecnologico.piracicaba.sp.gov.br/events/piracicaba-em-transformacao-anamid",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "modality": "Presencial"
+    },
+    {
+      "id": "arena-nd-2026",
+      "title": "Arena ND 2026",
+      "partnerId": "pecege",
+      "start": "2026-11-26",
+      "time": "13h30 às 17h30",
+      "location": "Instituto Pecege · Rua Cezira Giovanoni Moretti, 580",
+      "topics": [
+        "inovacao"
+      ],
+      "description": "Encontro de ideias, experiências e conexões para o desenvolvimento de negócios.",
+      "url": "https://parquetecnologico.piracicaba.sp.gov.br/events/arena-nd-2026",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "modality": "Presencial"
+    },
+    {
+      "id": "alimentos-esalq-2026",
+      "title": "Alimentos na ESALQ IV",
+      "partnerId": "esalq",
+      "start": "2026-11-28",
+      "time": "10h às 16h",
+      "location": "Em frente ao Departamento de Ciência e Tecnologia de Alimentos · ESALQ",
+      "topics": [
+        "ciencia",
+        "tecnologia",
+        "universidades"
+      ],
+      "price": "Gratuito",
+      "description": "Ciência dos alimentos para a comunidade, com oficinas, experiências e visitas. Algumas atividades têm vagas limitadas e inscrição no local.",
+      "url": "https://www.esalq.usp.br/2026/10/27/alimentos-na-esalq-tera-atracoes-interativas-oficinas-e-visitas-guiadas/",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "modality": "Presencial"
+    },
+    {
+      "id": "pae-2026",
+      "title": "Workshop PAE 2026",
+      "partnerId": "esalq",
+      "start": "2026-12-01",
+      "time": "A partir das 14h",
+      "location": "Anfiteatro Athanassof · Departamento de Zootecnia · ESALQ",
+      "topics": [
+        "universidades"
+      ],
+      "description": "Formação e troca de experiências sobre docência no ensino superior.",
+      "url": "https://www.esalq.usp.br/2026/11/09/workshop-pae-2026-sera-realizado-no-proximo-dia-1o/",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "modality": "Presencial"
+    },
+    {
+      "id": "ig-2026",
+      "title": "3ª Feira das Indicações Geográficas",
+      "partnerId": "esalq",
+      "start": "2026-12-02",
+      "time": "7h às 15h",
+      "location": "Pavilhão de Engenharia · ESALQ",
+      "topics": [
+        "inovacao",
+        "universidades"
+      ],
+      "price": "Gratuito",
+      "description": "Encontro entre produtores, universidade e sociedade, com produtos de origem reconhecida. Inscrições divulgadas até 01/12.",
+      "url": "https://www.esalq.usp.br/2026/11/12/3a-feira-das-indicacoes-geograficas-aproxima-produtores-e-sociedade-na-esalq-usp/",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "modality": "Presencial"
+    },
+    {
+      "id": "agtech-2026",
+      "title": "AgTech Day — 10 anos do Vale do Piracicaba",
+      "partnerId": "ptp",
+      "start": "2026-12-03",
+      "location": "Núcleo PTP · Rua Cezira Giovanoni Moretti, 600",
+      "topics": [
+        "ciencia",
+        "tecnologia",
+        "inovacao",
+        "universidades"
+      ],
+      "price": "Gratuito · ação solidária",
+      "description": "Startups, pesquisadores, empresas e universidades debatem a inovação no agro. Consulte a programação e as orientações de doação na página do evento.",
+      "url": "https://www.linka.la/event/agtech-day-10-anos-do-vale-do-piracicaba-uma-decada-de-inovacao-que-transformou-o-agro",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "modality": "Presencial"
+    },
+    {
+      "id": "sensory-2026",
+      "title": "USP Sensory Science Meeting 2026",
+      "partnerId": "esalq",
+      "start": "2026-12-10",
+      "time": "8h às 17h30",
+      "location": "Anfiteatro Dr. Urgel de Almeida Lima · Ciência e Tecnologia de Alimentos · ESALQ",
+      "topics": [
+        "ciencia",
+        "tecnologia",
+        "universidades"
+      ],
+      "description": "Atualização técnica e científica em análise sensorial para estudantes, pesquisadores e profissionais.",
+      "url": "https://www.esalq.usp.br/2026/11/13/usp-sensory-science-meeting-2026-promove-atualizacao-em-ciencia-sensorial/",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "modality": "Presencial"
+    },
+    {
+      "id": "jardim-genetico-2026",
+      "title": "Jardim genético: entre genes e plantas",
+      "partnerId": "esalq",
+      "start": "2026-11-14",
+      "url": "https://www.esalq.usp.br/evento/jardim-genetico-entre-genes-e-plantas/",
+      "topics": [
+        "ciencia",
+        "universidades"
+      ],
+      "location": "Departamento de Genética · ESALQ / USP",
+      "time": "9h às 14h",
+      "description": "Exposição de genética e diversidade vegetal aberta à comunidade.",
+      "price": "Gratuito",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14"
+    },
+    {
+      "id": "pequenas-frutas-2026",
+      "title": "Dia de Campo: Pequenas Frutas",
+      "partnerId": "esalq",
+      "start": "2026-11-14",
+      "url": "https://www.esalq.usp.br/evento/dia-de-campo-pequenas-frutas/",
+      "topics": [
+        "ciencia",
+        "tecnologia",
+        "universidades"
+      ],
+      "location": "Anfiteatro Heitor Montenegro · Departamento de Produção Vegetal · ESALQ",
+      "time": "7h às 12h",
+      "description": "Atividade de campo e formação sobre pequenas frutas.",
+      "price": "Gratuito",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14"
+    },
+    {
+      "id": "consciencia-esalq-2026",
+      "title": "V Encontro para Consciência Negra",
+      "partnerId": "esalq",
+      "start": "2026-11-16",
+      "url": "https://www.esalq.usp.br/evento/v-encontro-para-consciencia-negra/",
+      "topics": [
+        "universidades"
+      ],
+      "location": "Anfiteatro da Engenharia · ESALQ",
+      "time": "16h30 às 19h",
+      "description": "Encontro da comunidade universitária sobre relações étnico-raciais.",
+      "price": "Gratuito",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14"
+    },
+    {
+      "id": "papel-esalq-2026",
+      "title": "Introdução às Propriedades do Papel",
+      "partnerId": "esalq",
+      "start": "2026-11-19",
+      "url": "https://www.esalq.usp.br/evento/introducao-as-propriedades-do-papel/",
+      "topics": [
+        "ciencia",
+        "tecnologia",
+        "universidades"
+      ],
+      "location": "ESALQ / USP · consulte o espaço na programação",
+      "time": "13h às 17h",
+      "description": "Treinamento técnico sobre propriedades do papel.",
+      "price": "",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14"
+    },
+    {
+      "id": "brasil-china-esalq-2026",
+      "title": "Cooperação científica e tecnológica Brasil–China",
+      "partnerId": "esalq",
+      "start": "2026-11-25",
+      "url": "https://www.esalq.usp.br/evento/brazil-china-scientific-and-technological-cooperation-connections-outcomes-and-opportunities-webinar/",
+      "topics": [
+        "ciencia",
+        "tecnologia",
+        "inovacao",
+        "universidades"
+      ],
+      "location": "Online · programação divulgada pela ESALQ / USP",
+      "time": "20h às 22h",
+      "description": "Webinar sobre conexões, resultados e oportunidades de cooperação científica.",
+      "price": "Gratuito",
+      "modality": "Online",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14"
+    },
+    {
+      "id": "consciencia-fop-2026",
+      "title": "1ª Semana da Consciência Negra da FOP",
+      "partnerId": "fop",
+      "start": "2026-11-16",
+      "url": "https://www.fop.unicamp.br/2026/10/26/fop-promove-1a-semana-da-consciencia-negra-com-foco-no-letramento-racial-e-em-praticas-antirracistas/",
+      "topics": [
+        "universidades"
+      ],
+      "location": "FOP / Unicamp · espaços indicados na programação",
+      "time": "Horários por atividade; mesa-redonda em 18/11, das 14h às 16h",
+      "description": "Letramento racial e práticas antirracistas na universidade e no ambiente profissional. Inscrição antecipada.",
+      "price": "",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "end": "2026-11-18"
+    },
+    {
+      "id": "estrategias-acipi-2026",
+      "title": "Estratégias Financeiras para Tempos de Incerteza",
+      "partnerId": "acipi",
+      "start": "2026-11-26",
+      "url": "https://acipi.com.br/palestra-gratuita-na-acipi-apresenta-estrategias-para-empresas-enfrentarem-momentos-de-incerteza/",
+      "topics": [
+        "empregabilidade"
+      ],
+      "location": "ACIPI · Rua Prudente de Moraes, 459",
+      "time": "17h às 21h",
+      "description": "Formação em finanças e estratégia corporativa para gestores, profissionais e estudantes. Vagas limitadas.",
+      "price": "Gratuito",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14"
+    },
+    {
+      "id": "simespi-metalurgia-2026",
+      "title": "Formação intensiva em metalurgia aplicada",
+      "partnerId": "simespi",
+      "start": "2026-11-16",
+      "url": "https://simespi.com.br/cursos-palestras-2026-2-2/",
+      "topics": [
+        "tecnologia",
+        "empregabilidade"
+      ],
+      "location": "SIMESPI · Rua Samuel Neves, 1601 · confirme o local da turma",
+      "time": "Teoria: 18h às 21h; prática em 28/11: 8h às 11h",
+      "description": "Capacitação profissional. Consulte condições de participação e inscrição na programação do SIMESPI.",
+      "price": "",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "end": "2026-11-28",
+      "dates": [
+        "2026-11-16",
+        "2026-11-23",
+        "2026-11-28"
+      ]
+    },
+    {
+      "id": "simespi-lideranca-pacificadora-2026",
+      "title": "Liderança pacificadora: transformando conflitos",
+      "partnerId": "simespi",
+      "start": "2026-11-16",
+      "url": "https://simespi.com.br/cursos-palestras-2026-2-2/",
+      "topics": [
+        "empregabilidade"
+      ],
+      "location": "SIMESPI · Rua Samuel Neves, 1601 · confirme o local da turma",
+      "time": "18h às 21h",
+      "description": "Capacitação profissional. Consulte condições de participação e inscrição na programação do SIMESPI.",
+      "price": "",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "end": "2026-11-17",
+      "dates": [
+        "2026-11-16",
+        "2026-11-17"
+      ]
+    },
+    {
+      "id": "simespi-nao-conformidades-2026",
+      "title": "Tratamento de não conformidades",
+      "partnerId": "simespi",
+      "start": "2026-11-16",
+      "url": "https://simespi.com.br/cursos-palestras-2026-2-2/",
+      "topics": [
+        "tecnologia",
+        "empregabilidade"
+      ],
+      "location": "SIMESPI · Rua Samuel Neves, 1601 · confirme o local da turma",
+      "time": "18h às 21h",
+      "description": "Capacitação profissional. Consulte condições de participação e inscrição na programação do SIMESPI.",
+      "price": "",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "end": "2026-11-18",
+      "dates": [
+        "2026-11-16",
+        "2026-11-17",
+        "2026-11-18"
+      ]
+    },
+    {
+      "id": "simespi-reter-talentos-2026",
+      "title": "Atrair, liderar e reter: o novo jogo do trabalho",
+      "partnerId": "simespi",
+      "start": "2026-11-17",
+      "url": "https://simespi.com.br/cursos-palestras-2026-2-2/",
+      "topics": [
+        "empregabilidade"
+      ],
+      "location": "SIMESPI · Rua Samuel Neves, 1601 · confirme o local da turma",
+      "time": "Recepção: 8h30; início: 9h",
+      "description": "Capacitação profissional. Consulte condições de participação e inscrição na programação do SIMESPI.",
+      "price": "",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "end": "2026-11-17",
+      "dates": [
+        "2026-11-17"
+      ]
+    },
+    {
+      "id": "simespi-escala-6x1-2026",
+      "title": "Desafios da escala 6x1",
+      "partnerId": "simespi",
+      "start": "2026-11-17",
+      "url": "https://simespi.com.br/cursos-palestras-2026-2-2/",
+      "topics": [
+        "empregabilidade"
+      ],
+      "location": "SIMESPI · Rua Samuel Neves, 1601 · confirme o local da turma",
+      "time": "Recepção: 18h30; início: 19h",
+      "description": "Capacitação profissional. Consulte condições de participação e inscrição na programação do SIMESPI.",
+      "price": "",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "end": "2026-11-17",
+      "dates": [
+        "2026-11-17"
+      ]
+    },
+    {
+      "id": "simespi-calibracao-2026",
+      "title": "Interpretação de certificados de calibração",
+      "partnerId": "simespi",
+      "start": "2026-11-18",
+      "url": "https://simespi.com.br/cursos-palestras-2026-2-2/",
+      "topics": [
+        "tecnologia",
+        "empregabilidade"
+      ],
+      "location": "SIMESPI · Rua Samuel Neves, 1601 · confirme o local da turma",
+      "time": "18h às 22h",
+      "description": "Capacitação profissional. Consulte condições de participação e inscrição na programação do SIMESPI.",
+      "price": "",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "end": "2026-11-19",
+      "dates": [
+        "2026-11-18",
+        "2026-11-19"
+      ]
+    },
+    {
+      "id": "simespi-contabilidade-2026",
+      "title": "Contabilidade e análise de balanço para não contadores",
+      "partnerId": "simespi",
+      "start": "2026-11-23",
+      "url": "https://simespi.com.br/cursos-palestras-2026-2-2/",
+      "topics": [
+        "empregabilidade"
+      ],
+      "location": "SIMESPI · Rua Samuel Neves, 1601 · confirme o local da turma",
+      "time": "18h às 21h",
+      "description": "Capacitação profissional. Consulte condições de participação e inscrição na programação do SIMESPI.",
+      "price": "",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "end": "2026-11-30",
+      "dates": [
+        "2026-11-23",
+        "2026-11-25",
+        "2026-11-30"
+      ]
+    },
+    {
+      "id": "simespi-diversidade-2026",
+      "title": "Diversidade, inclusão e equidade no ambiente de trabalho",
+      "partnerId": "simespi",
+      "start": "2026-11-24",
+      "url": "https://simespi.com.br/cursos-palestras-2026-2-2/",
+      "topics": [
+        "empregabilidade"
+      ],
+      "location": "SIMESPI · Rua Samuel Neves, 1601 · confirme o local da turma",
+      "time": "18h às 21h",
+      "description": "Capacitação profissional. Consulte condições de participação e inscrição na programação do SIMESPI.",
+      "price": "",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "end": "2026-11-24",
+      "dates": [
+        "2026-11-24"
+      ]
+    },
+    {
+      "id": "simespi-gestao-impacto-2026",
+      "title": "Gestão de impacto: como medir e melhorar sua operação",
+      "partnerId": "simespi",
+      "start": "2026-11-24",
+      "url": "https://simespi.com.br/cursos-palestras-2026-2-2/",
+      "topics": [
+        "inovacao",
+        "empregabilidade"
+      ],
+      "location": "SIMESPI · Rua Samuel Neves, 1601 · confirme o local da turma",
+      "time": "18h às 21h",
+      "description": "Capacitação profissional. Consulte condições de participação e inscrição na programação do SIMESPI.",
+      "price": "",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "end": "2026-11-26",
+      "dates": [
+        "2026-11-24",
+        "2026-11-25",
+        "2026-11-26"
+      ]
+    },
+    {
+      "id": "simespi-resiliencia-2026",
+      "title": "Liderar com resiliência: estratégias para tempos incertos",
+      "partnerId": "simespi",
+      "start": "2026-11-26",
+      "url": "https://simespi.com.br/cursos-palestras-2026-2-2/",
+      "topics": [
+        "empregabilidade"
+      ],
+      "location": "SIMESPI · Rua Samuel Neves, 1601 · confirme o local da turma",
+      "time": "18h às 21h",
+      "description": "Capacitação profissional. Consulte condições de participação e inscrição na programação do SIMESPI.",
+      "price": "",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "end": "2026-11-26",
+      "dates": [
+        "2026-11-26"
+      ]
+    },
+    {
+      "id": "simespi-negociacao-2026",
+      "title": "Negociação estratégica",
+      "partnerId": "simespi",
+      "start": "2026-12-03",
+      "url": "https://simespi.com.br/cursos-palestras-2026-2-2/",
+      "topics": [
+        "empregabilidade"
+      ],
+      "location": "SIMESPI · Rua Samuel Neves, 1601 · confirme o local da turma",
+      "time": "18h às 21h",
+      "description": "Capacitação profissional. Consulte condições de participação e inscrição na programação do SIMESPI.",
+      "price": "",
+      "modality": "Presencial",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-14",
+      "end": "2026-12-03",
+      "dates": [
+        "2026-12-03"
+      ]
+    }
+  ]
+}

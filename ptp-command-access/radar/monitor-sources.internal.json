@@ -1,0 +1,203 @@
+{
+  "updatedAt": "2026-11-14",
+  "purpose": "Mapa interno de descoberta. Não publicar na vitrine nem carregar no frontend.",
+  "membershipSources": [
+    "https://conselhos.piracicaba.sp.gov.br/cmcti/os-conselheiros/",
+    "https://conselhos.piracicaba.sp.gov.br/cmcti/files/2023/01/CC3B3pia-da-PublicaC3A7C3A3o-3.pdf",
+    "https://conselhos.piracicaba.sp.gov.br/cmcti/files/2026/02/ATA-CMCTI-Dezembro-2025.docx-1-1.pdf"
+  ],
+  "entities": [
+    {
+      "id": "obras",
+      "name": "Secretaria Municipal de Obras",
+      "query": "Secretaria Municipal de Obras Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "semdec",
+      "name": "Secretaria Municipal de Desenvolvimento Econômico, Indústria e Comércio",
+      "query": "Secretaria Municipal de Desenvolvimento Econômico, Indústria e Comércio Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "sema",
+      "name": "Secretaria Municipal de Agricultura e Abastecimento",
+      "query": "Secretaria Municipal de Agricultura e Abastecimento Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "sme",
+      "name": "Secretaria Municipal de Educação",
+      "query": "Secretaria Municipal de Educação Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "semad",
+      "name": "Secretaria Municipal de Administração",
+      "query": "Secretaria Municipal de Administração Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "esalq",
+      "name": "ESALQ / USP",
+      "query": "ESALQ / USP Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "unimep",
+      "name": "Universidade Metodista de Piracicaba",
+      "query": "Universidade Metodista de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "fop",
+      "name": "FOP / Unicamp",
+      "query": "FOP / Unicamp Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "fumep",
+      "name": "FUMEP / EEP / COTIP",
+      "query": "FUMEP / EEP / COTIP Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "ifsp",
+      "name": "Instituto Federal de São Paulo — Campus Piracicaba",
+      "query": "Instituto Federal de São Paulo — Campus Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "cena",
+      "name": "CENA / USP",
+      "query": "CENA / USP Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "ciesp",
+      "name": "CIESP Piracicaba",
+      "query": "CIESP Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "acipi",
+      "name": "ACIPI",
+      "query": "ACIPI Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "aeap",
+      "name": "Associação dos Engenheiros e Arquitetos de Piracicaba",
+      "query": "Associação dos Engenheiros e Arquitetos de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "apm",
+      "name": "Associação Paulista de Medicina — Piracicaba",
+      "query": "Associação Paulista de Medicina — Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "apcd",
+      "name": "Associação Paulista de Cirurgiões-Dentistas — Piracicaba",
+      "query": "Associação Paulista de Cirurgiões-Dentistas — Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "camara",
+      "name": "Câmara Municipal de Piracicaba",
+      "query": "Câmara Municipal de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "comdema",
+      "name": "Conselho Municipal de Defesa do Meio Ambiente de Piracicaba",
+      "query": "Conselho Municipal de Defesa do Meio Ambiente de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "ccecp",
+      "name": "Conselho Coordenador das Entidades Civis de Piracicaba",
+      "query": "Conselho Coordenador das Entidades Civis de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "fatec",
+      "name": "Fatec Piracicaba",
+      "query": "Fatec Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "apla",
+      "name": "Arranjo Produtivo Local do Álcool — APLA",
+      "query": "Arranjo Produtivo Local do Álcool — APLA Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "simespi",
+      "name": "SIMESPI",
+      "query": "SIMESPI Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "atepi",
+      "name": "ATEPI / Tinspira",
+      "query": "ATEPI / Tinspira Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "ptp",
+      "name": "Parque Tecnológico de Piracicaba",
+      "query": "Parque Tecnológico de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "sebrae",
+      "name": "Sebrae Piracicaba",
+      "query": "Sebrae Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "senac",
+      "name": "Senac Piracicaba",
+      "query": "Senac Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "senai",
+      "name": "SENAI Piracicaba — unidades Centro e Vila Rezende",
+      "query": "SENAI Piracicaba — unidades Centro e Vila Rezende Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "fealq",
+      "name": "FEALQ",
+      "query": "FEALQ Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "pecege",
+      "name": "Instituto Pecege / Faculdade Pecege",
+      "query": "Instituto Pecege / Faculdade Pecege Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "comunidade",
+      "name": "Comunidade de Inovação de Piracicaba / PiN",
+      "query": "Comunidade de Inovação de Piracicaba / PiN Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "uam",
+      "name": "Universidade Anhembi Morumbi — Piracicaba",
+      "query": "Universidade Anhembi Morumbi — Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    },
+    {
+      "id": "pira21",
+      "name": "Pira 21",
+      "query": "Pira 21 Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "coverage": "incluída na varredura; registrar resultado por execução"
+    }
+  ]
+}
