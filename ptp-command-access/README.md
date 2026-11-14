@@ -88,3 +88,13 @@ O módulo é exclusivamente de leitura. Não aprova publicações, altera regist
 | Experiência gerencial | Filtros, exportação, atualização e logout funcionam integrados | Testes simulados aprovados; homologação real pendente |
 | Cadastro e login | Cadastro, verificação, recuperação e persistência entre sessões | Regressão automatizada existente aprovada; novo ciclo real pendente |
 | Divulgação | Jornadas críticas aprovadas, mobile/teclado conferidos e falhas corrigidas | Ainda não liberado como entrega integral homologada |
+
+## Radar de eventos — publicado em 14/11/2026
+
+`radar/agenda.html`, `radar/ptp_observatorio.css` e `radar/ptp_observatorio.js` foram publicados no site PTP existente, upload `cbd4fa89-b53e-4aab-a878-e40c77f37686`. Os 70 arquivos foram preservados; os três arquivos publicados tiveram conteúdo conferido. Página inicial, Centro de Comando, módulo de autenticação e conta permaneceram iguais.
+
+A agenda reúne nove eventos com fontes específicas e nove canais institucionais, cinco temas (ciência, tecnologia, inovação, empregabilidade e universidades), busca sem distinção de acentos, filtros de instituição/período e lembretes de dia inteiro em ICS. Os canais são diretórios de consulta, não novas integrações automáticas. A curadoria está datada de 14/11/2026 e precisa de revisão editorial periódica. O feed existente continua sendo consultado a cada 30 minutos enquanto a página permanece aberta; sua coleta no servidor não foi alterada.
+
+O navegador real confirmou: nove eventos exibidos; combinação carreira + empregabilidade + FEALQ + sete dias com um resultado; download ICS; estado vazio; limpeza dos filtros com retorno aos nove eventos. O feed respondeu e a página mostrou o estado de consulta concluída. Verificação visual em desktop realizada; celular não homologado nesta entrega. Onze testes adicionais passaram para datas, filtros, fontes, deduplicação, conteúdo externo, calendário, fallback e compatibilidade com notícias/fomento.
+
+Para editar: `ptp_radar.js` é a fonte do módulo inicial de `ptp_observatorio.js`; a versão publicada é o arquivo combinado. Alterações na fonte exigem substituir o prefixo do bundle e executar os testes. A lista editorial não é atualizada automaticamente a partir dos nove diretórios. Eventos encerrados são omitidos pela data de Piracicaba; os lembretes não efetuam inscrição.
