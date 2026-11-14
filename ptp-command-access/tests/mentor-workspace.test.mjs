@@ -21,7 +21,7 @@ function fill(s){s.api.create();const r=s.api.current();Object.assign(r,{project
 test('new professional workspace preserves library and exposes a four-stage workflow',()=>{
  const s=setup();assert.match(s.ctx.demoMentor(),/Iniciar primeiro ciclo/);assert.match(s.ctx.library(),/102 materiais/);
  s.api.create();assert.match(s.ctx.demoMentor(),/Hipótese e teste/);assert.match(s.ctx.demoMentor(),/Plano de ação/);assert.match(s.ctx.demoMentor(),/Salvo neste navegador/);
- assert.equal(s.ctx.window.PTPNext.catalog().length,117);
+ assert.equal(s.ctx.window.PTPNext.catalog().length,128);
 });
 test('diagnostic progress measures completion, never business validation',()=>{
  const s=setup();s.api.create();const r=s.api.current();assert.equal(s.api.readiness(r).filled,0);

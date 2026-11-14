@@ -203,6 +203,160 @@
     "tags": "patente invencao propriedade intelectual protecao tecnologia registro formalizacao",
     "url": "https://www.gov.br/inpi/pt-br/servicos/patentes/guia-basico",
     "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-mit-course",
+    "title": "New Enterprises — curso aberto do MIT",
+    "provider": "MIT OpenCourseWare",
+    "axis": "Mercado e modelo de negócio",
+    "language": "Inglês",
+    "resourceType": "Curso universitário",
+    "note": "Curso de 2013 sobre oportunidades, proposta de valor e construção de novos negócios. Útil como formação; não é uma análise do seu projeto.",
+    "tags": "empreendedorismo mercado clientes equipe estrategia modelo negocio pesquisa",
+    "url": "https://ocw.mit.edu/courses/15-390-new-enterprises-spring-2013/",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-mit-method",
+    "title": "Disciplined Entrepreneurship — método e materiais",
+    "provider": "MIT · Martin Trust Center",
+    "axis": "Mercado e modelo de negócio",
+    "language": "Inglês",
+    "resourceType": "Livro e método",
+    "note": "Apresenta o método de Bill Aulet e caminhos para livro, exercícios e aulas. A página é aberta; a compra de livros é opcional.",
+    "tags": "literatura livro aulet estrategia empreendedorismo equipe mercado segmentacao",
+    "url": "https://diymtc.mit.edu/education/deframework/",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-ufpb-review",
+    "title": "Empreendedorismo, inovação, startups e lean startup: uma revisão da literatura",
+    "provider": "Ziviani et al. · Biblionline / UFPB · 2022",
+    "axis": "Gestão da inovação e ecossistemas",
+    "language": "Português",
+    "resourceType": "Artigo acadêmico",
+    "note": "Revisão bibliográfica de publicações de 2009 a 2019. Ajuda a comparar conceitos; não comprova o desempenho de uma startup específica.",
+    "tags": "academia pesquisa literatura revisao cientifica empreendedorismo inovacao lean startup validacao",
+    "url": "https://periodicos.ufpb.br/index.php/biblio/article/view/64428",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-uff-study",
+    "title": "Lean Startup: análise exploratória sobre sua utilização por startups brasileiras",
+    "provider": "Ribeiro e Sarfati · CGE / UFF · 2019",
+    "axis": "MVP, validação e crescimento",
+    "language": "Português",
+    "resourceType": "Artigo acadêmico",
+    "note": "Pesquisa exploratória com 115 empreendedores. Examine método, amostra e limites antes de aplicar as conclusões ao seu contexto.",
+    "tags": "academia pesquisa estudo cientifico lean startup validacao mvp metricas evidencias",
+    "url": "https://periodicos.uff.br/cge/article/view/12764",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-ufg-case",
+    "title": "Aplicação da metodologia Lean Startup em uma empresa de base tecnológica de Goiás",
+    "provider": "Araújo e Yamanaka · Produção Online · UFG",
+    "axis": "MVP, validação e crescimento",
+    "language": "Português",
+    "resourceType": "Artigo acadêmico",
+    "note": "Estudo de caso que propõe a aplicação de Lean Startup em uma empresa incubada. Serve para discutir adaptação do método, não como garantia de resultado.",
+    "tags": "academia estudo caso pesquisa lean startup validacao mvp incubacao inovacao",
+    "url": "https://www.producaoonline.org.br/rpo/article/view/4212",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-ufsc-guide",
+    "title": "Lean Startup: o que as empresas podem aprender com as startups",
+    "provider": "VIA / UFSC · 2021",
+    "axis": "Gestão da inovação e ecossistemas",
+    "language": "Português",
+    "resourceType": "Portal universitário",
+    "note": "Introdução de divulgação universitária à aprendizagem e adaptação em novos negócios. Não é um artigo de pesquisa com resultados originais.",
+    "tags": "universidade lean startup inovacao experimento aprender empresa",
+    "url": "https://via.ufsc.br/lean-startup-o-que-as-empresas-podem-aprender-com-as-startups/?lang=pt",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-yc-growth",
+    "title": "How to Start a Startup: Growth — crescimento e retenção",
+    "provider": "Y Combinator",
+    "axis": "Vendas e crescimento",
+    "language": "Inglês",
+    "resourceType": "Aula especializada",
+    "note": "Aula para discutir retenção por grupos de clientes e crescimento. Compare negócios com ciclos de uso semelhantes ao seu.",
+    "tags": "tracao retencao churn coorte crescimento metricas uso recorrencia produto clientes",
+    "url": "https://www.ycombinator.com/library/dU-how-to-start-a-startup-growth",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-yc-models",
+    "title": "YC guide to business models — modelos de negócio",
+    "provider": "Y Combinator",
+    "axis": "Mercado e modelo de negócio",
+    "language": "Inglês",
+    "resourceType": "Guia especializado",
+    "note": "Discussão de modelos de receita, retenção e características de diferentes negócios. Use para comparar alternativas e formular hipóteses.",
+    "tags": "receita modelo negocio recorrencia assinatura marketplace monetizacao saas",
+    "url": "https://www.ycombinator.com/library/Gh-yc-guide-to-business-models",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-cash",
+    "title": "Como fazer o fluxo de caixa",
+    "provider": "Sebrae SC",
+    "axis": "Finanças e precificação",
+    "language": "Português",
+    "resourceType": "Guia prático",
+    "note": "Guia para organizar entradas, saídas e projeção do caixa. Serve de apoio à gestão; a aplicação depende dos registros reais do negócio.",
+    "tags": "caixa financeiro runway burn rate custos receita despesas capital giro",
+    "url": "https://www.sebrae-sc.com.br/blog/como-fazer-o-fluxo-de-caixa",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-price",
+    "title": "Como calcular o preço de um produto",
+    "provider": "Sebrae SC",
+    "axis": "Finanças e precificação",
+    "language": "Português",
+    "resourceType": "Guia prático",
+    "note": "Discussão de custos, preço e mercado para preparar sua análise de precificação. Confira premissas e tributos com o profissional responsável.",
+    "tags": "preco precificacao margem custo markup lucro valor financeiro",
+    "url": "https://www.sebrae-sc.com.br/blog/como-calcular-o-preco-de-um-produto",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-scielo-sources",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Guia de fontes de informação para startups",
+    "provider": "Silva, Coletta e Larocca · RDBCI / SciELO · 2019",
+    "axis": "Gestão da inovação e ecossistemas",
+    "language": "Português",
+    "resourceType": "Artigo acadêmico",
+    "note": "Estudo sobre demandas de informação de startups e fontes científicas e tecnológicas. O artigo é aberto; algumas bases discutidas nele exigem acesso institucional.",
+    "tags": "pesquisa literatura academia referencias fontes informacao universidade tecnologia startup",
+    "url": "https://www.scielo.br/j/rdbci/a/FvYhsGmKxjwF5CjHCYnfwmB/?lang=pt",
+    "verifiedAt": "2026-11-14"
   }
 ];
   const catalog = () => [...internalCatalog(), ...externalCatalog];
@@ -228,7 +382,7 @@
   }
   function searchCatalog(items, query, axis, origin = '') {
     const wanted = terms(query);
-    return items.filter(item => (!axis || item.axis === axis) && (!origin || (origin === 'external' ? item.kind === 'external' : item.kind !== 'external')) && wanted.every(term => norm([item.title, item.axis, item.note, item.collection, item.provider, item.tags].join(' ')).includes(term)));
+    return items.filter(item => (!axis || item.axis === axis) && (!origin || (origin === 'external' ? item.kind === 'external' : item.kind !== 'external')) && wanted.every(term => norm([item.title, item.axis, item.note, item.collection, item.provider, item.tags, item.resourceType].join(' ')).includes(term)));
   }
   const stop = new Set(['como','para','com','qual','quais','quero','preciso','devo','minha','meu','uma','uns','dos','das','sobre','essa','esse','fazer','projeto','startup','posso']);
   function references(question) {
@@ -536,7 +690,155 @@
   const style=document.createElement('style');style.textContent=`.mp-intro{display:flex;justify-content:space-between;gap:24px;align-items:start}.mp-intro>div:first-child{max-width:760px}.mp-intro p{margin:8px 0}.mp-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.mp-intro .mp-toolbar{min-width:180px}.mp-notice{min-height:24px;color:#006b63;font-weight:600}.mp-cyclelist{display:flex;gap:10px;overflow:auto;margin:16px 0;padding:2px 2px 10px}.mp-cycle{background:white;border:1px solid #c8ddd6;border-radius:12px;padding:13px 16px;min-width:220px;text-align:left;color:#153e44;cursor:pointer}.mp-cycle strong,.mp-cycle span{display:block}.mp-cycle span{font-size:12px;margin-top:6px}.mp-cycle.selected{border:2px solid #18786e;background:#f0faf5}.mp-workspace{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(260px,1fr);gap:20px;align-items:start}.mp-workspace aside{display:grid;gap:16px}.mp-sessionhead{display:flex;justify-content:space-between;gap:14px;align-items:center}.mp-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;border-bottom:1px solid #d9e6e1;padding-bottom:14px;margin:16px 0 24px}.mp-tabs button{background:#f4f8f6;border:0;padding:12px 7px;border-radius:8px;font:inherit;font-size:12px;color:#355c60;cursor:pointer}.mp-tabs button[aria-current=step]{background:#146e65;color:white;font-weight:700}.mp-field{margin-bottom:18px}.mp-field label,.mp-action label{display:block;font-weight:600;color:#214e53;margin-bottom:7px;font-size:13px}.mp-field .field,.mp-field .select,.mp-action .field,.mp-action .select{width:100%;box-sizing:border-box}.mp-field textarea,.mp-action textarea{resize:vertical;min-height:76px;line-height:1.6}.mp-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px}.mp-preparation{border-left:4px solid #1c8973;background:#edf8f2;padding:12px;border-radius:8px}.mp-preparation p{font-size:12px;margin:5px 0 0}.mp-action{border:1px solid #d5e3dc;padding:18px;border-radius:12px;margin:16px 0}.mp-action .field,.mp-action .select{margin-bottom:14px}.mp-alert{color:#865513}.mp-review{padding:12px 0;border-bottom:1px solid #d5e3dc}.mp-bottom{margin-top:22px;justify-content:space-between}.mp-workspace li{margin-bottom:10px}.mp-workspace p{overflow-wrap:anywhere}.mp-workspace a{overflow-wrap:anywhere}.mp-workspace small{font-size:12px}#mp-form h3{margin-top:0}@media(max-width:920px){.mp-intro{display:block}.mp-intro .mp-toolbar{margin-top:16px}.mp-workspace{grid-template-columns:1fr}}@media(max-width:560px){.mp-columns{grid-template-columns:1fr;gap:0}.mp-tabs{grid-template-columns:1fr 1fr}.mp-sessionhead{align-items:start;flex-direction:column}.mp-action{padding:12px}}`;
   document.head.appendChild(style);
   window.PTPMentoria={readiness,gaps,requirements,cleanRecord,decode,makeActions,completeAction,review,reportHtml,importData,create,snapshot:()=>JSON.parse(JSON.stringify(db)),current,save};
-  if(typeof navBtn==='function'){const previousNav=navBtn;navBtn=function(viewId,icon,label,count){return previousNav(viewId,icon,viewId==='mentor'?'Mentoria NEXT · ciclos de desenvolvimento':label,count);};}
+  if(typeof navBtn==='function'){const previousNav=navBtn;navBtn=function(viewId,icon,label,count){return previousNav(viewId,icon,viewId==='mentor'?'Mentoria NEXT':label,count);};}
   if(typeof demoMentor==='function')demoMentor=view;
   redraw();
+})();
+
+/* Mentoria NEXT: entrada simples, orientação editorial e referências verificáveis.
+ * Não simula IA nem consulta conteúdos externos sem ação explícita do usuário.
+ */
+(function(){
+  'use strict';
+  const topics=[{"id": "discovery", "label": "Clientes e problema", "focus": "Mercado e clientes", "keywords": ["entrevista", "cliente", "publico alvo", "dor", "problema", "descoberta", "customer discovery"], "search": "descoberta de clientes validação de problemas customer discovery", "questions": ["Como descobrir se o problema do cliente é real?", "Que perguntas devo fazer em uma entrevista com clientes?", "Como escolher meu primeiro público-alvo?", "Como diferenciar interesse de intenção real de compra?"], "answer": "Comece pelo comportamento atual do cliente: quando o problema aconteceu, como ele resolveu e qual foi a consequência. Opiniões sobre uma ideia são um indício; decisões, uso e compromissos concretos ajudam a investigar a demanda.", "steps": ["Escolha um público específico e convide pessoas que vivenciam o problema, incluindo quem não gostou da proposta.", "Pergunte pela última ocorrência: o que aconteceu, o que foi tentado e quanto tempo ou recurso foi gasto. Registre fatos e interpretações separadamente.", "Compare padrões e divergências; proponha um próximo compromisso observável, como experimentar uma tarefa ou discutir um piloto."], "example": "Em vez de “você usaria meu aplicativo?”, experimente “conte a última vez em que precisou resolver isso e mostre o caminho que seguiu”.", "caution": "Uma pequena rodada de entrevistas ajuda a aprender; não estima sozinha o tamanho do mercado nem prova disposição de pagar.", "next": "Escreva três perguntas sobre fatos passados e teste o roteiro em uma conversa.", "followups": ["Como transformar entrevistas em hipóteses para um MVP?", "Como definir uma proposta de valor para esse público?"], "refs": ["ext-customer", "ext-value", "ext-mit-course"]}, {"id": "mvp", "label": "MVP e validação", "focus": "Produto e MVP", "keywords": ["mvp", "pmv", "prototipo", "produto minimo", "validar", "validacao", "hipotese", "experimento"], "search": "produto mínimo viável experimentação lean startup validação", "questions": ["Como criar um MVP sem desenvolver o produto inteiro?", "Como escolher a hipótese mais arriscada para testar?", "Que critério define se um experimento funcionou?", "Quando devo ajustar a ideia ou mudar de direção?"], "answer": "O MVP deve produzir aprendizado sobre uma hipótese importante com o menor escopo que permita um teste válido. Primeiro escolha o que precisa descobrir; depois defina protótipo, simulação ou operação manual e como observar o resultado.", "steps": ["Declare a hipótese com público, comportamento e benefício esperado. Escolha a incerteza que mais ameaça o negócio.", "Defina tarefa, participantes, métrica e limiar de decisão antes de executar. Registre a situação atual para comparação.", "Observe o uso, inclua as falhas e compare com o critério. Decida entre repetir, ajustar ou avançar, registrando limites."], "example": "Para testar uma recomendação de serviços, faça a seleção manualmente e acompanhe se o usuário realiza a próxima ação. Automatize somente depois de entender o que gera valor.", "caution": "Cadastro, elogio e clique isolado não demonstram valor recorrente. O teste deve ser compatível com a decisão pretendida.", "next": "Complete: acreditamos que [público] fará [ação]; testaremos por [método] e decidiremos usando [métrica e critério].", "followups": ["Que métricas de tração devo acompanhar depois do MVP?", "Como entrevistar quem desistiu do protótipo?"], "refs": ["ext-test", "ext-mvp", "ext-uff-study", "ext-ufg-case"]}, {"id": "model", "label": "Modelo de negócio", "focus": "Negócios / Canvas", "keywords": ["canvas", "modelo de negocio", "proposta de valor", "monetizacao", "assinatura", "marketplace"], "search": "business model canvas proposta de valor modelo de negócios", "questions": ["Como montar um Canvas que ajude a tomar decisões?", "Como definir minha proposta de valor?", "Qual modelo de receita faz sentido para minha solução?", "Como validar um marketplace com dois públicos diferentes?"], "answer": "Use o modelo de negócio para conectar quem recebe valor, quem paga e o que é necessário para entregar. Trate cada bloco do Canvas como hipótese e escolha quais relações precisam ser verificadas primeiro.", "steps": ["Descreva um segmento prioritário e sua tarefa. Diferencie usuário, comprador e decisor quando forem pessoas distintas.", "Relacione proposta de valor, canal, receita e custo de entrega. Compare alternativas como assinatura, projeto ou transação.", "Teste a hipótese mais incerta com clientes e parceiros. Atualize o modelo com evidências e datas."], "example": "Em um marketplace, entrevistar compradores não valida a oferta. Teste também se os fornecedores participam nas condições propostas e se uma transação acontece.", "caution": "Um Canvas preenchido não valida o negócio. Não confunda intenção de receita com vendas realizadas.", "next": "Marque no seu Canvas três hipóteses sem evidência e escolha uma para testar nesta semana.", "followups": ["Como definir o preço da primeira oferta?", "Como validar o interesse real de clientes?"], "refs": ["ext-canvas", "ext-value", "ext-yc-models"]}, {"id": "pricing", "label": "Preço e caixa", "focus": "Negócios / Canvas", "keywords": ["preco", "precificacao", "margem", "custo", "caixa", "runway", "burn rate", "financeiro", "markup"], "search": "precificação margem de contribuição fluxo de caixa startups", "questions": ["Como definir o preço sem olhar só para o concorrente?", "Qual a diferença entre margem e markup?", "Como saber por quanto tempo meu caixa sustenta a operação?", "Estou vendendo, mas por que o dinheiro não sobra?"], "answer": "Cruze custo de entrega, valor percebido, alternativas do cliente e condições de pagamento. Separe resultado econômico de dinheiro disponível: uma venda a prazo pode gerar receita antes de gerar entrada no caixa.", "steps": ["Liste custos e despesas variáveis por venda, custos fixos e prazos de recebimento e pagamento.", "Estime a contribuição de cada venda e compare cenários de preço e volume. Confira os tributos e as premissas aplicáveis com o responsável financeiro.", "Projete entradas e saídas por período; teste a oferta com clientes e revise o efeito de descontos e inadimplência."], "example": "Exemplo simplificado: vender por R$ 100 com R$ 60 de custos e despesas variáveis deixa R$ 40 para cobrir custos fixos e resultado. Isso não significa R$ 40 de lucro líquido.", "caution": "Runway estimado = caixa disponível ÷ consumo líquido por período, quando esse consumo é positivo e razoavelmente estável. Variações de receita e despesas exigem cenários.", "next": "Monte uma previsão curta de caixa com saldo inicial, recebimentos previstos, pagamentos e saldo final.", "followups": ["Como validar se o cliente aceita meu preço?", "Que métricas mostram crescimento sustentável?"], "refs": ["ext-price", "ext-cash", "ext-yc-models"]}, {"id": "sales", "label": "Vendas e funil", "focus": "Mercado e clientes", "keywords": ["venda", "funil", "conversao", "prospeccao", "comercial", "lead", "marketing", "canal", "b2b"], "search": "vendas B2B funil comercial conversão aquisição clientes", "questions": ["Como conquistar os primeiros clientes B2B?", "Como montar um funil de vendas simples?", "Como calcular o funil de trás para frente?", "Em qual etapa estamos perdendo oportunidades?"], "answer": "Um funil útil descreve decisões observáveis do comprador. Defina entrada, saída e responsável de cada etapa; depois observe onde oportunidades ficam paradas e por quê.", "steps": ["Escolha um perfil de cliente e uma oferta. Use poucas etapas, como contato, conversa qualificada, proposta e venda.", "Registre volume, conversão e tempo em cada passagem, mantendo a mesma janela e acompanhando as mesmas oportunidades.", "Trabalhe um gargalo por vez. Use as taxas históricas para estimar o esforço necessário e revise conforme novos dados chegarem."], "example": "Funil invertido ilustrativo: para 10 vendas, com 25% das propostas convertidas, seriam 40 propostas. Se metade das conversas qualificadas gera proposta, seriam 80 conversas. As taxas são hipóteses do exemplo, não benchmarks.", "caution": "Não divida vendas deste mês por leads deste mês se o ciclo comercial levar vários meses. Isso mistura grupos diferentes.", "next": "Registre as próximas oportunidades com etapa, data, próximo compromisso e motivo de perda.", "followups": ["Como entrevistar clientes que não compraram?", "Que métricas de retenção complementam o funil?"], "refs": ["ext-sales", "ext-customer", "ext-yc-growth"]}, {"id": "traction", "label": "Tração e retenção", "focus": "Mercado e clientes", "keywords": ["tracao", "retencao", "churn", "coorte", "cac", "ltv", "recorrencia", "metricas", "crescimento", "escalar"], "search": "startup retenção coortes métricas crescimento customer retention", "questions": ["Quais métricas de tração realmente importam?", "Como medir retenção sem me enganar com cadastros?", "Como calcular CAC e comparar com o retorno dos clientes?", "Quando faz sentido investir para crescer?"], "answer": "Tração depende de comportamento que representa valor para o negócio: uso relevante, compra, renovação ou outro compromisso verificável. Observe aquisição, ativação, retenção e receita juntos, separando grupos de entrada e canais.", "steps": ["Defina a ação que demonstra valor e a frequência esperada de uso. Uma solução mensal não deve ser avaliada como um aplicativo diário.", "Agrupe clientes pela entrada e acompanhe quantos repetem a ação em períodos comparáveis. Registre cancelamentos e seus motivos.", "Compare o custo de adquirir e atender com a contribuição observada. Só amplie o investimento após entender retenção, capacidade de entrega e caixa."], "example": "Se 20 dos 50 clientes de uma mesma coorte voltaram a usar a função principal no período definido, a retenção observada dessa coorte é 40%. O resultado precisa ser comparado com o ciclo de uso e outros grupos.", "caution": "Não use uma razão universal de LTV/CAC como prova de viabilidade. Estimativas de LTV ficam frágeis quando há pouco histórico ou retenção instável.", "next": "Monte uma tabela com mês de entrada, número inicial de clientes e clientes ativos nos períodos seguintes.", "followups": ["Como investigar o motivo de abandono dos clientes?", "Como projetar o caixa antes de escalar?"], "refs": ["ext-yc-growth", "ext-yc-models", "ext-lean", "ext-cash"]}, {"id": "pitch", "label": "Pitch e apresentação", "focus": "Pitch Deck", "keywords": ["pitch", "apresentacao", "deck", "investidor", "captacao"], "search": "startup pitch apresentação investidores evidências", "questions": ["Como estruturar um pitch claro em poucos minutos?", "O que não pode faltar no meu pitch deck?", "Como apresentar resultados quando ainda não tenho receita?", "Como adaptar o pitch para parceiro, cliente ou investidor?"], "answer": "Comece pela decisão que deseja provocar na audiência. Organize uma narrativa curta que ligue problema, evidências, proposta, modelo de negócio e pedido; a apresentação deve permitir entender o valor e a próxima conversa.", "steps": ["Defina audiência, tempo e pedido concreto: reunião, piloto, compra ou análise de investimento.", "Mostre o problema e as evidências disponíveis, a solução, o público, a forma de receita e a capacidade da equipe.", "Separe resultados medidos de projeções, explique as premissas e ensaie. Peça a alguém que repita a proposta e o pedido."], "example": "Sem receita, apresente o que foi observado em entrevistas e testes, inclusive limites. “Realizamos um teste com participantes do público” é mais preciso que anunciar tração sem uso ou compra.", "caution": "Não transforme estimativas de mercado em receita provável nem liste parceiros sem explicar o vínculo real.", "next": "Escreva uma frase para problema, solução, evidência e pedido. Corte o que não ajuda a audiência a decidir.", "followups": ["Que métricas posso levar para investidores?", "Como preparar um piloto com uma empresa?"], "refs": ["ext-pitch", "ext-sales", "ext-mit-course"]}, {"id": "funding", "label": "Fomento e recursos", "focus": "Fomento e capital", "keywords": ["fomento", "edital", "pipe", "fapesp", "financiamento", "subvencao", "recurso", "capital"], "search": "fomento inovação pesquisa empresa FAPESP PIPE", "questions": ["Como preparar meu projeto para buscar fomento?", "O que verificar antes de me candidatar a um edital?", "Como organizar orçamento e cronograma de pesquisa?", "Como comparar fomento, receita própria e investimento?"], "answer": "Comece pela atividade que precisa financiar, seu estágio e as evidências técnicas e comerciais. Depois compare instrumentos compatíveis: pesquisa, desenvolvimento, operação e expansão podem exigir fontes e condições diferentes.", "steps": ["Defina entregas, equipe, prazo e orçamento, com premissas explícitas. Separe pesquisa de despesas operacionais.", "Leia o instrumento oficial vigente: elegibilidade, itens financiáveis, contrapartida, prazos e obrigações.", "Prepare documentação e evidências, compare custo e compromissos de cada alternativa e confira condições antes da candidatura."], "example": "Uma dúvida técnica que exige pesquisa deve ser descrita como pergunta investigável, método e resultado esperado; comprar um equipamento por si só não descreve um projeto de pesquisa.", "caution": "A indicação de FAPESP ou Embrapii não significa edital aberto, enquadramento ou aprovação. Confirme regras e prazos diretamente na fonte oficial.", "next": "Faça uma página com problema, hipótese técnica, método, entregas, equipe e estimativa de recursos.", "followups": ["Como transformar pesquisa em um piloto de inovação aberta?", "Como comunicar evidências no pitch?"], "refs": ["ext-pipe", "ext-embrapii", "ext-cash"]}, {"id": "open", "label": "Pilotos e parcerias", "focus": "Inovação aberta empresarial", "keywords": ["inovacao aberta", "piloto", "poc", "prova de conceito", "parceria", "corporacao", "desafio empresarial"], "search": "inovação aberta prova de conceito piloto parceria empresa universidade", "questions": ["Como propor um piloto para uma empresa?", "Como transformar uma demanda empresarial em desafio de inovação?", "Quais critérios definem sucesso em uma prova de conceito?", "Como preparar uma parceria entre empresa e universidade?"], "answer": "Um piloto deve reduzir uma incerteza relevante para quem decide. Alinhe problema, resultado observável, escopo e condições de execução antes de prometer escala ou contratação.", "steps": ["Identifique patrocinador, usuário e decisor. Registre o processo atual e a consequência do problema.", "Combine hipótese, escopo, acesso a dados e recursos, responsáveis, prazo e critério de sucesso.", "Preveja como os resultados serão avaliados e quem decide a etapa seguinte. Trate uso de dados e propriedade intelectual com as partes responsáveis."], "example": "Para reduzir retrabalho, compare o indicador no processo atual com o piloto em condições descritas. Defina antes o que levará a repetir, ajustar ou discutir contratação.", "caution": "Um piloto bem-sucedido não garante contrato. Acesso a dados, autorizações e obrigações precisam ser combinados antes da execução.", "next": "Prepare uma proposta de uma página com desafio, hipótese, entregas, condições e decisão ao final.", "followups": ["Como definir o MVP de um piloto?", "Como proteger a tecnologia antes de uma parceria?"], "refs": ["ext-embrapii", "ext-test", "ext-mit-course"]}, {"id": "agro", "label": "AgTech e campo", "focus": "Produto e MVP", "keywords": ["agtech", "agro", "agricultura", "produtor rural", "safra", "campo", "agronomico"], "search": "agricultura digital adoção tecnologia produtor rural validação campo", "questions": ["Como validar uma AgTech com produtores rurais?", "Como planejar um piloto em campo considerando a safra?", "Como identificar quem usa, decide e paga por uma AgTech?", "Como demonstrar valor sem prometer produtividade não comprovada?"], "answer": "Na AgTech, a validação precisa considerar sistema produtivo, calendário, infraestrutura e quem decide a compra. Uma tecnologia útil em um contexto pode exigir adaptação em outra cultura, região ou escala de operação.", "steps": ["Caracterize a operação e o problema: cultura ou atividade, porte, rotina, conectividade e alternativas já usadas.", "Planeje um teste compatível com o calendário e as condições locais. Combine indicador, comparação e acompanhamento técnico adequado.", "Registre custo de adoção, uso e resultados, incluindo clima e outras condições que possam explicá-los. Investigue a decisão de compra separadamente."], "example": "Antes de desenvolver um painel de dados, acompanhe como o produtor toma a decisão e se a informação chega a tempo de mudar uma ação concreta.", "caution": "Uma demonstração isolada não comprova ganho de produtividade. Ensaios técnicos e alegações agronômicas exigem desenho e avaliação especializados.", "next": "Converse com um usuário e um decisor da mesma operação e compare o que cada um considera valor.", "followups": ["Como desenhar um experimento para uma AgTech?", "Como estruturar uma proposta de piloto empresarial?"], "refs": ["ext-agro", "ext-customer", "ext-test"]}, {"id": "impact", "label": "Impacto e ESG", "focus": "Impacto", "keywords": ["impacto", "esg", "ods", "sustentabilidade", "social", "ambiental", "carbono"], "search": "avaliação impacto indicadores linha de base sustentabilidade ODS", "questions": ["Como medir impacto sem confundir atividade com resultado?", "Quais indicadores ESG fazem sentido para meu projeto?", "Como construir uma linha de base?", "Como relacionar uma iniciativa aos ODS com evidências?"], "answer": "Defina qual mudança pretende observar, para quem e em qual período. Separe o que foi feito, o resultado observado e o que pode ser atribuído à iniciativa; são afirmações diferentes.", "steps": ["Desenhe a relação esperada entre atividade e mudança. Identifique beneficiários, possíveis efeitos negativos e fatores externos.", "Escolha poucos indicadores com unidade, fonte, linha de base, frequência e responsável pela coleta.", "Compare resultados com a referência e explique limites. Use os ODS para organizar o tema, sem tratá-los como certificação."], "example": "Número de oficinas é uma entrega. Mudança na capacidade de executar uma tarefa pode ser um resultado. Atribuir essa mudança apenas às oficinas exige avaliação adicional.", "caution": "Associar um projeto a um ODS não comprova impacto. Alegações ambientais e de carbono precisam de evidências e métodos apropriados.", "next": "Escolha um resultado e complete: indicador, valor inicial, fonte, periodicidade e mudança esperada.", "followups": ["Como testar a hipótese de impacto do meu projeto?", "Como apresentar evidências de impacto em um pitch?"], "refs": ["ext-ods", "ext-test", "ext-ufpb-review"]}, {"id": "ip", "label": "Tecnologia e proteção", "focus": "Inovação aberta empresarial", "keywords": ["patente", "propriedade intelectual", "marca", "protecao", "licenciamento", "nit", "invencao"], "search": "propriedade intelectual patente marca transferência tecnologia NIT", "questions": ["Como começar a avaliar a proteção da minha tecnologia?", "Qual a diferença entre proteger marca e invenção?", "O que preparar para conversar com um NIT?", "Como discutir licenciamento com um parceiro?"], "answer": "Comece identificando o ativo: marca, invenção, software, conhecimento ou outro resultado. Organize autoria, titularidade, desenvolvimento e divulgações já realizadas para discutir as alternativas com o responsável técnico ou NIT.", "steps": ["Descreva o que foi criado, por quem, em que projeto e com quais recursos ou vínculos.", "Consulte os guias oficiais pertinentes e faça um levantamento inicial de soluções semelhantes.", "Antes de divulgar detalhes ou negociar, peça avaliação sobre proteção, titularidade e condições de uso. Registre o que precisa ser decidido."], "example": "O nome comercial e uma solução técnica são ativos diferentes. Proteger um deles não significa proteger automaticamente o outro.", "caution": "Este roteiro não determina patenteabilidade, titularidade ou liberdade de operação. Esses pontos exigem análise especializada e regras vigentes.", "next": "Prepare um resumo não confidencial do ativo e uma lista de envolvidos e divulgações anteriores.", "followups": ["Como estruturar uma parceria com universidade?", "Como apresentar tecnologia sem revelar detalhes confidenciais?"], "refs": ["ext-patentes", "ext-marcas", "ext-embrapii"]}, {"id": "research", "label": "Pesquisa e literatura", "focus": "Problema e evidências", "keywords": ["literatura", "artigo", "academico", "cientifico", "pesquisa", "revisao", "referencia", "bibliografia", "universidade"], "search": "lean startup revisão literatura evidências empreendedorismo inovação", "questions": ["Como encontrar artigos relevantes para meu desafio?", "Como avaliar a qualidade de uma referência acadêmica?", "Como transformar uma revisão de literatura em decisão prática?", "Como comparar autores que chegam a conclusões diferentes?"], "answer": "Transforme a dúvida em uma pergunta delimitada e procure termos equivalentes em português e inglês. Compare o tipo de evidência, o contexto estudado e os limites antes de aplicar uma conclusão ao seu negócio.", "steps": ["Defina problema, contexto e resultado de interesse. Prepare combinações de palavras e sinônimos.", "Use referências acadêmicas e bases de busca; registre título, autores, ano, link ou DOI, método e resultado relevante.", "Compare amostras, condições e limitações. Separe revisões, estudos empíricos, relatos de caso e guias de prática."], "example": "Para investigar MVP, compare uma revisão de conceitos com uma pesquisa empírica e um estudo de caso. Eles respondem perguntas diferentes e não têm o mesmo alcance.", "caution": "Título, resumo e número de citações não bastam para avaliar qualidade. Leia o método e não trate correlação como causalidade.", "next": "Selecione três referências e anote o que cada uma permite afirmar — e o que não permite.", "followups": ["Como transformar uma evidência em hipótese de MVP?", "Como medir resultados de um experimento?"], "refs": ["ext-scielo-sources", "ext-ufpb-review", "ext-uff-study", "ext-ufg-case", "ext-mit-method"]}, {"id": "team", "label": "Equipe e execução", "focus": "Problema e evidências", "keywords": ["equipe", "socio", "execucao", "prioridade", "responsavel", "gestao", "planejamento", "competencia"], "search": "empreendedorismo equipe fundadora execução prioridades novos negócios", "questions": ["Como escolher a prioridade da startup nesta semana?", "Como dividir responsabilidades em uma equipe pequena?", "Como identificar competências que faltam na equipe?", "Como organizar uma reunião de acompanhamento objetiva?"], "answer": "Organize a execução em torno da próxima decisão importante. Escolha poucas entregas observáveis e esclareça quem realiza, quem decide e quais dependências precisam ser resolvidas.", "steps": ["Liste os bloqueios e selecione o que mais impede aprendizado, entrega ao cliente ou continuidade da operação.", "Defina uma entrega verificável, responsável, prazo e recursos necessários. Confirme capacidade e dependências com a equipe.", "Na revisão, compare combinado e realizado, registre impedimentos e decida o próximo compromisso."], "example": "Troque “melhorar as vendas” por “registrar as objeções de uma rodada de conversas com o público prioritário e decidir o ajuste da oferta”.", "caution": "Ter muitas tarefas concluídas não garante avanço. Verifique se as entregas reduziram uma incerteza ou melhoraram um resultado relevante.", "next": "Escolha uma entrega para a próxima revisão e escreva responsável, prazo e evidência de conclusão.", "followups": ["Como priorizar as hipóteses de um MVP?", "Como definir métricas para acompanhar a execução?"], "refs": ["ext-mit-course", "ext-mit-method", "ext-test"]}];
+  const api=window.PTPNext, workspace=window.PTPMentoria, advancedView=demoMentor;
+  const norm=api.normalize, esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const KEY='ptp.mentoria.quick.v1';
+  const stages=['Ainda explorando','Já estou testando','Já tenho clientes'];
+  let mode='quick',question='',stage=stages[0],topicId='auto',selected=null,history=[],notice='',blocked=false,promptFilter='';
+  const uid=()=>globalThis.crypto?.randomUUID?.()||'q-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
+  function cleanHistory(raw){
+    const data=JSON.parse(raw);if(data.version!==1||!Array.isArray(data.items)||data.items.length>20)throw Error('Histórico inválido');
+    return data.items.filter(x=>x&&typeof x.question==='string'&&x.question.length>=10&&x.question.length<=2500&&typeof x.id==='string'&&/^[\w-]{1,100}$/.test(x.id)&&Number.isFinite(Date.parse(x.date))).map(x=>({id:x.id,question:x.question,topic:topics.some(t=>t.id===x.topic)?x.topic:'auto',stage:stages.includes(x.stage)?x.stage:stages[0],date:x.date}));
+  }
+  try{const raw=localStorage.getItem(KEY);if(raw)history=cleanHistory(raw);}catch{blocked=true;notice='O histórico não pôde ser recuperado. Os dados anteriores foram preservados; a orientação continua disponível nesta sessão.';}
+  function remember(record){
+    history=[record,...history.filter(x=>x.id!==record.id)].slice(0,20);
+    if(blocked)return false;
+    try{const raw=localStorage.getItem(KEY),remote=raw?cleanHistory(raw):[];const combined=new Map([...remote,...history].map(x=>[x.id,x]));history=[...combined.values()].sort((a,b)=>Date.parse(b.date)-Date.parse(a.date)).slice(0,20);localStorage.setItem(KEY,JSON.stringify({version:1,items:history}));return true;}catch{blocked=true;return false;}
+  }
+  const stop=new Set('como para qual quais quero preciso devo minha meu uma uns dos das sobre essa esse fazer projeto startup posso que quem mais tem sao nao tenho esta isso sera negocio ajuda gostaria saber melhor novo'.split(' '));
+  function words(value){return norm(value).split(' ').filter(x=>x.length>2&&!stop.has(x));}
+  function detect(value,explicit='auto'){
+    if(explicit!=='auto')return topics.find(t=>t.id===explicit)||null;
+    const s=' '+norm(value)+' ';
+    const ranked=topics.map(t=>({t,score:t.keywords.reduce((n,k)=>n+(s.includes(' '+norm(k)+' ')?(k.includes(' ')?5:3):norm(k).length>4&&words(value).some(w=>w.startsWith(norm(k))||norm(k).startsWith(w))?1:0),0)})).sort((a,b)=>b.score-a.score);
+    return ranked[0]?.score>0?ranked[0].t:null;
+  }
+  function sourceType(item){return item.kind!=='external'?'Acervo NEXT':item.resourceType||'Método ou guia especializado';}
+  function rankSources(value,topic,kind='all'){
+    const q=words(value), related=topic?words(topic.label+' '+topic.search):[];
+    const scored=api.catalog().map(item=>{
+      const title=norm(item.title),body=norm([item.axis,item.tags,item.note,item.resourceType,item.provider].join(' '));
+      const tokenMatch=(hay,w)=>hay.split(' ').some(x=>x===w||(w.length>=5&&x.startsWith(w.slice(0,-1))));
+      const direct=q.reduce((sum,w)=>sum+(tokenMatch(title,w)?4:tokenMatch(body,w)?1:0),0);
+      const thematic=related.reduce((sum,w)=>sum+(tokenMatch(title,w)?2:tokenMatch(body,w)?1:0),0);
+      const linked=topic?.refs.includes(item.id);
+      const score=direct*3+(linked?40:0)+Math.min(thematic,8);
+      return {item,score,reason:linked?'Leitura selecionada para '+topic.label.toLowerCase():direct?'Correspondência com os termos da sua busca':'Leitura relacionada ao tema'};
+    }).filter(x=>api.materialUrl(x.item)&&(x.score>0)&&(kind==='all'||kind==='academic'&&x.item.resourceType==='Artigo acadêmico'||kind==='internal'&&x.item.kind!=='external'||kind==='external'&&x.item.kind==='external'));
+    scored.sort((a,b)=>b.score-a.score||String(a.item.id).localeCompare(String(b.item.id)));
+    return scored.slice(0,8);
+  }
+  function searchLinks(value){
+    const q=String(value||'').trim().slice(0,220),enc=encodeURIComponent(q);
+    if(!q)return [];
+    return [
+      {name:'Google Acadêmico',url:'https://scholar.google.com/scholar?hl=pt-BR&q='+enc},
+      {name:'Artigos no SciELO',url:'https://www.google.com/search?q='+encodeURIComponent('site:scielo.br '+q)},
+      {name:'Universidades e repositórios',url:'https://www.google.com/search?q='+encodeURIComponent('(site:usp.br OR site:unicamp.br OR site:ufsc.br OR site:mit.edu) '+q)},
+      {name:'Portais especializados',url:'https://www.google.com/search?q='+encodeURIComponent('(site:sebrae.com.br OR site:sebrae-sc.com.br OR site:ycombinator.com OR site:strategyzer.com) '+q)}
+    ];
+  }
+  const linkMarkup=(label,url)=>`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} ↗</a>`;
+  function sourceCards(rows){return rows.length?rows.map(({item,reason})=>`<article class="mq-source"><span class="mq-tag">${esc(sourceType(item))}</span><h4>${linkMarkup(item.title,api.materialUrl(item))}</h4><p>${esc(item.note||'Material do acervo para aprofundar o tema.')}</p><small>${esc(item.provider||'Acervo NEXT')} · ${esc(item.language||'Idioma não catalogado')}</small><small>${esc(reason)}</small></article>`).join(''):'<p>Nenhuma referência específica encontrada na curadoria. Tente outro termo ou use a pesquisa externa abaixo.</p>';}
+  function referenceMarkup(record,topic){
+    const query=topic?.search||words(record.question).join(' '),rows=rankSources(record.question,topic);
+    return `<section class="mq-references"><h3>Referências para aprofundar</h3><p class="hint">Seleção por tema e palavras-chave. Leia o material antes de aplicar suas conclusões; os links não significam que a resposta foi gerada a partir do texto completo.</p><div class="mq-source-grid">${sourceCards(rows.slice(0,3))}</div><details><summary>Buscar mais materiais e literatura</summary><div class="mq-search-row"><div><label for="mq-ref-query">Termos para pesquisar</label><input class="field" id="mq-ref-query" maxlength="220" value="${esc(query)}"></div><div><label for="mq-ref-kind">Tipo de referência</label><select id="mq-ref-kind" class="select"><option value="all">Todas as fontes</option><option value="academic">Artigos acadêmicos</option><option value="internal">Acervo NEXT</option><option value="external">Fontes externas</option></select></div><button class="btn outline" type="button" data-mq="search">Buscar na curadoria</button></div><div id="mq-search-results" class="mq-source-grid"></div><h4>Continuar a pesquisa fora da plataforma</h4><p class="hint">Estes atalhos abrem buscas externas com os termos acima. Não são artigos já encontrados nem pesquisa automática. Evite informações confidenciais nos termos de busca.</p><div id="mq-search-links" class="mq-links">${searchLinks(query).map(x=>linkMarkup(x.name,x.url)).join('')}</div><p class="hint">Na leitura, confira autoria, ano, método, amostra e limitações. A disponibilidade e as condições de acesso são definidas por cada fonte.</p></details></section>`;
+  }
+  function angle(topic,q){
+    const s=norm(q);
+    if(topic.id==='pricing'&&/markup|margem/.test(s))return 'Markup é um acréscimo sobre o custo; margem usa o preço como base. Exemplo simplificado, sem outras despesas: custo de R$ 60 e preço de R$ 100 representam markup de 66,7% e margem bruta de 40%. A contribuição exige considerar também as demais despesas variáveis.';
+    if(topic.id==='pricing'&&/caixa|runway|dinheiro/.test(s))return 'Monte uma projeção de caixa por período. Separe saldo disponível, entradas e saídas e observe o menor saldo projetado. Vendas ainda não recebidas não pagam as contas que vencem agora.';
+    if(topic.id==='sales'&&/invertido|tras para frente/.test(s))return 'Comece pela meta de vendas e divida pela taxa de conversão de cada etapa, voltando até a entrada do funil. Use taxas observadas no seu negócio e arredonde os volumes necessários para cima; sem histórico, apresente cenários, não previsões certas.';
+    if(topic.id==='traction'&&/cac/.test(s))return 'Defina quais gastos entram na aquisição e divida-os pelos novos clientes adquiridos na janela correspondente. Considere a defasagem do ciclo de venda e compare canais e coortes. Explique se o cálculo inclui equipe e ferramentas para não comparar bases diferentes.';
+    if(topic.id==='discovery'&&/entrevista|perguntas/.test(s))return 'Use perguntas abertas sobre situações concretas: “quando isso aconteceu pela última vez?”, “como você resolveu?”, “o que tentou antes?” e “qual foi a consequência?”. Peça exemplos, evite defender a solução e registre também o que contraria sua hipótese.';
+    if(topic.id==='model'&&/marketplace/.test(s))return 'Teste os dois lados do marketplace e a interação entre eles. Verifique a oferta disponível, a demanda e se a transação gera valor suficiente para ambos; cadastros separados não demonstram que o encontro acontece.';
+    if(topic.id==='pitch'&&/sem receita|nao tenho receita/.test(s))return 'Apresente o estágio com transparência e mostre o aprendizado que já existe: problema observado, teste realizado, comportamento e próximos riscos. Evidências de aprendizagem ajudam a explicar a proposta, mas não devem ser chamadas de receita ou tração comercial.';
+    return topic.answer;
+  }
+  function nextFor(topic,q){
+    const s=norm(q);
+    if(topic.id==='pricing'&&/markup|margem/.test(s))return 'Escolha um produto e registre preço, custo e despesas variáveis. Calcule o acréscimo sobre o custo e a contribuição sobre o preço, explicando o que entrou em cada conta.';
+    if(topic.id==='pricing'&&/preco|precificar|precificacao/.test(s))return 'Compare três cenários de preço, seus custos e o volume necessário. Depois prepare um teste de oferta com o público prioritário.';
+    if(topic.id==='sales'&&/invertido|tras para frente/.test(s))return 'Defina uma meta e registre a conversão observada em cada etapa. Volte da venda até a entrada do funil e monte cenários quando ainda não houver histórico.';
+    if(topic.id==='traction'&&/cac/.test(s))return 'Liste os gastos de aquisição, a janela de análise e os novos clientes atribuídos ao período. Registre as limitações antes de comparar canais.';
+    if(topic.id==='discovery'&&/entrevista|perguntas/.test(s))return 'Prepare três perguntas sobre a última ocorrência do problema e uma pergunta sobre o que contrariaria sua hipótese.';
+    return topic.next;
+  }
+  function answerMarkup(record){
+    const topic=detect(record.question,record.topic);
+    if(!topic)return `<section class="panel mq-answer"><h3>Vamos delimitar sua dúvida</h3><p>Ainda não identifiquei um tema com orientação específica na base. Escolha um tema acima ou explique qual decisão precisa tomar. Assim evitamos apresentar um roteiro genérico como resposta ao seu caso.</p>${referenceMarkup(record,null)}</section>`;
+    const stageNote=record.stage===stages[2]?'Como você já tem clientes, use dados reais da operação como ponto de partida e compare grupos e períodos equivalentes.':record.stage===stages[1]?'Como você já está testando, registre o que aconteceu, o que contrariou a hipótese e o que precisa mudar no próximo teste.':'Como você ainda está explorando, priorize uma dúvida importante e uma ação pequena antes de investir em uma solução completa.';
+    return `<section class="panel mq-answer" id="mq-guidance"><div class="mq-tag">Orientação prática · ${esc(topic.label)}</div><h3>Sua dúvida, um caminho para avançar</h3><p class="mq-question">${esc(record.question)}</p><p class="mq-lead">${esc(angle(topic,record.question))}</p><div class="mq-next"><strong>Comece por aqui</strong><p>${esc(nextFor(topic,record.question))}</p></div><details><summary>Como aplicar, com exemplo</summary><ol>${topic.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><h4>Exemplo</h4><p>${esc(topic.example)}</p><p>${esc(stageNote)}</p><p><strong>Cuidados na interpretação:</strong> ${esc(topic.caution)}</p></details>${referenceMarkup(record,topic)}<h4>Aprofundar a conversa</h4><div class="mq-suggestions">${topic.followups.map(q=>`<button type="button" class="mq-prompt" data-mq-question="${esc(q)}">${esc(q)}</button>`).join('')}</div><div class="mq-actions"><button class="btn outline" type="button" data-mq="plan">Transformar em plano de ação</button><button class="btn outline" type="button" data-mq="export">Baixar orientação</button><button class="btn outline" type="button" onclick="setView('fxMentors')">Encontrar um mentor</button></div><small class="mq-method">Orientação editorial selecionada por tema e estágio, sem IA conversacional ou análise automática das evidências do seu negócio.</small></section>`;
+  }
+  function prompts(filter=''){
+    const q=norm(filter);
+    return topics.flatMap(t=>t.questions.map(question=>({topic:t,question}))).filter(x=>!q||norm(x.question+' '+x.topic.label).includes(q)).map(x=>`<button type="button" class="mq-prompt" data-mq-topic="${x.topic.id}" data-mq-question="${esc(x.question)}"><small>${esc(x.topic.label)}</small>${esc(x.question)}</button>`).join('')||'<p>Nenhuma sugestão encontrada. Você pode escrever sua própria pergunta.</p>';
+  }
+  function quickView(){
+    const picks=['discovery','mvp','sales','traction','pitch','funding'].map(id=>topics.find(t=>t.id===id));
+    return `${pageHead('MENTORIA NEXT · PTP','Qual é sua dúvida de hoje?','Uma pergunta para começar. Orientação prática e referências para avançar.')}<div class="mq-wrap"><section class="panel"><form id="mq-form"><label class="mq-mainlabel" for="mq-question">O que você precisa resolver?</label><textarea id="mq-question" class="field" rows="3" minlength="10" maxlength="2500" required placeholder="Ex.: tenho um protótipo, mas não sei o que medir para validar a ideia.">${esc(question)}</textarea><details class="mq-context"><summary>Personalizar por tema e estágio (opcional)</summary><div class="mq-search-row"><div><label for="mq-topic">Tema</label><select id="mq-topic" class="select"><option value="auto">Identificar pela pergunta</option>${topics.map(t=>`<option value="${t.id}"${topicId===t.id?' selected':''}>${esc(t.label)}</option>`).join('')}</select></div><div><label for="mq-stage">Seu momento</label><select id="mq-stage" class="select">${stages.map(s=>`<option${stage===s?' selected':''}>${s}</option>`).join('')}</select></div></div></details><div class="mq-actions"><button type="submit" class="btn">Receber orientação →</button><button type="button" class="btn outline" data-mq="workspace">Meus planos de ação</button></div><p class="hint">Orientação por temas, sem IA conversacional. Seu histórico fica neste navegador; não informe dados confidenciais.</p><p role="status" aria-live="polite" id="mq-notice">${esc(notice)}</p></form><h3>Precisa de uma ideia para começar?</h3><div class="mq-suggestions">${picks.map(t=>`<button type="button" class="mq-prompt" data-mq-topic="${t.id}" data-mq-question="${esc(t.questions[0])}">${esc(t.questions[0])}</button>`).join('')}</div><details><summary>Ver as 56 sugestões por tema</summary><label for="mq-prompt-filter">Filtrar sugestões</label><input class="field" id="mq-prompt-filter" type="search" maxlength="100" value="${esc(promptFilter)}" placeholder="Ex.: vendas, MVP, pesquisa, preço"><div id="mq-prompts" class="mq-suggestions">${prompts(promptFilter)}</div></details></section><div id="mq-answer" tabindex="-1">${selected?answerMarkup(selected):''}</div><details class="panel"><summary>Consultas recentes neste navegador (${history.length})</summary><div id="mq-history">${history.map(r=>`<button type="button" class="mq-history" data-mq-history="${esc(r.id)}">${esc(r.question)}<small>${esc(new Date(r.date).toLocaleString('pt-BR'))}</small></button>`).join('')||'<p>Suas consultas aparecerão aqui depois da primeira orientação.</p>'}</div></details><div class="mq-links"><button class="btn outline" type="button" onclick="setView('library')">Explorar toda a biblioteca</button><button class="btn outline" type="button" onclick="setView('fxMentors')">Conversar com um mentor</button></div></div>`;
+  }
+  function view(){return mode==='advanced'?`<div class="mq-back"><button type="button" class="btn outline" data-mq="quick">← Voltar às perguntas</button><p>Use o plano quando quiser acompanhar ações, prazos e aprendizados.</p></div>`+advancedView():quickView();}
+  function redraw(){if(typeof state!=='undefined'&&state.view==='mentor'&&typeof render==='function')render();}
+  function say(msg){notice=msg;const node=document.getElementById('mq-notice');if(node)node.textContent=msg;}
+  function readDraft(){question=(document.getElementById('mq-question')?.value??question).trim();topicId=document.getElementById('mq-topic')?.value||topicId;stage=document.getElementById('mq-stage')?.value||stage;}
+  function ask(){
+    readDraft();if(question.length<10||question.length>2500){say('Escreva uma pergunta com 10 a 2.500 caracteres.');return false;}
+    selected={id:uid(),question,topic:topics.some(t=>t.id===topicId)?topicId:'auto',stage:stages.includes(stage)?stage:stages[0],date:new Date().toISOString()};
+    const saved=remember(selected);notice=saved?'Orientação pronta. Consulta salva neste navegador.':'Orientação pronta. O navegador não confirmou o salvamento; baixe a orientação para guardar.';
+    redraw();document.getElementById('mq-answer')?.focus?.({preventScroll:true});document.getElementById('mq-answer')?.scrollIntoView?.({block:'start',behavior:'smooth'});return true;
+  }
+  function toPlan(){
+    if(!selected)return false;
+    const topic=detect(selected.question,selected.topic);if(!topic)return false;
+    if(workspace.snapshot().sessions.length>=30){say('O limite de 30 planos foi atingido. Abra Meus planos de ação para consultar e exportar os registros.');return false;}
+    const previous=workspace.current()?.id;workspace.create();const r=workspace.current();if(!r||r.id===previous)return false;
+    r.challenge=selected.question.slice(0,1800);r.focus=topic.focus;r.stage=selected.stage===stages[2]?'Tração e crescimento':selected.stage===stages[1]?'MVP / protótipo':'Ideação';r.next=nextFor(topic,selected.question);
+    workspace.save();mode='advanced';redraw();return true;
+  }
+  function exportHtml(record){
+    const t=detect(record.question,record.topic),refs=rankSources(record.question,t).slice(0,6);
+    return '<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Orientação Mentoria NEXT</title><style>body{max-width:850px;margin:40px auto;padding:20px;font:16px/1.7 system-ui;color:#163e43}a{color:#006b63}li{margin:10px 0}small{display:block}article{border-top:1px solid #ddd;margin-top:20px}</style><h1>Mentoria NEXT</h1><p>'+esc(record.question)+'</p><p>'+esc(t?angle(t,record.question):'Tema ainda não identificado na curadoria.')+'</p>'+(t?'<h2>Próximo passo</h2><p>'+esc(nextFor(t,record.question))+'</p><h2>Como aplicar</h2><ol>'+t.steps.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ol><h2>Exemplo</h2><p>'+esc(t.example)+'</p><p>'+esc(t.caution)+'</p>':'')+'<h2>Referências</h2>'+sourceCards(refs)+'<p>Orientação editorial por tema, sem IA conversacional e sem análise automática das evidências do projeto. Consulta: '+esc(new Date(record.date).toLocaleString('pt-BR'))+'.</p></html>';
+  }
+  function download(){if(!selected)return;try{const url=URL.createObjectURL(new Blob([exportHtml(selected)],{type:'text/html;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='mentoria-next-orientacao.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch{say('Não foi possível baixar a orientação. Tente novamente em um navegador que permita downloads.');}}
+  function updateSearch(){
+    const q=document.getElementById('mq-ref-query')?.value?.trim()||'',kind=document.getElementById('mq-ref-kind')?.value||'all',box=document.getElementById('mq-search-results'),links=document.getElementById('mq-search-links');
+    if(box)box.innerHTML=q?sourceCards(rankSources(q,detect(q),kind)):'<p>Digite um tema para pesquisar.</p>';
+    if(links)links.innerHTML=searchLinks(q).map(x=>linkMarkup(x.name,x.url)).join('');
+  }
+  document.addEventListener('submit',e=>{if(e.target.id==='mq-form'){e.preventDefault();ask();}});
+  document.addEventListener('input',e=>{
+    const n=e.target;if(n.id==='mq-question'){question=n.value;topicId='auto';const s=document.getElementById('mq-topic');if(s)s.value='auto';}
+    if(n.id==='mq-prompt-filter'){promptFilter=n.value;const box=document.getElementById('mq-prompts');if(box)box.innerHTML=prompts(promptFilter);}
+    if(n.id==='mq-ref-query'){const links=document.getElementById('mq-search-links');if(links)links.innerHTML=searchLinks(n.value).map(x=>linkMarkup(x.name,x.url)).join('');}
+  });
+  document.addEventListener('change',e=>{if(e.target.id==='mq-topic')topicId=e.target.value;if(e.target.id==='mq-stage')stage=e.target.value;if(e.target.id==='mq-ref-kind')updateSearch();});
+  document.addEventListener('keydown',e=>{if(e.target.id==='mq-ref-query'&&e.key==='Enter'){e.preventDefault();updateSearch();}});
+  document.addEventListener('click',e=>{
+    const b=e.target.closest?.('button');if(!b)return;
+    if(b.dataset.mqQuestion){readDraft();question=b.dataset.mqQuestion;topicId=b.dataset.mqTopic||'auto';const q=document.getElementById('mq-question'),t=document.getElementById('mq-topic');if(q){q.value=question;q.focus();}if(t)t.value=topicId;say('Pergunta selecionada. Você pode editar antes de receber a orientação.');return;}
+    if(b.dataset.mqHistory){const r=history.find(x=>x.id===b.dataset.mqHistory);if(r){selected=r;question=r.question;stage=r.stage;topicId=r.topic;redraw();}return;}
+    if(b.dataset.mq==='workspace'){readDraft();mode='advanced';redraw();}
+    if(b.dataset.mq==='quick'){mode='quick';redraw();}
+    if(b.dataset.mq==='plan')toPlan();
+    if(b.dataset.mq==='search')updateSearch();
+    if(b.dataset.mq==='export')download();
+  });
+  const style=document.createElement('style');style.textContent=`.mq-wrap{max-width:1080px;margin:auto;display:grid;gap:20px}.mq-wrap .panel{min-width:0}.mq-mainlabel{font-size:20px;font-weight:700;display:block;margin-bottom:12px}.mq-wrap .field,.mq-wrap .select{width:100%;box-sizing:border-box;max-width:100%}#mq-question{min-height:105px;resize:vertical;font:inherit;line-height:1.6}.mq-actions,.mq-links{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}.mq-wrap .btn{white-space:normal}.mq-context{margin:10px 0}.mq-wrap summary{cursor:pointer;font-weight:650;padding:14px 0;color:#126e64}.mq-wrap summary:focus-visible,.mq-wrap button:focus-visible,.mq-wrap a:focus-visible{outline:3px solid #e1b54c;outline-offset:3px}.mq-suggestions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}.mq-prompt{border:1px solid #cfe0db;background:#f6faf8;color:#21484e;border-radius:10px;text-align:left;padding:13px 15px;font:inherit;cursor:pointer;line-height:1.5;overflow-wrap:anywhere}.mq-prompt:hover{background:#eaf5f0;border-color:#7daa9d}.mq-prompt small{display:block;color:#51756f;margin-bottom:4px}.mq-search-row{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:14px 0}.mq-search-row>div{flex:1;min-width:min(220px,100%)}.mq-search-row label{display:block;margin:6px 0}.mq-tag{font-size:12px;font-weight:650;color:#216f65}.mq-lead{font-size:18px;line-height:1.75}.mq-question{border-left:3px solid #afcfc4;padding-left:13px;color:#536e71}.mq-next{padding:18px;background:#edf7f2;border-radius:12px;border-left:4px solid #268675}.mq-next p{margin:7px 0 0}.mq-answer li{margin:13px 0;line-height:1.65}.mq-answer p{overflow-wrap:anywhere}.mq-references{border-top:1px solid #dce7e3;margin-top:24px;padding-top:16px}.mq-source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.mq-source{border:1px solid #dce7e3;border-radius:12px;padding:16px;min-width:0}.mq-source h4{line-height:1.5;margin:8px 0}.mq-source a{color:#096b63;overflow-wrap:anywhere}.mq-source p{font-size:14px;line-height:1.6}.mq-source small,.mq-method{display:block;font-size:12px;line-height:1.6;color:#536d70;margin-top:7px}.mq-history{display:block;width:100%;background:white;border:0;border-bottom:1px solid #dce7e3;padding:14px 0;text-align:left;font:inherit;color:#175952;cursor:pointer}.mq-history small{display:block;margin-top:4px;color:#647b7d}.mq-back{margin-bottom:20px}.mq-wrap [role=status]{min-height:20px;color:#116d61}#mq-answer{scroll-margin-top:90px}#mq-prompts{max-height:440px;overflow:auto;padding:4px}@media(max-width:620px){.mq-suggestions,.mq-source-grid{grid-template-columns:1fr}.mq-search-row{display:block}.mq-search-row .btn{margin-top:12px}.mq-lead{font-size:16px}.mq-actions .btn{flex:1 1 160px}.mq-wrap{gap:14px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}}`;
+  document.head.appendChild(style);
+  window.PTPMentoriaQuick={topics,detect,rankSources,searchLinks,sourceType,angle,nextFor,answerMarkup,exportHtml,cleanHistory,remember,ask,toPlan,snapshot:()=>JSON.parse(JSON.stringify(history)),view};
+  if(typeof navBtn==='function'){const previousNav=navBtn;navBtn=function(viewId,icon,label,count){return previousNav(viewId,icon,viewId==='mentor'?'Mentoria NEXT':label,count);};}
+  demoMentor=view;redraw();
 })();

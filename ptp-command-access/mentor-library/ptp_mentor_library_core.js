@@ -203,6 +203,160 @@
     "tags": "patente invencao propriedade intelectual protecao tecnologia registro formalizacao",
     "url": "https://www.gov.br/inpi/pt-br/servicos/patentes/guia-basico",
     "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-mit-course",
+    "title": "New Enterprises — curso aberto do MIT",
+    "provider": "MIT OpenCourseWare",
+    "axis": "Mercado e modelo de negócio",
+    "language": "Inglês",
+    "resourceType": "Curso universitário",
+    "note": "Curso de 2013 sobre oportunidades, proposta de valor e construção de novos negócios. Útil como formação; não é uma análise do seu projeto.",
+    "tags": "empreendedorismo mercado clientes equipe estrategia modelo negocio pesquisa",
+    "url": "https://ocw.mit.edu/courses/15-390-new-enterprises-spring-2013/",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-mit-method",
+    "title": "Disciplined Entrepreneurship — método e materiais",
+    "provider": "MIT · Martin Trust Center",
+    "axis": "Mercado e modelo de negócio",
+    "language": "Inglês",
+    "resourceType": "Livro e método",
+    "note": "Apresenta o método de Bill Aulet e caminhos para livro, exercícios e aulas. A página é aberta; a compra de livros é opcional.",
+    "tags": "literatura livro aulet estrategia empreendedorismo equipe mercado segmentacao",
+    "url": "https://diymtc.mit.edu/education/deframework/",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-ufpb-review",
+    "title": "Empreendedorismo, inovação, startups e lean startup: uma revisão da literatura",
+    "provider": "Ziviani et al. · Biblionline / UFPB · 2022",
+    "axis": "Gestão da inovação e ecossistemas",
+    "language": "Português",
+    "resourceType": "Artigo acadêmico",
+    "note": "Revisão bibliográfica de publicações de 2009 a 2019. Ajuda a comparar conceitos; não comprova o desempenho de uma startup específica.",
+    "tags": "academia pesquisa literatura revisao cientifica empreendedorismo inovacao lean startup validacao",
+    "url": "https://periodicos.ufpb.br/index.php/biblio/article/view/64428",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-uff-study",
+    "title": "Lean Startup: análise exploratória sobre sua utilização por startups brasileiras",
+    "provider": "Ribeiro e Sarfati · CGE / UFF · 2019",
+    "axis": "MVP, validação e crescimento",
+    "language": "Português",
+    "resourceType": "Artigo acadêmico",
+    "note": "Pesquisa exploratória com 115 empreendedores. Examine método, amostra e limites antes de aplicar as conclusões ao seu contexto.",
+    "tags": "academia pesquisa estudo cientifico lean startup validacao mvp metricas evidencias",
+    "url": "https://periodicos.uff.br/cge/article/view/12764",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-ufg-case",
+    "title": "Aplicação da metodologia Lean Startup em uma empresa de base tecnológica de Goiás",
+    "provider": "Araújo e Yamanaka · Produção Online · UFG",
+    "axis": "MVP, validação e crescimento",
+    "language": "Português",
+    "resourceType": "Artigo acadêmico",
+    "note": "Estudo de caso que propõe a aplicação de Lean Startup em uma empresa incubada. Serve para discutir adaptação do método, não como garantia de resultado.",
+    "tags": "academia estudo caso pesquisa lean startup validacao mvp incubacao inovacao",
+    "url": "https://www.producaoonline.org.br/rpo/article/view/4212",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-ufsc-guide",
+    "title": "Lean Startup: o que as empresas podem aprender com as startups",
+    "provider": "VIA / UFSC · 2021",
+    "axis": "Gestão da inovação e ecossistemas",
+    "language": "Português",
+    "resourceType": "Portal universitário",
+    "note": "Introdução de divulgação universitária à aprendizagem e adaptação em novos negócios. Não é um artigo de pesquisa com resultados originais.",
+    "tags": "universidade lean startup inovacao experimento aprender empresa",
+    "url": "https://via.ufsc.br/lean-startup-o-que-as-empresas-podem-aprender-com-as-startups/?lang=pt",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-yc-growth",
+    "title": "How to Start a Startup: Growth — crescimento e retenção",
+    "provider": "Y Combinator",
+    "axis": "Vendas e crescimento",
+    "language": "Inglês",
+    "resourceType": "Aula especializada",
+    "note": "Aula para discutir retenção por grupos de clientes e crescimento. Compare negócios com ciclos de uso semelhantes ao seu.",
+    "tags": "tracao retencao churn coorte crescimento metricas uso recorrencia produto clientes",
+    "url": "https://www.ycombinator.com/library/dU-how-to-start-a-startup-growth",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-yc-models",
+    "title": "YC guide to business models — modelos de negócio",
+    "provider": "Y Combinator",
+    "axis": "Mercado e modelo de negócio",
+    "language": "Inglês",
+    "resourceType": "Guia especializado",
+    "note": "Discussão de modelos de receita, retenção e características de diferentes negócios. Use para comparar alternativas e formular hipóteses.",
+    "tags": "receita modelo negocio recorrencia assinatura marketplace monetizacao saas",
+    "url": "https://www.ycombinator.com/library/Gh-yc-guide-to-business-models",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-cash",
+    "title": "Como fazer o fluxo de caixa",
+    "provider": "Sebrae SC",
+    "axis": "Finanças e precificação",
+    "language": "Português",
+    "resourceType": "Guia prático",
+    "note": "Guia para organizar entradas, saídas e projeção do caixa. Serve de apoio à gestão; a aplicação depende dos registros reais do negócio.",
+    "tags": "caixa financeiro runway burn rate custos receita despesas capital giro",
+    "url": "https://www.sebrae-sc.com.br/blog/como-fazer-o-fluxo-de-caixa",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-price",
+    "title": "Como calcular o preço de um produto",
+    "provider": "Sebrae SC",
+    "axis": "Finanças e precificação",
+    "language": "Português",
+    "resourceType": "Guia prático",
+    "note": "Discussão de custos, preço e mercado para preparar sua análise de precificação. Confira premissas e tributos com o profissional responsável.",
+    "tags": "preco precificacao margem custo markup lucro valor financeiro",
+    "url": "https://www.sebrae-sc.com.br/blog/como-calcular-o-preco-de-um-produto",
+    "verifiedAt": "2026-11-14",
+    "kind": "external",
+    "collection": "Curadoria externa"
+  },
+  {
+    "id": "ext-scielo-sources",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Guia de fontes de informação para startups",
+    "provider": "Silva, Coletta e Larocca · RDBCI / SciELO · 2019",
+    "axis": "Gestão da inovação e ecossistemas",
+    "language": "Português",
+    "resourceType": "Artigo acadêmico",
+    "note": "Estudo sobre demandas de informação de startups e fontes científicas e tecnológicas. O artigo é aberto; algumas bases discutidas nele exigem acesso institucional.",
+    "tags": "pesquisa literatura academia referencias fontes informacao universidade tecnologia startup",
+    "url": "https://www.scielo.br/j/rdbci/a/FvYhsGmKxjwF5CjHCYnfwmB/?lang=pt",
+    "verifiedAt": "2026-11-14"
   }
 ];
   const catalog = () => [...internalCatalog(), ...externalCatalog];
@@ -228,7 +382,7 @@
   }
   function searchCatalog(items, query, axis, origin = '') {
     const wanted = terms(query);
-    return items.filter(item => (!axis || item.axis === axis) && (!origin || (origin === 'external' ? item.kind === 'external' : item.kind !== 'external')) && wanted.every(term => norm([item.title, item.axis, item.note, item.collection, item.provider, item.tags].join(' ')).includes(term)));
+    return items.filter(item => (!axis || item.axis === axis) && (!origin || (origin === 'external' ? item.kind === 'external' : item.kind !== 'external')) && wanted.every(term => norm([item.title, item.axis, item.note, item.collection, item.provider, item.tags, item.resourceType].join(' ')).includes(term)));
   }
   const stop = new Set(['como','para','com','qual','quais','quero','preciso','devo','minha','meu','uma','uns','dos','das','sobre','essa','esse','fazer','projeto','startup','posso']);
   function references(question) {

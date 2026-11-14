@@ -78,13 +78,13 @@ test('external recommendations respond to the question and explicit focus',()=>{
  assert.equal(api.externalReferences('xzyabcdefgh','Mentor geral NEXT').length,0);
 });
 test('external URLs must exactly match the curated public links',()=>{
- const {api}=setup();assert.equal(api.catalog().filter(x=>x.kind==='external').length,15);
+ const {api}=setup();assert.equal(api.catalog().filter(x=>x.kind==='external').length,26);
  for(const item of api.catalog().filter(x=>x.kind==='external')){assert.match(api.materialUrl(item),/^https:/);assert.ok(item.provider&&item.language&&item.note);}
  for(const url of ['javascript:alert(1)','https://evil.test/path','https://www.strategyzer.com/library/the-business-model-canvas?redirect=evil'])assert.equal(api.materialUrl({kind:'external',url}),'');
 });
 test('origin filter combines with theme and search including Portuguese tags',()=>{
  const {api}=setup(), items=api.catalog();
- assert.equal(api.searchCatalog(items,'','','internal').length,102);assert.equal(api.searchCatalog(items,'','','external').length,15);
+ assert.equal(api.searchCatalog(items,'','','internal').length,102);assert.equal(api.searchCatalog(items,'','','external').length,26);
  assert.ok(api.searchCatalog(items,'fapesp','Capital, fomento e investimento','external').some(x=>x.id==='ext-pipe'));
  assert.ok(api.searchCatalog(items,'validacao','','external').length>0);
 });
@@ -94,9 +94,9 @@ test('mentoring keeps internal reading and external curation in distinct section
 });
 test('pagination shows each catalog entry once across all pages',()=>{
  const s=setup();s.nodes.set('ptp-library-results',{innerHTML:'',scrollIntoView(){}});const ids=[];
- for(let page=1;page<=7;page++){
+ for(let page=1;page<=8;page++){
   s.listeners.click({target:{closest:()=>({hasAttribute:key=>key==='data-next-page',dataset:{nextPage:String(page)}})}});
   const html=s.nodes.get('ptp-library-results').innerHTML;ids.push(...[...html.matchAll(/href="(https:[^"]+)"/g)].map(x=>x[1]));
  }
- assert.equal(ids.length,117);assert.equal(new Set(ids).size,117);
+ assert.equal(ids.length,128);assert.equal(new Set(ids).size,128);
 });

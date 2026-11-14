@@ -1,6 +1,37 @@
 # Biblioteca e Mentoria NEXT — atualizações de 14/11/2026
 
-## Estado atual: ciclos profissionais de mentoria
+## Estado atual: pergunta primeiro, plano opcional
+
+Publicação final de 14/11/2026: `025b763f-3726-40a9-ac23-a4fd5cf47d98`, hash `519480899`. Apenas `ptp_mentor_next.js` foi substituído, preservando os 71 arquivos do site. A entrada de mentoria passa a ter uma pergunta obrigatória, contexto opcional e orientações progressivas. Os ciclos anteriores permanecem disponíveis em Meus planos de ação.
+
+- 56 perguntas em 14 temas, com pesquisa de sugestões e edição antes de enviar.
+- Orientação editorial por tema, variações para dúvidas específicas, exemplos, limites e próxima ação. Não é IA conversacional nem interpretação automática de evidências particulares.
+- Curadoria ampliada para 26 fontes externas, incluindo 4 artigos acadêmicos, cursos/métodos do MIT, portal universitário e guias especializados. Os 102 materiais acessíveis do acervo permanecem; os 13 restritos/não confirmados continuam excluídos.
+- Referências classificadas por natureza, fonte, idioma e razão de seleção. Pesquisa na curadoria com filtro acadêmico/acervo/externo. Atalhos para Google Acadêmico e pesquisas Google restritas a SciELO, universidades e portais especializados; são buscas externas explícitas, não resultados coletados pela plataforma.
+- Histórico local de até 20 consultas, fusão de consultas de abas independentes, proteção de histórico corrompido e mensagens reais de falha de persistência.
+- Download da orientação em HTML e conversão opcional em novo plano sem sobrescrever ciclos anteriores.
+
+Validação: `node --experimental-vm-modules --test tests/*.test.mjs` passou em 146 testes, incluindo 17 da entrada simplificada. No site: consulta de funil invertido, pergunta de margem/markup, filtragem de sugestões, busca de artigos acadêmicos, download, restauração do histórico e conversão em plano conferidos. O ciclo fictício da versão anterior continuou presente. A biblioteca exibiu 26 referências externas e 4 artigos ao buscar artigo acadêmico. Nenhum erro do módulo apareceu no console durante os fluxos observados. Visual desktop conferido; mobile não homologado neste ciclo.
+
+Fontes de autoria: `mentor-topics.json`, `ptp_mentor_simple.js`, `ptp_mentor_workspace.js` e `ptp_mentor_library_core.js`. O compilador incorpora os temas ao bundle, sem requisição adicional. Referências documentadas em `external-curation.json`; data de verificação não representa monitoramento automático.
+
+### Avaliação técnica e limites
+
+A redução da entrada resolve o principal atrito observado. A arquitetura ainda usa estado global e sobreposição de funções de renderização em um aplicativo legado; mudanças de ordem de scripts exigem regressão. A mentoria continua local ao navegador, sem isolamento por conta ou sincronização. Pesquisa semântica com recuperação de documentos e respostas por IA exigem serviço de backend operacional, proteção de credenciais, avaliação da relevância e citações verificáveis. Não foram ativadas nesta entrega. Os testes desta sprint não equivalem a auditoria completa de segurança, carga, login e todas as integrações da plataforma.
+
+Fontes verificadas nesta revisão incluem:
+- https://ocw.mit.edu/courses/15-390-new-enterprises-spring-2013/
+- https://diymtc.mit.edu/education/deframework/
+- https://periodicos.ufpb.br/index.php/biblio/article/view/64428
+- https://periodicos.uff.br/cge/article/view/12764
+- https://www.producaoonline.org.br/rpo/article/view/4212
+- https://www.scielo.br/j/rdbci/a/FvYhsGmKxjwF5CjHCYnfwmB/?lang=pt
+- https://www.ycombinator.com/library/dU-how-to-start-a-startup-growth
+- https://www.ycombinator.com/library/Gh-yc-guide-to-business-models
+- https://www.sebrae-sc.com.br/blog/como-fazer-o-fluxo-de-caixa
+- https://www.sebrae-sc.com.br/blog/como-calcular-o-preco-de-um-produto
+
+## Histórico: ciclos profissionais de mentoria
 
 Publicação `0b53b825-8561-4c05-9c97-3fa6aca620ec`, hash de conteúdo `424356612`: substituição somente de `ptp_mentor_next.js`, preservando os 71 arquivos do site. Esta entrega substitui a interface de orientação simples descrita no histórico abaixo.
 

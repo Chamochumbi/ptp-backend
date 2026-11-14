@@ -129,3 +129,8 @@ Upload `5364edac-087f-4337-8501-f79d7ca8829c`: a Biblioteca NEXT exibe 102 itens
 ### Mentoria NEXT com ciclos de desenvolvimento — 14/11/2026
 
 Upload `0b53b825-8561-4c05-9c97-3fa6aca620ec`: a mentoria passa a organizar diagnóstico, hipótese e teste, plano de ação e revisão. Responsáveis, prazos, evidências de entrega, histórico de decisões, relatório HTML e backup JSON implementados. A jornada permanece local ao navegador, sem IA conversacional, sincronização ou atribuição automática de mentor. 129 testes passaram; ciclo completo, bloqueio sem evidência, conclusão, persistência após recarregar e downloads verificados no site publicado. Detalhes e limites em `mentor-library/README.md`. Os demais módulos e o backend não foram alterados por esta publicação.
+
+
+### Mentoria simplificada e referências ampliadas — 14/11/2026
+
+Publicação `025b763f-3726-40a9-ac23-a4fd5cf47d98`: entrada com uma pergunta, 56 sugestões em 14 temas, orientações editoriais por assunto e próximos passos específicos. Planos completos preservados como opção. Biblioteca com 102 itens do acervo e 26 fontes externas, sendo 4 artigos acadêmicos. Busca na curadoria por tipo e atalhos de pesquisa externa claramente identificados. 146 testes passaram; consultas, filtros, histórico, download e conversão em plano conferidos em produção. Permanecem explícitos os limites de persistência local, ausência de IA conversacional e ausência de pesquisa automática em tempo real. A revisão desta sprint não certifica todas as integrações da plataforma.
