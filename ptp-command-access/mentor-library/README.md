@@ -29,3 +29,14 @@ O arquivo `library-audit.internal.json` registra apenas resposta anônima do vis
 ## Pendências explícitas
 
 A geração por IA depende da implantação de um endpoint operacional com credencial segura e validação própria. Não foi ativada por esta correção. A liberação dos documentos privados depende de decisão do proprietário e não foi presumida a partir do pedido de reparar a interface. O item 114 exige verificação de acesso adicional.
+
+
+## Atualização: remoção de referências restritas e curadoria externa
+
+Publicada em 14/11/2026, upload `5364edac-087f-4337-8501-f79d7ca8829c`. Substitui a apresentação do catálogo descrita acima: 12 arquivos privados e 1 acesso não confirmado foram retirados da vitrine e das recomendações, sem excluir arquivos do Drive. O catálogo público passa a ter 102 referências do acervo e 15 referências externas.
+
+A curadoria externa está incorporada ao mesmo arquivo publicado para não depender de uma requisição adicional. `external-curation.json` registra a seleção e metadados, com links para páginas de conteúdo de Strategyzer, Y Combinator, Steve Blank, The Lean Startup, Embrapii, FAPESP, Enap, Embrapa, Ipea e INPI. A conferência das páginas foi feita por navegação web de leitura; a sondagem HTTP local de algumas fontes foi bloqueada pelo túnel de rede do ambiente e está registrada como tal em `external-audit.internal.json`, não como indisponibilidade do site.
+
+A busca inclui fonte e palavras-chave temáticas; o filtro de origem combina com termo e eixo. O roteiro inclui até cinco referências externas por pergunta/foco, separadas das leituras do acervo. As recomendações são por correspondência temática; não há pesquisa em tempo real nem geração por IA. Condições de downloads e serviços permanecem sob responsabilidade das fontes.
+
+Validação: 111 testes passaram, incluindo 14 do módulo. Em produção: filtro externo exibiu 15 resultados, FAPESP exibiu o conteúdo PIPE, pergunta sobre pitch indicou conteúdos de apresentação e vendas da Y Combinator. A captura visual confirmou os cartões, fontes, idioma e novo filtro.

@@ -64,15 +64,39 @@ test('library search submits without replacing the input and renders filtered co
  s.listeners.submit({target:{id:'ptp-library-form'},preventDefault(){prevented=true;}});
  assert.equal(prevented,true);assert.equal(s.nodes.get('library-search'),input);assert.match(s.nodes.get('ptp-library-results').innerHTML,/materiais encontrados/);assert.equal(s.ctx.state.libraryQ,'inovacao');
 });
-test('restricted materials are labelled; mentor does not recommend restricted URLs',()=>{
- const s=setup();s.ctx.state.libraryQ='AgTech Business';assert.match(s.ctx.library(),/Arquivo privado/);assert.match(s.ctx.library(),/Abrir com conta autorizada/);
+test('restricted and unverified materials are absent from the public catalog and recommendations',()=>{
+ const s=setup(), excluded=[18,21,26,35,36,44,107,108,111,112,113,114,116];
+ const items=s.api.catalog();assert.equal(items.filter(x=>x.kind!=='external').length,102);
+ assert.ok(items.every(x=>!excluded.includes(x.id)));
+ s.ctx.state.libraryQ='AgTech Business';assert.ok(!s.ctx.library().includes('1DzrtsBV1nCjJd6eB9tIWYhJGiFs2TNzF'));
  fillForm(s,'Como elaborar um AgTech Business Model Canvas?');s.ctx.window.PTPMentor.perguntar();assert.ok(!s.nodes.get('mentor-answer').innerHTML.includes('/1DzrtsBV1nCjJd6eB9tIWYhJGiFs2TNzF/'));
+});
+test('external recommendations respond to the question and explicit focus',()=>{
+ const {api}=setup();
+ for(const [q,expected] of [['Como planejar um MVP?','ext-mvp'],['Como montar meu pitch?','ext-pitch'],['Preciso de fomento FAPESP PIPE','ext-pipe'],['Como registrar uma patente?','ext-patentes'],['Agricultura digital','ext-agro'],['Indicadores de impacto e ODS','ext-ods']])assert.ok(api.externalReferences(q,'Mentor geral NEXT').some(x=>x.id===expected),q);
+ assert.ok(api.externalReferences('Preciso de ajuda para planejar','Pitch Deck').some(x=>x.id==='ext-pitch'));
+ assert.equal(api.externalReferences('xzyabcdefgh','Mentor geral NEXT').length,0);
+});
+test('external URLs must exactly match the curated public links',()=>{
+ const {api}=setup();assert.equal(api.catalog().filter(x=>x.kind==='external').length,15);
+ for(const item of api.catalog().filter(x=>x.kind==='external')){assert.match(api.materialUrl(item),/^https:/);assert.ok(item.provider&&item.language&&item.note);}
+ for(const url of ['javascript:alert(1)','https://evil.test/path','https://www.strategyzer.com/library/the-business-model-canvas?redirect=evil'])assert.equal(api.materialUrl({kind:'external',url}),'');
+});
+test('origin filter combines with theme and search including Portuguese tags',()=>{
+ const {api}=setup(), items=api.catalog();
+ assert.equal(api.searchCatalog(items,'','','internal').length,102);assert.equal(api.searchCatalog(items,'','','external').length,15);
+ assert.ok(api.searchCatalog(items,'fapesp','Capital, fomento e investimento','external').some(x=>x.id==='ext-pipe'));
+ assert.ok(api.searchCatalog(items,'validacao','','external').length>0);
+});
+test('mentoring keeps internal reading and external curation in distinct sections',()=>{
+ const s=setup();fillForm(s);s.ctx.window.PTPMentor.perguntar();const html=s.nodes.get('mentor-answer').innerHTML;
+ assert.match(html,/Materiais da Biblioteca NEXT/);assert.match(html,/Curadoria externa para este tema/);assert.match(html,/ycombinator.com/);assert.match(html,/Inglês/);
 });
 test('pagination shows each catalog entry once across all pages',()=>{
  const s=setup();s.nodes.set('ptp-library-results',{innerHTML:'',scrollIntoView(){}});const ids=[];
  for(let page=1;page<=7;page++){
   s.listeners.click({target:{closest:()=>({hasAttribute:key=>key==='data-next-page',dataset:{nextPage:String(page)}})}});
-  const html=s.nodes.get('ptp-library-results').innerHTML;ids.push(...[...html.matchAll(/href="https:\/\/drive.google.com\/file\/d\/([\w-]+)\/view"/g)].map(x=>x[1]));
+  const html=s.nodes.get('ptp-library-results').innerHTML;ids.push(...[...html.matchAll(/href="(https:[^"]+)"/g)].map(x=>x[1]));
  }
- assert.equal(ids.length,115);assert.equal(new Set(ids).size,115);
+ assert.equal(ids.length,117);assert.equal(new Set(ids).size,117);
 });

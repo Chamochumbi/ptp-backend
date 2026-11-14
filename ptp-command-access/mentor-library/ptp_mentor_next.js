@@ -7,10 +7,213 @@
   const text = value => String(value ?? '');
   const esc = value => text(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const norm = value => text(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-  const catalog = () => typeof DEMO_LIBRARY !== 'undefined' && Array.isArray(DEMO_LIBRARY) ? DEMO_LIBRARY : [];
+  const internalCatalog = () => (typeof DEMO_LIBRARY !== 'undefined' && Array.isArray(DEMO_LIBRARY) ? DEMO_LIBRARY : []).filter(item => !restricted.has(item.id) && !unverified.has(item.id));
+  const externalCatalog = [
+  {
+    "id": "ext-canvas",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Business Model Canvas — modelo e orientações",
+    "provider": "Strategyzer",
+    "axis": "Mercado e modelo de negócio",
+    "language": "Inglês",
+    "note": "Ferramenta para relacionar clientes, proposta de valor, receitas, atividades, parceiros e custos.",
+    "tags": "canvas modelo negocio receita custos estrategia proposta valor",
+    "url": "https://www.strategyzer.com/library/the-business-model-canvas",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-value",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Value Proposition Canvas — proposta de valor",
+    "provider": "Strategyzer",
+    "axis": "Problema, cliente e proposta de valor",
+    "language": "Inglês",
+    "note": "Ajuda a relacionar tarefas, dores e ganhos dos clientes com a oferta do negócio.",
+    "tags": "canvas proposta valor cliente dores ganhos descoberta problema evidencias mercado",
+    "url": "https://www.strategyzer.com/library/the-value-proposition-canvas",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-test",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Test Card — desenhe testes para suas hipóteses",
+    "provider": "Strategyzer",
+    "axis": "MVP, validação e crescimento",
+    "language": "Inglês",
+    "note": "Estrutura hipótese, experimento, medida e critério de sucesso antes de testar uma ideia.",
+    "tags": "mvp validacao validar teste experimento hipotese evidencias prototipo produto piloto",
+    "url": "https://www.strategyzer.com/library/validate-your-ideas-with-the-test-card",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-mvp",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Como planejar um MVP — Michael Seibel",
+    "provider": "Y Combinator",
+    "axis": "MVP, validação e crescimento",
+    "language": "Inglês",
+    "note": "Orientação sobre escopo do primeiro produto e aprendizagem com os primeiros usuários.",
+    "tags": "mvp produto minimo viavel prototipo validar validacao usuario lancamento",
+    "url": "https://www.ycombinator.com/library/6f-how-to-plan-an-mvp",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-pitch",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Como apresentar sua startup",
+    "provider": "Y Combinator",
+    "axis": "Pitch, comunicação e investimento",
+    "language": "Inglês",
+    "note": "Conteúdo para preparar a apresentação da startup e comunicar sua proposta.",
+    "tags": "pitch deck apresentacao comunicar investidor investimento captacao",
+    "url": "https://www.ycombinator.com/library/6q-how-to-pitch-your-startup",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-sales",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Vendas, marketing e conversa com investidores",
+    "provider": "Y Combinator",
+    "axis": "Vendas e crescimento",
+    "language": "Inglês",
+    "note": "Aula sobre desenvolvimento comercial e comunicação com investidores.",
+    "tags": "vendas marketing funil tracao crescimento clientes mercado investidor",
+    "url": "https://www.ycombinator.com/library/dc-how-to-start-a-startup-sales-and-marketing-how-to-talk-to-investors",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-customer",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Customer Development — aulas e apresentações",
+    "provider": "Steve Blank",
+    "axis": "Problema, cliente e produto",
+    "language": "Inglês",
+    "note": "Aulas sobre descoberta de clientes, risco de mercado e desenvolvimento de negócios.",
+    "tags": "customer discovery development cliente entrevista descoberta problema evidencias mercado",
+    "url": "https://steveblank.com/slides/",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-lean",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Lean Startup — princípios e aprendizagem validada",
+    "provider": "Eric Ries · The Lean Startup",
+    "axis": "MVP, validação e crescimento",
+    "language": "Inglês",
+    "note": "Introduz o ciclo construir, medir e aprender, MVP e métricas para orientar decisões.",
+    "tags": "lean startup mvp aprendizado aprendizagem validacao metricas tracao crescimento medir produto",
+    "url": "https://theleanstartup.com/principles?level=1",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-embrapii",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Como construir uma parceria tecnológica com a Embrapii",
+    "provider": "Embrapii",
+    "axis": "Inovação aberta e provas de conceito",
+    "language": "Português",
+    "note": "Explica a aproximação entre empresas e unidades de pesquisa para desenvolver soluções tecnológicas.",
+    "tags": "inovacao aberta parceria pesquisa tecnologia ict industria piloto prova conceito cooperacao",
+    "url": "https://embrapii.org.br/unidades-embrapii-concentram-conhecimento-e-tecnologia-para-as-empresas-inovarem/",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-pipe",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "PIPE — dúvidas frequentes sobre apoio à pesquisa",
+    "provider": "FAPESP",
+    "axis": "Capital, fomento e investimento",
+    "language": "Português",
+    "note": "Perguntas e respostas sobre o programa e suas etapas. Confira as regras vigentes na fonte.",
+    "tags": "pipe fapesp fomento financiamento pesquisa recurso edital capital viabilidade pequenas empresas",
+    "url": "https://fapesp.br/pipe/faq/",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-gov",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Toolkit de inovação aberta no serviço público",
+    "provider": "Enap · InovaGov",
+    "axis": "GovTech e cidades inteligentes",
+    "language": "Português",
+    "note": "Ferramentas e modelos para organizar competições de inovação aberta voltadas a desafios públicos.",
+    "tags": "govtech governo publico inovacao aberta desafios competicao ferramentas cidade inteligente",
+    "url": "https://inovagov.enap.gov.br/content/show/22",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-agro",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Agricultura digital — definições e tecnologias",
+    "provider": "Embrapa",
+    "axis": "AgTech e transformação digital",
+    "language": "Português",
+    "note": "Capítulo de acesso aberto sobre tecnologias digitais e suas aplicações na agricultura.",
+    "tags": "agro agtech agricultura digital rural fazenda inteligencia artificial sensores tecnologia",
+    "url": "https://www.alice.cnptia.embrapa.br/alice/handle/doc/1126215",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-ods",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "ODS — referências e publicações para o Brasil",
+    "provider": "Ipea",
+    "axis": "ESG e sustentabilidade",
+    "language": "Português",
+    "note": "Reúne referências sobre desenvolvimento sustentável para apoiar o estudo de objetivos e impactos.",
+    "tags": "ods impacto social ambiental sustentabilidade esg indicadores metas desenvolvimento",
+    "url": "https://www.ipea.gov.br/ods/",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-marcas",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Guia básico de registro de marcas",
+    "provider": "INPI",
+    "axis": "Marca e comunicação",
+    "language": "Português",
+    "note": "Apresenta etapas e orientações oficiais para pesquisar, solicitar e acompanhar o registro de uma marca.",
+    "tags": "marca branding nome identidade registro propriedade intelectual protecao",
+    "url": "https://www.gov.br/inpi/pt-br/servicos/marcas/guia-basico",
+    "verifiedAt": "2026-11-14"
+  },
+  {
+    "id": "ext-patentes",
+    "kind": "external",
+    "collection": "Curadoria externa",
+    "title": "Guia básico de patentes",
+    "provider": "INPI",
+    "axis": "Formalização, legislação e PI",
+    "language": "Português",
+    "note": "Referência oficial para compreender o processo de proteção de invenções por patentes.",
+    "tags": "patente invencao propriedade intelectual protecao tecnologia registro formalizacao",
+    "url": "https://www.gov.br/inpi/pt-br/servicos/patentes/guia-basico",
+    "verifiedAt": "2026-11-14"
+  }
+];
+  const catalog = () => [...internalCatalog(), ...externalCatalog];
   const restricted = new Set([18,21,26,35,36,44,107,108,111,112,113,116]);
   const unverified = new Set([114]);
-  const availability = item => restricted.has(item.id) ? 'Arquivo privado · conta autorizada no Drive' : unverified.has(item.id) ? 'Acesso não confirmado' : 'Visualizador verificado em 14/11/2026';
+  const availability = item => item.kind === 'external' ? item.provider + ' · ' + item.language : 'Acervo NEXT · Google Drive';
+  const externalUrls = new Set(externalCatalog.map(item => item.url));
+  function materialUrl(item) {
+    if (item.kind !== 'external') return documentUrl(item.url);
+    try { const url = new URL(item.url); return url.protocol === 'https:' && !url.username && !url.password && externalUrls.has(item.url) ? url.href : ''; } catch { return ''; }
+  }
   const terms = value => norm(value).split(/\s+/).filter(Boolean);
   function documentUrl(value) {
     try {
@@ -23,19 +226,32 @@
       return url.hostname === 'docs.google.com' ? url.href : '';
     } catch { return ''; }
   }
-  function searchCatalog(items, query, axis) {
+  function searchCatalog(items, query, axis, origin = '') {
     const wanted = terms(query);
-    return items.filter(item => (!axis || item.axis === axis) && wanted.every(term => norm([item.title, item.axis, item.note, item.collection].join(' ')).includes(term)));
+    return items.filter(item => (!axis || item.axis === axis) && (!origin || (origin === 'external' ? item.kind === 'external' : item.kind !== 'external')) && wanted.every(term => norm([item.title, item.axis, item.note, item.collection, item.provider, item.tags].join(' ')).includes(term)));
   }
   const stop = new Set(['como','para','com','qual','quais','quero','preciso','devo','minha','meu','uma','uns','dos','das','sobre','essa','esse','fazer','projeto','startup','posso']);
   function references(question) {
     const wanted = terms(question).filter(term => term.length > 2 && !stop.has(term));
     if (!wanted.length) return [];
-    return catalog().map(item => {
+    return internalCatalog().map(item => {
       const title = norm(item.title), body = norm([item.axis, item.note].join(' '));
       const score = wanted.reduce((sum, term) => sum + (title.includes(term) ? 3 : body.includes(term) ? 1 : 0), 0);
       return {item, score};
     }).filter(row => row.score > 0 && !restricted.has(row.item.id) && !unverified.has(row.item.id) && documentUrl(row.item.url)).sort((a,b) => b.score-a.score || a.item.id-b.item.id).slice(0,6).map(({item}) => ({id:item.id,title:item.title,axis:item.axis,url:documentUrl(item.url)}));
+  }
+  function externalReferences(question, focus = '') {
+    const words = value => terms(value).filter(term => term.length > 2 && !stop.has(term) && !['mentor','geral','next'].includes(term));
+    const requested = words(question), focused = words(focus);
+    const score = (item, wanted) => {
+      const haystack = terms([item.title, item.tags].join(' '));
+      return wanted.reduce((sum, term) => sum + (haystack.some(word => word.startsWith(term.length > 5 ? term.slice(0,5) : term)) ? 1 : 0), 0);
+    };
+    return externalCatalog.map(item => ({item, score:score(item, requested)*4+score(item, focused)})).filter(row => row.score > 0 && materialUrl(row.item)).sort((a,b)=>b.score-a.score).slice(0,5).map(row=>row.item);
+  }
+  function externalMarkup(record) {
+    const refs=externalReferences(record.question,record.focus);
+    return '<section id="ptp-next-external"><h4>Curadoria externa para este tema</h4>'+(refs.length?refs.map(item=>`<article class="source-card" style="margin:12px 0"><a href="${esc(materialUrl(item))}" target="_blank" rel="noopener noreferrer"><strong>${esc(item.title)} ↗</strong></a><p>${esc(item.note)}</p><small>${esc(item.provider)} · ${esc(item.language)}</small></article>`).join(''):'<p>A curadoria ainda não tem uma referência externa específica para este tema. Experimente termos como MVP, Canvas, pitch, clientes, fomento ou impacto.</p>')+'<small>Conteúdos selecionados por tema; as condições de acesso a downloads e serviços são definidas pela fonte.</small></section>';
   }
   const stages = ['Ideação','Descoberta e validação','MVP / protótipo','Tração e crescimento','Escala','Projeto institucional'];
   const focuses = ['Mentor geral NEXT','Problema e evidências','Negócios / Canvas','Produto e MVP','Mercado e clientes','Pitch Deck','Impacto','Inovação aberta empresarial'];
@@ -70,7 +286,7 @@
   const options = (values, value) => values.map(x=>`<option${x===value?' selected':''}>${esc(x)}</option>`).join('');
   function resultMarkup(record) {
     const plan = planFor(record), refs = references(record.question);
-    return `<section class="panel"><div class="eyebrow">ORIENTAÇÃO METODOLÓGICA</div><h3>Seu roteiro de trabalho</h3><p><strong>Desafio:</strong> ${esc(record.question)}</p><p><strong>Estágio:</strong> ${esc(record.stage||stages[0])} · <strong>Objetivo:</strong> ${esc(record.outcome||outcomes[0])} · <strong>Prazo:</strong> ${esc(record.deadline||deadlines[0])}</p>${record.org?`<p><strong>Projeto:</strong> ${esc(record.org)}</p>`:''}<p>${esc(plan.stage)}</p><ol>${plan.steps.map(step=>`<li style="margin-bottom:12px">${esc(step)}</li>`).join('')}</ol><h4>Execução no prazo escolhido</h4><p>Até o dia ${plan.milestones[0]}: delimitar e preparar. Até o dia ${plan.milestones[1]}: executar o primeiro teste. Até o dia ${plan.milestones[2]}: revisar as evidências e decidir o próximo passo.</p><p><strong>Entrega esperada:</strong> ${esc(plan.delivery)}</p><p class="hint">Roteiro estruturado a partir do foco e do contexto informados. Não é uma resposta gerada por IA nem substitui uma conversa com um mentor.</p><h4>Leituras relacionadas</h4>${refs.length?refs.map(ref=>`<p><a href="${esc(ref.url)}" target="_blank" rel="noopener noreferrer">${esc(ref.title)} ↗</a><br><small>${esc(ref.axis)}</small></p>`).join(''):'<p>Não encontramos materiais diretamente relacionados a essa pergunta. Experimente um tema mais específico ou explore a biblioteca.</p>'}<small>Seleção por tema e título. O roteiro não representa conclusões extraídas dos documentos.</small></section>`;
+    return `<section class="panel"><div class="eyebrow">ORIENTAÇÃO METODOLÓGICA</div><h3>Seu roteiro de trabalho</h3><p><strong>Desafio:</strong> ${esc(record.question)}</p><p><strong>Estágio:</strong> ${esc(record.stage||stages[0])} · <strong>Objetivo:</strong> ${esc(record.outcome||outcomes[0])} · <strong>Prazo:</strong> ${esc(record.deadline||deadlines[0])}</p>${record.org?`<p><strong>Projeto:</strong> ${esc(record.org)}</p>`:''}<p>${esc(plan.stage)}</p><ol>${plan.steps.map(step=>`<li style="margin-bottom:12px">${esc(step)}</li>`).join('')}</ol><h4>Execução no prazo escolhido</h4><p>Até o dia ${plan.milestones[0]}: delimitar e preparar. Até o dia ${plan.milestones[1]}: executar o primeiro teste. Até o dia ${plan.milestones[2]}: revisar as evidências e decidir o próximo passo.</p><p><strong>Entrega esperada:</strong> ${esc(plan.delivery)}</p><p class="hint">Roteiro estruturado a partir do foco e do contexto informados. Não é uma resposta gerada por IA nem substitui uma conversa com um mentor.</p><h4>Materiais da Biblioteca NEXT</h4>${refs.length?refs.map(ref=>`<p><a href="${esc(ref.url)}" target="_blank" rel="noopener noreferrer">${esc(ref.title)} ↗</a><br><small>${esc(ref.axis)}</small></p>`).join(''):'<p>Não encontramos materiais diretamente relacionados a essa pergunta. Experimente um tema mais específico ou explore a biblioteca.</p>'}<small>Seleção por tema e título. O roteiro não representa conclusões extraídas dos documentos.</small>${externalMarkup(record)}</section>`;
   }
   function mentorView() {
     const recent=history(), record=selected || recent.find(r=>r.version==='next-20261114');
@@ -96,18 +312,18 @@
     if(message)message.textContent='Roteiro pronto. Consulta salva neste navegador.';
   }
   function libraryResults() {
-    const found=searchCatalog(catalog(),state.libraryQ||'',state.libraryAxis||'');
+    const found=searchCatalog(catalog(),state.libraryQ||'',state.libraryAxis||'',state.libraryOrigin||'');
     const pages=Math.max(1,Math.ceil(found.length/pageSize));page=Math.max(1,Math.min(page,pages));
-    return `<p role="status" aria-live="polite">${found.length} ${found.length===1?'material encontrado':'materiais encontrados'}${found.length?` · Página ${page} de ${pages}`:''}</p><div class="grid">${found.slice((page-1)*pageSize,page*pageSize).map(item=>{const url=documentUrl(item.url);return `<article class="panel opcard"><div class="micro">${esc(item.collection)}</div><h3>${esc(item.title)}</h3><small>${esc(item.axis)}</small><p>${esc(item.note||'Material do acervo NEXT.')}</p><p class="hint">${esc(availability(item))}</p><div class="cardfoot">${url?`<a class="btn outline small" href="${esc(url)}" target="_blank" rel="noopener noreferrer" aria-label="Abrir material: ${esc(item.title)}">${restricted.has(item.id)?'Abrir com conta autorizada':unverified.has(item.id)?'Verificar acesso no Drive':'Abrir material'} ↗</a>`:'<span>Link indisponível no catálogo.</span>'}</div></article>`;}).join('')||'<div class="panel empty"><h3>Nenhum material encontrado</h3><p>Tente menos palavras ou remova o filtro de eixo.</p><button class="btn outline small" type="button" data-next-clear>Limpar filtros</button></div>'}</div>${pages>1?`<nav class="ptp-next-pagination" aria-label="Páginas da biblioteca"><button class="btn outline small" type="button" data-next-page="${page-1}" ${page===1?'disabled':''}>Anterior</button><span>Página ${page} de ${pages}</span><button class="btn outline small" type="button" data-next-page="${page+1}" ${page===pages?'disabled':''}>Próxima</button></nav>`:''}`;
+    return `<p role="status" aria-live="polite">${found.length} ${found.length===1?'material encontrado':'materiais encontrados'}${found.length?` · Página ${page} de ${pages}`:''}</p><div class="grid">${found.slice((page-1)*pageSize,page*pageSize).map(item=>{const url=materialUrl(item);return `<article class="panel opcard"><div class="micro">${esc(item.collection)}</div><h3>${esc(item.title)}</h3><small>${esc(item.axis)}</small><p>${esc(item.note||'Material do acervo NEXT.')}</p><p class="hint">${esc(availability(item))}</p><div class="cardfoot">${url?`<a class="btn outline small" href="${esc(url)}" target="_blank" rel="noopener noreferrer" aria-label="Abrir material: ${esc(item.title)}">${item.kind==='external'?'Consultar conteúdo':'Abrir material'} ↗</a>`:'<span>Link indisponível no catálogo.</span>'}</div></article>`;}).join('')||'<div class="panel empty"><h3>Nenhum material encontrado</h3><p>Tente menos palavras ou remova o filtro de eixo.</p><button class="btn outline small" type="button" data-next-clear>Limpar filtros</button></div>'}</div>${pages>1?`<nav class="ptp-next-pagination" aria-label="Páginas da biblioteca"><button class="btn outline small" type="button" data-next-page="${page-1}" ${page===1?'disabled':''}>Anterior</button><span>Página ${page} de ${pages}</span><button class="btn outline small" type="button" data-next-page="${page+1}" ${page===pages?'disabled':''}>Próxima</button></nav>`:''}`;
   }
   function libraryView() {
     const axes=[...new Set(catalog().map(item=>item.axis))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
-    return `${pageHead('BIBLIOTECA NEXT · PTP','Conhecimento para colocar em prática',`${catalog().length} materiais em ${axes.length} eixos temáticos. Encontre ferramentas, guias e referências para o seu projeto.`)}<section class="panel"><form class="filterstrip" id="ptp-library-form"><div style="flex:2;min-width:180px"><label for="library-search">Buscar materiais</label><input class="field" type="search" id="library-search" maxlength="200" value="${esc(state.libraryQ||'')}" placeholder="Ex.: canvas, inovação, pitch"></div><div style="flex:1;min-width:180px"><label for="library-axis">Eixo temático</label><select class="select" id="library-axis"><option value="">Todos os eixos</option>${options(axes,state.libraryAxis)}</select></div><button class="btn small" type="submit">Buscar</button><button class="btn outline small" type="button" data-next-clear>Limpar filtros</button></form><p class="hint">Os materiais abrem em nova aba no Google Drive. Na checagem de 14/11/2026: 102 visualizadores acessíveis, 12 arquivos privados e 1 acesso não confirmado. Arquivos privados exigem autorização do proprietário.</p><div id="ptp-library-results">${libraryResults()}</div></section>`;
+    return `${pageHead('BIBLIOTECA NEXT · PTP','Conhecimento para colocar em prática',`${internalCatalog().length} materiais do acervo NEXT e ${externalCatalog.length} referências externas selecionadas. Encontre ferramentas, guias e conteúdos para seu projeto.`)}<section class="panel"><form class="filterstrip" id="ptp-library-form"><div style="flex:2;min-width:180px"><label for="library-search">Buscar materiais</label><input class="field" type="search" id="library-search" maxlength="200" value="${esc(state.libraryQ||'')}" placeholder="Ex.: canvas, inovação, pitch"></div><div style="flex:1;min-width:180px"><label for="library-axis">Eixo temático</label><select class="select" id="library-axis"><option value="">Todos os eixos</option>${options(axes,state.libraryAxis)}</select></div><div style="flex:1;min-width:160px"><label for="library-origin">Origem do conteúdo</label><select class="select" id="library-origin"><option value="">Todas as fontes</option><option value="internal" ${state.libraryOrigin==='internal'?'selected':''}>Acervo NEXT</option><option value="external" ${state.libraryOrigin==='external'?'selected':''}>Curadoria externa</option></select></div><button class="btn small" type="submit">Buscar</button><button class="btn outline small" type="button" data-next-clear>Limpar filtros</button></form><p class="hint">Explore o acervo NEXT e conteúdos de autores e instituições de referência. Os links abrem em nova aba; a curadoria externa informa fonte, idioma e aplicação do material.</p><div id="ptp-library-results">${libraryResults()}</div></section>`;
   }
   function search(event) {
     event?.preventDefault();
     state.libraryQ=(document.getElementById('library-search')?.value||'').slice(0,200);
-    state.libraryAxis=document.getElementById('library-axis')?.value||'';page=1;persistSafely();updateLibrary();
+    state.libraryAxis=document.getElementById('library-axis')?.value||'';state.libraryOrigin=document.getElementById('library-origin')?.value||'';page=1;persistSafely();updateLibrary();
   }
   function updateLibrary() {const target=document.getElementById('ptp-library-results');if(target)target.innerHTML=libraryResults();}
   if(typeof demoMentor==='function')demoMentor=mentorView;
@@ -115,13 +331,13 @@
   if(typeof askDemoMentor==='function')askDemoMentor=ask;
   if(typeof searchDemoLibrary==='function')searchDemoLibrary=search;
   window.PTPMentor={perguntar:ask};
-  window.PTPNext={searchCatalog,documentUrl,planFor,normalize:norm};
+  window.PTPNext={searchCatalog,documentUrl,materialUrl,planFor,normalize:norm,externalReferences,catalog};
   document.addEventListener('submit',event=>{if(event.target.id==='ptp-next-form')ask(event);if(event.target.id==='ptp-library-form')search(event);});
   document.addEventListener('input',event=>{if(event.target.id==='library-search')search();else if(event.target.closest?.('#ptp-next-form'))readDraft();});
-  document.addEventListener('change',event=>{if(event.target.id==='library-axis')search();else if(event.target.closest?.('#ptp-next-form'))readDraft();});
+  document.addEventListener('change',event=>{if(['library-axis','library-origin'].includes(event.target.id))search();else if(event.target.closest?.('#ptp-next-form'))readDraft();});
   document.addEventListener('click',event=>{
     const button=event.target.closest?.('button');if(!button)return;
-    if(button.hasAttribute('data-next-clear')) {const input=document.getElementById('library-search'),axis=document.getElementById('library-axis');if(input)input.value='';if(axis)axis.value='';search();input?.focus();}
+    if(button.hasAttribute('data-next-clear')) {const input=document.getElementById('library-search'),axis=document.getElementById('library-axis');if(input)input.value='';if(axis)axis.value='';const origin=document.getElementById('library-origin');if(origin)origin.value='';search();input?.focus();}
     if(button.hasAttribute('data-next-page')) {page=Number(button.dataset.nextPage)||1;updateLibrary();document.getElementById('ptp-library-results')?.scrollIntoView({block:'start'});}
     if(button.hasAttribute('data-next-prompt')) {const question=document.getElementById('mentor-question');if(question){question.value=button.textContent;readDraft();question.focus();}}
     if(button.hasAttribute('data-next-history')) {const record=history()[Number(button.dataset.nextHistory)];const target=document.getElementById('mentor-answer');if(record&&target){selected=record;target.innerHTML=resultMarkup(record);target.scrollIntoView({block:'start'});}}

@@ -120,3 +120,8 @@ A tentativa de criar a tarefa diária `PTP | Vitrine de eventos` retornou `too_m
 ## Biblioteca e Orientações NEXT — 14/11/2026
 
 Correção publicada no arquivo `ptp_mentor_next.js`, upload `2fe044bb-fed7-48d6-91be-4aab2b49569d`. Busca sem acentos, Enter, filtros, paginação e histórico corrigidos; roteiro usa o contexto e prazo informados. A IA permanece não implantada (endpoint anterior retornava 404). Auditoria do acervo: 102 visualizadores acessíveis, 12 documentos privados, 1 acesso não confirmado. Nenhuma permissão alterada. 107 testes passaram e os dois fluxos foram verificados no site. Detalhes: `mentor-library/README.md`.
+
+
+### Curadoria externa e retirada de links restritos — 14/11/2026
+
+Upload `5364edac-087f-4337-8501-f79d7ca8829c`: a Biblioteca NEXT exibe 102 itens do acervo e 15 referências externas; os 13 links privados/não confirmados saíram da vitrine e das recomendações. Filtro por origem, busca por fonte/tema e seleção externa na orientação NEXT implementados e conferidos em produção. 111 testes passaram.
