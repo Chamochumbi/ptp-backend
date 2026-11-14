@@ -1,0 +1,117 @@
+# Centro de Comando PTP — sprint de autorização
+
+O proprietário autentica corretamente, mas a versão publicada consulta coleções privadas com um token de membro e recebe 403. Esta alteração transfere as consultas gerenciais para o servidor: o Wix confirma o membro a cada pedido; só o ID e o e-mail institucional verificados e aprovados podem utilizar a credencial de serviço.
+
+**Estado em 13/11/2026: backend implementado e testado localmente; não implantado em produção.** O serviço ativo `ptp-api` informa `adminBackendEnabled:false`. Sua versão 3.2.0 difere do código 2.0.0 na branch `main`. A fonte/configuração efetiva precisa ser recuperada antes de incorporar o módulo ao servidor existente. Uma correção independente de sessão foi publicada; os detalhes estão abaixo.
+
+## Entrega publicada em 13/11/2026
+
+`production-hotfix/` contém somente os três arquivos publicados no site existente. Quando uma consulta acusa sessão expirada, o painel limpa os dados visíveis imediatamente e interrompe o agendamento das fontes restantes, inclusive se outras consultas ainda estão pendentes. Falhas isoladas de fontes continuam permitindo repetição seletiva.
+
+- Publicação: `df217141-ae8a-45a2-86d3-4d8808f4a462`; versão dos scripts `20261113-session5`.
+- Os três arquivos foram relidos e conferidos; os 70 arquivos foram mantidos. A página inicial, o CSS do painel e o módulo compartilhado de autenticação permanecem iguais.
+- A página de acesso foi aberta no navegador após a publicação: foto, marcas institucionais, botão de acesso e mensagem de login renderizaram. Não havia sessão institucional ativa; o fluxo gerencial autenticado não foi homologado nessa inspeção.
+- Essa publicação preserva o design de acesso e não modifica permissões ou registros do CMS. Ela **não resolve o bloqueio gerencial 403 do proprietário**.
+- Não confundir `production-hotfix/`, já publicado, com `frontend/`, que depende do novo backend e aguarda implantação.
+
+## Validação em 13/11/2026
+
+44 testes locais aprovados: 33 para backend/cliente/painel em preparação e 11 para a correção publicada. Passaram também os 65 testes da regressão anterior. Os testes de identidade institucional usam respostas Wix simuladas.
+
+Teste real, sem login institucional, usando sessão de visitante emitida pelo cliente público do site: vitrine pública respondeu 200 e zero registros; histórico de membros e mensagens privadas responderam 403. Nenhum registro foi alterado e nenhum token foi salvo. Esses resultados comprovam somente as três consultas realizadas; não comprovam o acesso do proprietário.
+
+Contrato oficial conferido: `GET /members/v1/members/my?fieldsets=FULL` para obter os campos completos de identidade e `POST /data/v2/items/query` para consultar dados. O backend foi corrigido, e os testes rejeitam URLs ou parâmetros diferentes. O esquema de permissões especiais do CMS não apresenta um campo próprio para ID de membro do site; não foi utilizado para ampliar o acesso das coleções.
+
+## Entregas
+
+### Acesso de participantes — segunda publicação de 13/11/2026
+
+`participant-access/` contém `js/wix.js` e `ptp_account.js` publicados na revisão `bea4a638-d17e-405b-bac6-0b3584c00d9a`. A página inicial, o acesso ao Centro de Comando e seu CSS foram preservados; o site mantém 70 arquivos.
+
+- Códigos atuais de CAPTCHA agora encaminham para a verificação de segurança já existente, sem remover o desafio.
+- Credenciais inválidas e conta inexistente recebem a mesma orientação, sem indicar qual informação está incorreta.
+- Cadastro com e-mail existente e excesso de tentativas recebem orientações específicas.
+- Código de confirmação incorreto ou expirado informa como corrigir; a tentativa seguinte preserva o estado pendente, sem criar sessão antes da confirmação.
+- O servidor publica esses módulos com `Cache-Control: public,max-age=0,must-revalidate`; as referências compartilhadas foram mantidas para não criar instâncias duplicadas do cliente de autenticação.
+
+Validação: 80 testes locais aprovados no pacote, incluindo 36 testes de autenticação. Uma tentativa real de login com dados sintéticos de uma conta inexistente recebeu 404/código `-19999`, sem sessão. Na consulta real das 21 coleções com sessão de visitante, as 18 fontes privadas responderam 403 e as três públicas responderam 200, todas sem itens retornados. Nenhum cadastro, envio de e-mail ou alteração de dados foi realizado nesses testes.
+
+As telas de login, cadastro e recuperação foram abertas e conferidas no navegador. Não foi concluído novo cadastro, entrega de código, recuperação de senha ou login com credenciais reais nesta rodada. O acesso do proprietário continua dependente da implantação do backend e da configuração protegida do Render. As solicitações anteriores de autenticação no Render foram encerradas sem conclusão; não há sessão administrativa disponível para recuperar a configuração efetiva do serviço.
+
+Referências: [Login V2](https://dev.wix.com/docs/api-reference/business-management/headless/authentication/login-v-2), [Register V2](https://dev.wix.com/docs/api-reference/business-management/headless/authentication/register-v-2), [Verify During Authentication](https://dev.wix.com/docs/api-reference/business-management/headless/verification/verify-during-authentication).
+
+### Módulo gerencial em preparação
+
+- `backend/command.mjs`: handler independente para `/api/command/status` e `/api/command/query`. Retorna `false` para rotas não relacionadas, permitindo integração no servidor ativo sem substituir os demais serviços.
+- `backend/server.mjs`: servidor isolado para homologação; não substitui a API 3.2.0.
+- `frontend/ptp_command_api.js`: cliente com token renovado, timeout, origem fixa, mensagens de erro e validação das respostas.
+- `frontend/ptp_command_data.js` e `ptp_command.js`: integração do painel com a prova de autorização do servidor; preserva o carregamento de quatro fontes simultâneas, a repetição seletiva, os filtros e as exportações.
+- `frontend/admin360.html`: mesmo design de acesso, com referências de versão atualizadas.
+- `tests/`: testes HTTP, cliente e painel. Respostas Wix são simuladas; não constituem homologação com credenciais reais.
+
+## Execução
+
+Node 22 ou superior, sem dependências adicionais:
+
+```sh
+cd ptp-command-access
+npm test
+npm start
+```
+
+`npm start` inicia exclusivamente o serviço de homologação. A porta vem de `PORT` ou usa 8080. O endpoint `/health` indica que o processo está ativo; **não comprova acesso ao CMS**. A prova de acesso exige `/api/command/status` autenticado.
+
+## Implantação pendente
+
+1. Recuperar a fonte ativa 3.2.0 do serviço Render `srv-db5uaoijnfac73boqkvg`, workspace confirmado `tea-dave7bvavr4c73bln11g`. Não reconstruir a API ativa a partir da antiga `main`.
+2. Integrar `createCommandHandler()` antes do roteamento existente e configurar `WIX_API_KEY` somente no armazenamento protegido do serviço, com acesso de leitura aos dados deste site. Não colocar chave no repositório, HTML, JavaScript público ou chat. Site e proprietário estão fixados no módulo.
+3. Testar as rotas com a sessão institucional real e uma conta comum: proprietário aprovado → 200; conta comum/sem verificação → 403; sessão ausente/expirada → 401; falha na chave de serviço → 503 sem dados. Validar as 21 fontes, inclusive coleções vazias.
+4. Conferir a continuidade das rotas de cadastro, observatório e demais integrações da API ativa antes da liberação.
+5. Só depois publicar os três arquivos alterados do painel e o novo `ptp_command_api.js` no site existente. Preservar `js/wix.js`, `ptp_command_model.js`, CSS, imagens e demais assets. Os arquivos de referência aqui incluídos não são uma substituição integral do site.
+6. Homologar no navegador: entrar → consultar → filtrar → exportar → sair; outra conta nunca deve ver dados. Confirmar mobile, teclado, foco e ausência de redirecionamento para o painel Wix.
+
+## Escopo e limites
+
+O módulo é exclusivamente de leitura. Não aprova publicações, altera registros, apaga dados nem envia mensagens. A autorização no navegador é apenas auxiliar; o servidor revalida a identidade antes de cada consulta. Não há cache de dados privados nem de decisões de autorização. As coleções CMS permanecem restritas.
+
+## Fontes oficiais utilizadas
+
+- [Wix Get My Member](https://dev.wix.com/docs/api-reference/crm/members-contacts/members/member-management/members/get-my-member)
+- [Wix Query Data Items](https://dev.wix.com/docs/api-reference/business-solutions/cms/data-items/query-data-items)
+- [Wix publicação de arquivos](https://dev.wix.com/docs/api-reference/account-level/sites/skills/upload-a-website-or-html-files)
+
+## Próximos critérios de aceite
+
+| Frente | Critério para concluir | Situação |
+|---|---|---|
+| Autorização gerencial | Conta PTP consulta CMS privado; demais contas recusadas pelo servidor | Código e testes prontos; falta configuração e homologação real |
+| Experiência gerencial | Filtros, exportação, atualização e logout funcionam integrados | Testes simulados aprovados; homologação real pendente |
+| Cadastro e login | Cadastro, verificação, recuperação e persistência entre sessões | Regressão automatizada existente aprovada; novo ciclo real pendente |
+| Divulgação | Jornadas críticas aprovadas, mobile/teclado conferidos e falhas corrigidas | Ainda não liberado como entrega integral homologada |
+
+## Radar de eventos — publicado em 14/11/2026
+
+`radar/agenda.html`, `radar/ptp_observatorio.css` e `radar/ptp_observatorio.js` foram publicados no site PTP existente, upload `cbd4fa89-b53e-4aab-a878-e40c77f37686`. Os 70 arquivos foram preservados; os três arquivos publicados tiveram conteúdo conferido. Página inicial, Centro de Comando, módulo de autenticação e conta permaneceram iguais.
+
+A agenda reúne nove eventos com fontes específicas e nove canais institucionais, cinco temas (ciência, tecnologia, inovação, empregabilidade e universidades), busca sem distinção de acentos, filtros de instituição/período e lembretes de dia inteiro em ICS. Os canais são diretórios de consulta, não novas integrações automáticas. A curadoria está datada de 14/11/2026 e precisa de revisão editorial periódica. O feed existente continua sendo consultado a cada 30 minutos enquanto a página permanece aberta; sua coleta no servidor não foi alterada.
+
+O navegador real confirmou: nove eventos exibidos; combinação carreira + empregabilidade + FEALQ + sete dias com um resultado; download ICS; estado vazio; limpeza dos filtros com retorno aos nove eventos. O feed respondeu e a página mostrou o estado de consulta concluída. Verificação visual em desktop realizada; celular não homologado nesta entrega. Onze testes adicionais passaram para datas, filtros, fontes, deduplicação, conteúdo externo, calendário, fallback e compatibilidade com notícias/fomento.
+
+Para editar: `ptp_radar.js` é a fonte do módulo inicial de `ptp_observatorio.js`; a versão publicada é o arquivo combinado. Alterações na fonte exigem substituir o prefixo do bundle e executar os testes. A lista editorial não é atualizada automaticamente a partir dos nove diretórios. Eventos encerrados são omitidos pela data de Piracicaba; os lembretes não efetuam inscrição.
+
+## Vitrine unificada — revisão de 14/11/2026 (substitui o radar anterior)
+
+Publicação `0251d543-5618-4dca-9632-2433220dac78`: três arquivos atualizados e `ptp_eventos.json` adicionado, total de 71 arquivos preservados. A página carrega o catálogo de mesmo domínio com timeout e validação; a agenda deixou de depender do endpoint antigo, que retornava apenas um evento estático. Notícias e fomento mantêm seus endpoints.
+
+A vitrine apresenta 27 eventos/atividades confirmados, filtros dos cinco eixos, busca, data, formato, organização e participação gratuita/paga/a consultar. Não há diretório institucional, links para homepages de instituições, chamada para submissão ou menção ao conselho. Apenas nomes dos organizadores e links para as programações específicas. Atividades do SIMESPI compartilham a página oficial de programação, que contém suas respectivas datas; o sistema preserva eventos distintos dessa mesma página. Datas alternadas são tratadas como sessões e exportadas via RDATE em ICS.
+
+`monitor-sources.internal.json` reúne 32 entidades para a varredura solicitada pelo usuário. É uma configuração de operação versionada no repositório e NÃO foi publicada no site. A composição foi consultada na listagem oficial, decreto de abril/2026 e ata que registra entidades convidadas. Não representa comprovação de primeira coleta de todas as fontes: cada execução deve registrar as consultadas, sem resultados futuros, indisponíveis e pendentes. O monitoramento programado é uma tarefa separada de atualização editorial; não foi alterado o serviço Render existente.
+
+Validação: 97 testes passaram, incluindo 17 do radar. No navegador real, catálogo de 27 eventos carregado; formato Online + Gratuito retornou o webinar da ESALQ; limpeza retornou 27 cartões; diretório e referência ao conselho ausentes no DOM. Verificação visual desktop concluída. A data de revisão em cada registro é preservada; mudanças na programação dos organizadores exigem nova conferência.
+
+Para recompilar após editar `ptp_radar.js`: `python3 radar/build-radar.py`. Para renovar conteúdo, atualizar somente o JSON conforme o contrato de `ingestCatalog`, revalidar e publicar pelo patch de arquivos Wix. Nunca apagar eventos futuros somente porque uma fonte está temporariamente indisponível; cancelamento exige evidência.
+
+
+### Bloqueio efetivo do agendamento
+
+A tentativa de criar a tarefa diária `PTP | Vitrine de eventos` retornou `too_many_active_automations`: 5 tarefas ativas, limite do plano 5. Nenhuma automação foi criada ou ativada. O monitoramento das 32 entidades está preparado em `radar/monitor-task.internal.txt`, mas NÃO está ativo. As cinco rotinas existentes foram preservadas. É necessária decisão do usuário para incorporar esta coleta a uma rotina existente ou liberar uma vaga. A consulta do catálogo pelo navegador a cada 30 minutos não substitui a pesquisa recorrente: somente lê o JSON já publicado.
