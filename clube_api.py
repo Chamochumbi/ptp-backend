@@ -200,7 +200,7 @@ def principal(authorization:str|None=Header(None)):
           left join ptp_companies c on c.id=u.company_id
           where s.token_hash=%s and s.revoked_at is null and s.expires_at>now()""",(digest(token),)).fetchone()
     if not u or not u["active"]:raise HTTPException(401,"Sessão inválida ou usuário inativo")
-    if u["company_id"] and not u["company_active"]:raise HTTPException(403,"Empresa não habilitada")
+    if u["role"]!="admin" and u["company_id"] and not u["company_active"]:raise HTTPException(403,"Empresa não habilitada")
     return dict(u)
 def require(*roles):
     def dependency(u=Depends(principal)):
@@ -929,7 +929,7 @@ def member_offers(u=Depends(require("employee","manager","admin"))):
         "category":x["category"],"description":x["description"]} for x in rows]}
 
 @app.get("/benefits/{offer_id}/redemption-channel")
-def benefit_redemption_channel(offer_id: int, u=Depends(require("employee","manager","admin","provider"))):
+def benefit_redemption_channel(offer_id: int, u=Depends(require("employee","manager","admin"))):
     """Confidential partner coupon and contractual booking links, released only to logged-in club accounts."""
     privileged = {
         7: {"url": "https://mbauspesalq.com/?poloId=66"},
