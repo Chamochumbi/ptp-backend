@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-14T01:48:28.059Z",
+  "updatedAt": "2026-11-15T19:47:11.329718+00:00",
   "items": [
     {
       "id": "boas-praticas-2026",
@@ -60,16 +60,20 @@
       "title": "Arena ND 2026",
       "partnerId": "pecege",
       "start": "2026-11-26",
-      "time": "13h30 às 17h30",
+      "time": "A partir das 13h30 · Sunset às 17h30",
       "location": "Instituto Pecege · Rua Cezira Giovanoni Moretti, 580",
       "topics": [
-        "inovacao"
+        "tecnologia",
+        "inovacao",
+        "empregabilidade",
+        "universidades"
       ],
-      "description": "Encontro de ideias, experiências e conexões para o desenvolvimento de negócios.",
-      "url": "https://parquetecnologico.piracicaba.sp.gov.br/events/arena-nd-2026",
+      "description": "Experiências e conversas sobre negócios digitais, criatividade, inteligência artificial e novas possibilidades de carreira.",
+      "url": "https://www.linka.la/event/arena-nd-2026-1o-edicao",
       "city": "Piracicaba",
-      "verifiedAt": "2026-11-14",
-      "modality": "Presencial"
+      "verifiedAt": "2026-11-15",
+      "modality": "Presencial",
+      "price": "Gratuito"
     },
     {
       "id": "alimentos-esalq-2026",
@@ -160,43 +164,6 @@
       "city": "Piracicaba",
       "verifiedAt": "2026-11-14",
       "modality": "Presencial"
-    },
-    {
-      "id": "jardim-genetico-2026",
-      "title": "Jardim genético: entre genes e plantas",
-      "partnerId": "esalq",
-      "start": "2026-11-14",
-      "url": "https://www.esalq.usp.br/evento/jardim-genetico-entre-genes-e-plantas/",
-      "topics": [
-        "ciencia",
-        "universidades"
-      ],
-      "location": "Departamento de Genética · ESALQ / USP",
-      "time": "9h às 14h",
-      "description": "Exposição de genética e diversidade vegetal aberta à comunidade.",
-      "price": "Gratuito",
-      "modality": "Presencial",
-      "city": "Piracicaba",
-      "verifiedAt": "2026-11-14"
-    },
-    {
-      "id": "pequenas-frutas-2026",
-      "title": "Dia de Campo: Pequenas Frutas",
-      "partnerId": "esalq",
-      "start": "2026-11-14",
-      "url": "https://www.esalq.usp.br/evento/dia-de-campo-pequenas-frutas/",
-      "topics": [
-        "ciencia",
-        "tecnologia",
-        "universidades"
-      ],
-      "location": "Anfiteatro Heitor Montenegro · Departamento de Produção Vegetal · ESALQ",
-      "time": "7h às 12h",
-      "description": "Atividade de campo e formação sobre pequenas frutas.",
-      "price": "Gratuito",
-      "modality": "Presencial",
-      "city": "Piracicaba",
-      "verifiedAt": "2026-11-14"
     },
     {
       "id": "consciencia-esalq-2026",
@@ -533,6 +500,139 @@
       "dates": [
         "2026-12-03"
       ]
+    },
+    {
+      "id": "automacao-ia-pecege-2026",
+      "title": "Automação com IA · Piracicaba",
+      "partnerId": "pecege",
+      "start": "2026-11-26",
+      "time": "26 e 27/11: 9h às 17h · 28/11: 9h às 13h",
+      "location": "Campus Pecege · Av. Cezira Giovanoni Moretti, 580",
+      "topics": [
+        "tecnologia",
+        "inovacao",
+        "empregabilidade"
+      ],
+      "description": "Imersão prática de 18 horas para criar agentes de IA e aplicar automação aos processos de negócios. Leve notebook.",
+      "url": "https://www.linka.la/event/007e525c-ba9c-4975-95e4-3aef1b8b191f",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-15",
+      "modality": "Presencial",
+      "end": "2026-11-28",
+      "dates": [
+        "2026-11-26",
+        "2026-11-27",
+        "2026-11-28"
+      ],
+      "price": "A partir de R$ 1.497,00"
+    },
+    {
+      "id": "todos-por-elas-2026",
+      "title": "Todos por Elas — Empreendedorismo Feminino",
+      "partnerId": "sebrae",
+      "start": "2026-11-24",
+      "time": "9h às 12h30",
+      "location": "Auditório do Sesc · Rua Ipiranga, 155",
+      "topics": [
+        "inovacao",
+        "empregabilidade"
+      ],
+      "description": "Encontro de empresárias com Aninha Barros sobre protagonismo, planejamento e conexões para empreender.",
+      "url": "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-celebra-o-dia-do-empreendedorismo-feminino-com-palestra-show-em-piracicaba/",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-15",
+      "modality": "Presencial",
+      "price": "Gratuito"
+    },
+    {
+      "id": "sebrae-fluxo-caixa-2026",
+      "title": "Fluxo de caixa para pequenos negócios",
+      "partnerId": "sebrae",
+      "start": "2026-11-16",
+      "time": "16h às 20h",
+      "location": "Sebrae · Av. Rui Barbosa, 132",
+      "topics": [
+        "inovacao",
+        "empregabilidade"
+      ],
+      "description": "Oficina de gestão financeira para empreendedores. Consulte as vagas na programação e o canal de inscrição indicado pelo organizador.",
+      "url": "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-15",
+      "modality": "Presencial",
+      "price": "Gratuito"
+    },
+    {
+      "id": "sebrae-instagram-2026",
+      "title": "Faça Digital — Instagram para negócios",
+      "partnerId": "sebrae",
+      "start": "2026-11-18",
+      "time": "8h às 12h",
+      "location": "Sebrae Aqui ACIPI · Rua Virgílio da Silva Fagundes, 534",
+      "topics": [
+        "tecnologia",
+        "inovacao"
+      ],
+      "description": "Oficina para desenvolver a presença digital de pequenos negócios. Consulte as vagas na programação e o canal de inscrição indicado pelo organizador.",
+      "url": "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-15",
+      "modality": "Presencial",
+      "price": "Gratuito"
+    },
+    {
+      "id": "sebrae-divulgacao-2026",
+      "title": "Divulgação e atração de clientes",
+      "partnerId": "sebrae",
+      "start": "2026-12-02",
+      "time": "8h às 12h",
+      "location": "Sebrae Aqui ACIPI · Rua Virgílio da Silva Fagundes, 534",
+      "topics": [
+        "inovacao",
+        "empregabilidade"
+      ],
+      "description": "Capacitação em comunicação comercial para empreendedores. Consulte as vagas na programação e o canal de inscrição indicado pelo organizador.",
+      "url": "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-15",
+      "modality": "Presencial",
+      "price": "Gratuito"
+    },
+    {
+      "id": "sebrae-tiktok-2026",
+      "title": "Faça Fácil — Vídeos que vendem no TikTok",
+      "partnerId": "sebrae",
+      "start": "2026-12-02",
+      "time": "19h às 21h",
+      "location": "ACIPI · Rua Prudente de Morais, 459",
+      "topics": [
+        "tecnologia",
+        "inovacao"
+      ],
+      "description": "Oficina de conteúdo digital aplicado às vendas. Consulte as vagas na programação e o canal de inscrição indicado pelo organizador.",
+      "url": "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-15",
+      "modality": "Presencial",
+      "price": "Gratuito"
+    },
+    {
+      "id": "longevidade-intelectual-2026",
+      "title": "Longevidade intelectual: aprender em um mundo em transformação",
+      "partnerId": "pecege",
+      "start": "2026-11-25",
+      "time": "19h às 21h",
+      "location": "Online ao vivo · MBX",
+      "topics": [
+        "universidades",
+        "empregabilidade"
+      ],
+      "description": "Conversa com Fátima Jinnyat sobre aprendizagem contínua, adaptação e novas possibilidades de atuação. Consulte as orientações de acesso.",
+      "url": "https://parquetecnologico.piracicaba.sp.gov.br/events/longevidade-intelectual-como-manter-a-curiosidade-em-um-mundo-em-transformacao",
+      "city": "Piracicaba",
+      "verifiedAt": "2026-11-15",
+      "modality": "Online",
+      "price": "Gratuito"
     }
   ]
 }

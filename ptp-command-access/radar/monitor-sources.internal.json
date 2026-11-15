@@ -1,203 +1,1655 @@
 {
-  "updatedAt": "2026-11-14",
-  "purpose": "Mapa interno de descoberta. Não publicar na vitrine nem carregar no frontend.",
-  "membershipSources": [
-    "https://conselhos.piracicaba.sp.gov.br/cmcti/os-conselheiros/",
-    "https://conselhos.piracicaba.sp.gov.br/cmcti/files/2023/01/CC3B3pia-da-PublicaC3A7C3A3o-3.pdf",
-    "https://conselhos.piracicaba.sp.gov.br/cmcti/files/2026/02/ATA-CMCTI-Dezembro-2025.docx-1-1.pdf"
-  ],
+  "schemaVersion": 2,
+  "updatedAt": "2026-11-15",
+  "purpose": "Mapa operacional interno. Não implantar no site nem carregar no frontend.",
+  "institutionalRule": "Lista inicial de monitoramento, não prova participação formal no CMCTI, vínculo com PTP ou operação atual. Validar existência, vínculo e canais separadamente.",
+  "groups": {
+    "A": "Poder público e governança",
+    "B": "Universidades, ensino e pesquisa",
+    "C": "Entidades empresariais e profissionais",
+    "D": "Ambientes de inovação e empreendedorismo",
+    "E": "Redes, comunidades e articulação",
+    "F": "Empresas e organizações tecnológicas"
+  },
   "entities": [
     {
-      "id": "obras",
-      "name": "Secretaria Municipal de Obras",
-      "query": "Secretaria Municipal de Obras Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "id": "cmcti",
+      "name": "CMCTI Piracicaba",
+      "group": "A",
+      "required": true,
+      "query": "CMCTI Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://conselhos.piracicaba.sp.gov.br/cmcti/contatos/"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://conselhos.piracicaba.sp.gov.br/cmcti/contatos/"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
+    },
+    {
+      "id": "prefeitura",
+      "name": "Prefeitura Municipal de Piracicaba",
+      "group": "A",
+      "required": true,
+      "query": "Prefeitura Municipal de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://piracicaba.sp.gov.br/lp/invest/guia-de-investimentos.html"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://piracicaba.sp.gov.br/lp/invest/guia-de-investimentos.html"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
     },
     {
       "id": "semdec",
-      "name": "Secretaria Municipal de Desenvolvimento Econômico, Indústria e Comércio",
-      "query": "Secretaria Municipal de Desenvolvimento Econômico, Indústria e Comércio Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "name": "SEMDEC e programas de apoio ao empreendedorismo",
+      "group": "A",
+      "required": true,
+      "query": "SEMDEC e programas de apoio ao empreendedorismo Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
     },
     {
-      "id": "sema",
-      "name": "Secretaria Municipal de Agricultura e Abastecimento",
-      "query": "Secretaria Municipal de Agricultura e Abastecimento Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "id": "inovacao-municipal",
+      "name": "Estruturas municipais de inovação",
+      "group": "A",
+      "required": true,
+      "query": "Estruturas municipais de inovação Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
     },
     {
       "id": "sme",
       "name": "Secretaria Municipal de Educação",
+      "group": "A",
+      "required": true,
       "query": "Secretaria Municipal de Educação Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "sema",
+      "name": "Secretaria municipal vinculada à agricultura",
+      "group": "A",
+      "required": true,
+      "query": "Secretaria municipal vinculada à agricultura Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "meio-ambiente",
+      "name": "Secretaria municipal vinculada ao meio ambiente",
+      "group": "A",
+      "required": true,
+      "query": "Secretaria municipal vinculada ao meio ambiente Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
     },
     {
       "id": "semad",
       "name": "Secretaria Municipal de Administração",
+      "group": "A",
+      "required": true,
       "query": "Secretaria Municipal de Administração Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "esalq",
-      "name": "ESALQ / USP",
-      "query": "ESALQ / USP Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "unimep",
-      "name": "Universidade Metodista de Piracicaba",
-      "query": "Universidade Metodista de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "fop",
-      "name": "FOP / Unicamp",
-      "query": "FOP / Unicamp Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "fumep",
-      "name": "FUMEP / EEP / COTIP",
-      "query": "FUMEP / EEP / COTIP Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "ifsp",
-      "name": "Instituto Federal de São Paulo — Campus Piracicaba",
-      "query": "Instituto Federal de São Paulo — Campus Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "cena",
-      "name": "CENA / USP",
-      "query": "CENA / USP Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "ciesp",
-      "name": "CIESP Piracicaba",
-      "query": "CIESP Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "acipi",
-      "name": "ACIPI",
-      "query": "ACIPI Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "aeap",
-      "name": "Associação dos Engenheiros e Arquitetos de Piracicaba",
-      "query": "Associação dos Engenheiros e Arquitetos de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "apm",
-      "name": "Associação Paulista de Medicina — Piracicaba",
-      "query": "Associação Paulista de Medicina — Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "apcd",
-      "name": "Associação Paulista de Cirurgiões-Dentistas — Piracicaba",
-      "query": "Associação Paulista de Cirurgiões-Dentistas — Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
     },
     {
       "id": "camara",
       "name": "Câmara Municipal de Piracicaba",
+      "group": "A",
+      "required": true,
       "query": "Câmara Municipal de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
     },
     {
-      "id": "comdema",
-      "name": "Conselho Municipal de Defesa do Meio Ambiente de Piracicaba",
-      "query": "Conselho Municipal de Defesa do Meio Ambiente de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "id": "conselhos",
+      "name": "Conselhos de desenvolvimento econômico, tecnologia e sustentabilidade",
+      "group": "A",
+      "required": true,
+      "query": "Conselhos de desenvolvimento econômico, tecnologia e sustentabilidade Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://conselhos.piracicaba.sp.gov.br/"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://conselhos.piracicaba.sp.gov.br/"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
     },
     {
-      "id": "ccecp",
-      "name": "Conselho Coordenador das Entidades Civis de Piracicaba",
-      "query": "Conselho Coordenador das Entidades Civis de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "id": "esalq",
+      "name": "ESALQ / USP",
+      "group": "B",
+      "required": true,
+      "query": "ESALQ / USP Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [
+          "https://www.esalq.usp.br/boletim/treinamento-aborda-boas-pr%C3%A1ticas-na-manipula%C3%A7%C3%A3o-de-alimentos-na-esalqusp",
+          "https://www.esalq.usp.br/2026/10/27/alimentos-na-esalq-tera-atracoes-interativas-oficinas-e-visitas-guiadas/",
+          "https://www.esalq.usp.br/2026/11/09/workshop-pae-2026-sera-realizado-no-proximo-dia-1o/",
+          "https://www.esalq.usp.br/2026/11/12/3a-feira-das-indicacoes-geograficas-aproxima-produtores-e-sociedade-na-esalq-usp/",
+          "https://www.esalq.usp.br/2026/11/13/usp-sensory-science-meeting-2026-promove-atualizacao-em-ciencia-sensorial/",
+          "https://www.esalq.usp.br/evento/v-encontro-para-consciencia-negra/",
+          "https://www.esalq.usp.br/evento/introducao-as-propriedades-do-papel/",
+          "https://www.esalq.usp.br/evento/brazil-china-scientific-and-technological-cooperation-connections-outcomes-and-opportunities-webinar/"
+        ]
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "cena",
+      "name": "CENA / USP",
+      "group": "B",
+      "required": true,
+      "query": "CENA / USP Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "fop",
+      "name": "FOP / Unicamp",
+      "group": "B",
+      "required": true,
+      "query": "FOP / Unicamp Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [
+          "https://www.fop.unicamp.br/2026/10/26/fop-promove-1a-semana-da-consciencia-negra-com-foco-no-letramento-racial-e-em-praticas-antirracistas/"
+        ]
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
     },
     {
       "id": "fatec",
-      "name": "Fatec Piracicaba",
-      "query": "Fatec Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "name": "FATEC Piracicaba",
+      "group": "B",
+      "required": true,
+      "query": "FATEC Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
     },
     {
-      "id": "apla",
-      "name": "Arranjo Produtivo Local do Álcool — APLA",
-      "query": "Arranjo Produtivo Local do Álcool — APLA Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "id": "ifsp",
+      "name": "IFSP Piracicaba",
+      "group": "B",
+      "required": true,
+      "query": "IFSP Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
     },
     {
-      "id": "simespi",
-      "name": "SIMESPI",
-      "query": "SIMESPI Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "id": "fumep",
+      "name": "FUMEP e Escola de Engenharia de Piracicaba",
+      "group": "B",
+      "required": true,
+      "query": "FUMEP e Escola de Engenharia de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://www.fumep.edu.br/noticia"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://www.fumep.edu.br/noticia"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
     },
     {
-      "id": "atepi",
-      "name": "ATEPI / Tinspira",
-      "query": "ATEPI / Tinspira Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "id": "unimep",
+      "name": "UNIMEP",
+      "group": "B",
+      "required": true,
+      "query": "UNIMEP Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
     },
     {
-      "id": "ptp",
-      "name": "Parque Tecnológico de Piracicaba",
-      "query": "Parque Tecnológico de Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "sebrae",
-      "name": "Sebrae Piracicaba",
-      "query": "Sebrae Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "senac",
-      "name": "Senac Piracicaba",
-      "query": "Senac Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
-    },
-    {
-      "id": "senai",
-      "name": "SENAI Piracicaba — unidades Centro e Vila Rezende",
-      "query": "SENAI Piracicaba — unidades Centro e Vila Rezende Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "id": "pecege",
+      "name": "Faculdade Pecege e Instituto Pecege",
+      "group": "B",
+      "required": true,
+      "query": "Faculdade Pecege e Instituto Pecege Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://www.linka.la/event/arena-nd-2026-1o-edicao"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://www.linka.la/event/arena-nd-2026-1o-edicao"
+        ],
+        "previousEventEvidence": [
+          "https://www.linka.la/event/arena-nd-2026-1o-edicao",
+          "https://www.linka.la/event/007e525c-ba9c-4975-95e4-3aef1b8b191f",
+          "https://parquetecnologico.piracicaba.sp.gov.br/events/longevidade-intelectual-como-manter-a-curiosidade-em-um-mundo-em-transformacao"
+        ]
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "confirmed_events_found",
+        "checkedAt": "2026-11-15"
+      }
     },
     {
       "id": "fealq",
       "name": "FEALQ",
+      "group": "B",
+      "required": true,
       "query": "FEALQ Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [
+          "https://fealq.org.br/cursos/gestao-de-carreira-da-vida-academica-ao-ambiente-corporativo/"
+        ]
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
     },
     {
-      "id": "pecege",
-      "name": "Instituto Pecege / Faculdade Pecege",
-      "query": "Instituto Pecege / Faculdade Pecege Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "id": "senai",
+      "name": "SENAI Piracicaba",
+      "group": "B",
+      "required": true,
+      "query": "SENAI Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
     },
     {
-      "id": "comunidade",
-      "name": "Comunidade de Inovação de Piracicaba / PiN",
-      "query": "Comunidade de Inovação de Piracicaba / PiN Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "id": "senac",
+      "name": "SENAC Piracicaba",
+      "group": "B",
+      "required": true,
+      "query": "SENAC Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://eventos.sp.senac.br/unidades/senac-piracicaba/"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://eventos.sp.senac.br/unidades/senac-piracicaba/"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
     },
     {
       "id": "uam",
       "name": "Universidade Anhembi Morumbi — Piracicaba",
+      "group": "B",
+      "required": true,
       "query": "Universidade Anhembi Morumbi — Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "acipi",
+      "name": "ACIPI e Inova ACIPI",
+      "group": "C",
+      "required": true,
+      "query": "ACIPI e Inova ACIPI Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [
+          "https://acipi.com.br/palestra-gratuita-na-acipi-apresenta-estrategias-para-empresas-enfrentarem-momentos-de-incerteza/"
+        ]
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "ciesp",
+      "name": "CIESP Piracicaba",
+      "group": "C",
+      "required": true,
+      "query": "CIESP Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "simespi",
+      "name": "SIMESPI",
+      "group": "C",
+      "required": true,
+      "query": "SIMESPI Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [
+          "https://simespi.com.br/cursos-palestras-2026-2-2/"
+        ]
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "apla",
+      "name": "APLA",
+      "group": "C",
+      "required": true,
+      "query": "APLA Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "atepi",
+      "name": "ATEPI",
+      "group": "C",
+      "required": true,
+      "query": "ATEPI Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "sebrae",
+      "name": "Sebrae",
+      "group": "C",
+      "required": true,
+      "query": "Sebrae Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/"
+        ],
+        "previousEventEvidence": [
+          "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-celebra-o-dia-do-empreendedorismo-feminino-com-palestra-show-em-piracicaba/",
+          "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/"
+        ]
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "confirmed_events_found",
+        "checkedAt": "2026-11-15"
+      }
+    },
+    {
+      "id": "aeap",
+      "name": "AEAP",
+      "group": "C",
+      "required": true,
+      "query": "AEAP Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "apcd",
+      "name": "APCD Piracicaba",
+      "group": "C",
+      "required": true,
+      "query": "APCD Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "apm",
+      "name": "APM Piracicaba",
+      "group": "C",
+      "required": true,
+      "query": "APM Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "ccecp",
+      "name": "Conselho Coordenador das Entidades Civis",
+      "group": "C",
+      "required": true,
+      "query": "Conselho Coordenador das Entidades Civis Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "ptp",
+      "name": "Parque Tecnológico Piracicaba",
+      "group": "D",
+      "required": true,
+      "query": "Parque Tecnológico Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://parquetecnologico.piracicaba.sp.gov.br/agendacolaborativa"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://parquetecnologico.piracicaba.sp.gov.br/agendacolaborativa"
+        ],
+        "previousEventEvidence": [
+          "https://parquetecnologico.piracicaba.sp.gov.br/events/piracicaba-em-transformacao-anamid",
+          "https://www.linka.la/event/agtech-day-10-anos-do-vale-do-piracicaba-uma-decada-de-inovacao-que-transformou-o-agro"
+        ]
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "confirmed_events_found",
+        "checkedAt": "2026-11-15"
+      }
+    },
+    {
+      "id": "nucleo-ptp",
+      "name": "Núcleo do PTP",
+      "group": "D",
+      "required": true,
+      "query": "Núcleo do PTP Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [],
+        "discoveryUrls": [
+          "https://parquetecnologico.piracicaba.sp.gov.br/sobre"
+        ],
+        "note": "Validar canal próprio, existência, operação e eventual vínculo separadamente; lista não comprova vínculo."
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "hub-piracicaba",
+      "name": "Hub Piracicaba",
+      "group": "D",
+      "required": true,
+      "query": "Hub Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [],
+        "discoveryUrls": [
+          "https://parquetecnologico.piracicaba.sp.gov.br/sobre"
+        ],
+        "note": "Validar canal próprio, existência, operação e eventual vínculo separadamente; lista não comprova vínculo."
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "park-lab",
+      "name": "Container ParkLab",
+      "group": "D",
+      "required": true,
+      "query": "Container ParkLab Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [],
+        "discoveryUrls": [
+          "https://parquetecnologico.piracicaba.sp.gov.br/sobre"
+        ],
+        "note": "Validar canal próprio, existência, operação e eventual vínculo separadamente; lista não comprova vínculo."
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "esalqtec",
+      "name": "ESALQTec",
+      "group": "D",
+      "required": true,
+      "query": "ESALQTec Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [],
+        "discoveryUrls": [
+          "https://parquetecnologico.piracicaba.sp.gov.br/sobre"
+        ],
+        "note": "Validar canal próprio, existência, operação e eventual vínculo separadamente; lista não comprova vínculo."
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "agtech-garage",
+      "name": "AgTech Garage",
+      "group": "D",
+      "required": true,
+      "query": "AgTech Garage Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [
+          "https://parquetecnologico.piracicaba.sp.gov.br/valedopiracicaba"
+        ],
+        "previousEventEvidence": [],
+        "note": "Confirmar denominação atual e evitar duplicação com PwC Agtech Innovation; aquisição histórica não confirma toda operação atual."
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      },
+      "possibleSuccessor": "pwc-agtech"
+    },
+    {
+      "id": "pulse",
+      "name": "Pulse / Raízen",
+      "group": "D",
+      "required": true,
+      "query": "Pulse / Raízen Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://www.pulsehub.com.br/"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://www.pulsehub.com.br/"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
+    },
+    {
+      "id": "pwc-agtech",
+      "name": "PwC Agtech Innovation",
+      "group": "D",
+      "required": true,
+      "query": "PwC Agtech Innovation Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://www.pwc.com.br/pt/consultoria/agtech-innovation/eventos.html"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://www.pwc.com.br/pt/consultoria/agtech-innovation/eventos.html"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
+    },
+    {
+      "id": "inova-park",
+      "name": "Inova Park",
+      "group": "D",
+      "required": true,
+      "query": "Inova Park Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [],
+        "discoveryUrls": [
+          "https://parquetecnologico.piracicaba.sp.gov.br/sobre"
+        ],
+        "note": "Validar canal próprio, existência, operação e eventual vínculo separadamente; lista não comprova vínculo."
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "avance-hub",
+      "name": "Avance Hub",
+      "group": "D",
+      "required": true,
+      "query": "Avance Hub Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [],
+        "discoveryUrls": [
+          "https://parquetecnologico.piracicaba.sp.gov.br/sobre"
+        ],
+        "note": "Validar canal próprio, existência, operação e eventual vínculo separadamente; lista não comprova vínculo."
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "gazebo",
+      "name": "Gazebo / Koppert",
+      "group": "D",
+      "required": true,
+      "query": "Gazebo / Koppert Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://www.koppert.com.br/sobre-a-koppert/koppert-do-brasil/"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://www.koppert.com.br/sobre-a-koppert/koppert-do-brasil/"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
+    },
+    {
+      "id": "pin",
+      "name": "PiN — Piracicaba Innovation",
+      "group": "E",
+      "required": true,
+      "query": "PiN — Piracicaba Innovation Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://invest.piracicaba.sp.gov.br/"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://invest.piracicaba.sp.gov.br/"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
     },
     {
       "id": "pira21",
       "name": "Pira 21",
+      "group": "E",
+      "required": true,
       "query": "Pira 21 Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
-      "coverage": "incluída na varredura; registrar resultado por execução"
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "vale-piracicaba",
+      "name": "Vale do Piracicaba",
+      "group": "E",
+      "required": true,
+      "query": "Vale do Piracicaba Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "corredor-agro",
+      "name": "Corredor de Inovação Agropecuária do Estado de São Paulo",
+      "group": "E",
+      "required": true,
+      "query": "Corredor de Inovação Agropecuária do Estado de São Paulo Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [],
+        "discoveryUrls": [
+          "https://pecege.com/noticias/agrimissao-tecnica-agrihub-percorre-corredor-agro-e-aproxima-ecossistemas-de-inovacao-de-sao-paulo-e-mato-grosso"
+        ]
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "tinspira",
+      "name": "Tinspira / CPL TIC",
+      "group": "E",
+      "required": true,
+      "query": "Tinspira / CPL TIC Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "devpira",
+      "name": "DEVPIRA",
+      "group": "E",
+      "required": true,
+      "query": "DEVPIRA Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "wbgi",
+      "name": "WBGI",
+      "group": "E",
+      "required": true,
+      "query": "WBGI Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [],
+        "discoveryUrls": [
+          "https://parquetecnologico.piracicaba.sp.gov.br/sobre"
+        ],
+        "note": "Validar canal próprio, existência, operação e eventual vínculo separadamente; lista não comprova vínculo."
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "raizen",
+      "name": "Raízen",
+      "group": "F",
+      "required": true,
+      "query": "Raízen Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "caterpillar",
+      "name": "Caterpillar",
+      "group": "F",
+      "required": true,
+      "query": "Caterpillar Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [],
+        "discoveryUrls": [
+          "https://piracicaba.sp.gov.br/lp/invest/guia-de-investimentos.html"
+        ]
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "ctc",
+      "name": "CTC",
+      "group": "F",
+      "required": true,
+      "query": "CTC Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [],
+        "discoveryUrls": [
+          "https://piracicaba.sp.gov.br/lp/invest/guia-de-investimentos.html"
+        ]
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "genica",
+      "name": "Gênica",
+      "group": "F",
+      "required": true,
+      "query": "Gênica Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://genica.com.br/fale-conosco/"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://genica.com.br/fale-conosco/"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
+    },
+    {
+      "id": "smartbreeder",
+      "name": "Smartbreeder",
+      "group": "F",
+      "required": true,
+      "query": "Smartbreeder Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://www.smartbreeder.com.br/contato"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://www.smartbreeder.com.br/contato"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
+    },
+    {
+      "id": "ideelab",
+      "name": "IdeeLab",
+      "group": "F",
+      "required": true,
+      "query": "IdeeLab Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://ideelab.com.br/contato/"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://ideelab.com.br/contato/"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
+    },
+    {
+      "id": "brcarbon",
+      "name": "BRCarbon",
+      "group": "F",
+      "required": true,
+      "query": "BRCarbon Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://brcarbon.com.br/contato/"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://brcarbon.com.br/contato/"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
+    },
+    {
+      "id": "delta-co2",
+      "name": "DELTA CO2",
+      "group": "F",
+      "required": true,
+      "query": "DELTA CO2 Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [],
+        "discoveryUrls": [
+          "https://www.esalq.usp.br/boletim/node/876"
+        ],
+        "note": "Evidência histórica de 2014 não confirma operação atual."
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "ccarbon",
+      "name": "C Carbon",
+      "group": "F",
+      "required": true,
+      "query": "C Carbon Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://ccarbon.usp.br/pt/"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://ccarbon.usp.br/pt/"
+        ],
+        "previousEventEvidence": [],
+        "note": "Fonte USP identifica centro de pesquisa; não classificar automaticamente como empresa."
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      },
+      "organizationType": "research_center"
+    },
+    {
+      "id": "neocert",
+      "name": "Neo Cert",
+      "group": "F",
+      "required": true,
+      "query": "Neo Cert Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://neocert.com.br/"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://neocert.com.br/"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
+    },
+    {
+      "id": "universidade-carbono",
+      "name": "Universidade do Carbono",
+      "group": "F",
+      "required": true,
+      "query": "Universidade do Carbono Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [
+        "https://universidadedocarbono.com/"
+      ],
+      "validation": {
+        "status": "official_source_identified",
+        "checkedAt": "2026-11-15",
+        "evidenceUrls": [
+          "https://universidadedocarbono.com/"
+        ],
+        "previousEventEvidence": []
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "partial_research",
+        "checkedAt": "2026-11-15"
+      }
+    },
+    {
+      "id": "residentes-ptp",
+      "name": "Empresas residentes, associadas ou participantes de programas do PTP",
+      "group": "F",
+      "required": true,
+      "query": "Empresas residentes, associadas ou participantes de programas do PTP Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
+      "channels": [],
+      "validation": {
+        "status": "pending_validation",
+        "checkedAt": null,
+        "evidenceUrls": [],
+        "previousEventEvidence": [],
+        "discoveryUrls": [
+          "https://parquetecnologico.piracicaba.sp.gov.br/sobre"
+        ],
+        "note": "Validar canal próprio, existência, operação e eventual vínculo separadamente; lista não comprova vínculo."
+      },
+      "relationships": {
+        "cmctiMembership": "not_asserted",
+        "ptpAffiliation": "not_asserted",
+        "currentOperation": "validate_separately"
+      },
+      "lastScan": {
+        "status": "pending",
+        "checkedAt": null
+      }
+    },
+    {
+      "id": "sesc",
+      "name": "Sesc Piracicaba",
+      "group": "B",
+      "required": false,
+      "discoveredAt": "2026-11-15",
+      "query": "Sesc Piracicaba ciência educação pesquisa eventos",
+      "channels": [
+        "https://www.sescsp.org.br/editorial/conipe2026/"
+      ],
+      "validation": {
+        "status": "pending_page_access",
+        "evidenceUrls": [
+          "https://www.sescsp.org.br/editorial/conipe2026/"
+        ]
+      },
+      "lastScan": {
+        "status": "source_unavailable",
+        "checkedAt": "2026-11-15",
+        "note": "Pesquisa encontrou CONIPE 25–27/11/2026; abertura retornou 403. Evento não publicado nesta entrega."
+      }
+    }
+  ],
+  "discoveryScopes": [
+    "Outras IES e ICTs com atividades relevantes em Piracicaba",
+    "Organizações empresariais e associações profissionais",
+    "Hubs, incubadoras, aceleradoras e espaços de inovação",
+    "Comunidades de startups, tecnologia, inovação e empreendedorismo",
+    "Redes de investidores e organizações de fomento",
+    "Empresas e startups do ecossistema; residentes, associadas e participantes de programas PTP"
+  ],
+  "sourceTypes": [
+    "Sites oficiais e agendas institucionais",
+    "Notícias e comunicados dos organizadores",
+    "LinkedIn e Instagram institucionais públicos",
+    "Inscrição e programação oficial; Sympla, Linka, Eventiza e outras plataformas",
+    "Calendários públicos universitários",
+    "Portais públicos de editais, inovação aberta e empreendedorismo",
+    "Núcleos, laboratórios e grupos de pesquisa",
+    "Páginas de eventos de startups, empresas e associações",
+    "Imprensa local para descoberta e confirmação adicional"
+  ],
+  "pendingEvents": [
+    {
+      "event": "IFSP — Noite de Astronomia",
+      "reason": "Datas 14/11 e 15/11 conflitantes; não publicar sem confirmação."
+    },
+    {
+      "event": "SIMESPI — Atrair, liderar e reter",
+      "reason": "Programa institucional indica 17/11; página Sympla tem cabeçalho 11/11 e texto 17/11. Preservado link institucional existente; reconferir antes do evento."
+    },
+    {
+      "event": "FATEC — atividades do calendário acadêmico",
+      "reason": "Confirmar sessão e acesso público antes de incluir."
+    },
+    {
+      "event": "Senac — jornadas estaduais",
+      "reason": "Não substituir confirmação de programação em Piracicaba por data estadual."
     }
   ]
 }
