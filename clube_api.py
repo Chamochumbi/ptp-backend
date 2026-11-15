@@ -943,7 +943,11 @@ def benefit_redemption_channel(offer_id: int, u=Depends(require("employee","mana
              "coupon": "PA554BR357"},
         25: {"coupon": "ANNYPTP"}
     }
-    if offer_id < 1 or offer_id > 25:
+    if offer_id < 1:
+        raise HTTPException(404,"Oferta não encontrada")
+    with db() as c:
+        offer=c.execute("select id from ptp_benefits where id=%s and active=true",(str(offer_id),)).fetchone()
+    if not offer:
         raise HTTPException(404,"Oferta não encontrada")
     return privileged.get(offer_id,{})
 
