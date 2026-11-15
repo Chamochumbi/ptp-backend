@@ -674,11 +674,18 @@ def admin_overview(u=Depends(require("admin"))):
              from ptp_users where role='provider'""").fetchone()
         provider_requests=c.execute("""select count(*) total from ptp_applications
              where application_type='provider' and status in ('pending','under_review')""").fetchone()
+        benefits = c.execute("""select count(*) as total,
+          count(*) filter(where active) as active from ptp_benefits""").fetchone()
+        redemptions = c.execute("""select count(*) as total,
+          count(*) filter(where status='requested') as requested,
+          count(*) filter(where status='confirmed') as confirmed,
+          count(*) filter(where status='cancelled') as cancelled
+          from ptp_redemptions""").fetchone()
     return {"companies":dict(companies),"users":dict(users),
             "providers":{"total":providers["total"],"active":providers["active"],
                          "pending_applications":provider_requests["total"],"count_basis":"contas de ofertantes"},
             "pending_applications":pending["total"],"pending_invites":outstanding["total"],
-            "offers":None,"redemptions":None,"financial":None}
+            "offers":dict(benefits),"redemptions":dict(redemptions),"financial":None}
 
 
 @app.get("/admin/operations/pulse")
@@ -1098,7 +1105,7 @@ def import_benefit_catalog(data:BenefitCatalogImport,u=Depends(require("admin"))
     return {"imported":len(data.benefits),"message":"Catálogo gravado no banco do Clube"}
 
 
-# Central catalog: database wins; the published 25-offer snapshot is a bootstrap-only fallback.
+# Central catalog: PostgreSQL plus official snapshot; new offers remain visible before authorized database import.
 CATALOG_SEED_URL="https://headless-uydjfwgjdgr-pedrousinae-140b.wix-site-host.com/assets/ofertas-publicas.json"
 
 @app.get("/catalog")
