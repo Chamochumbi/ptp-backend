@@ -716,7 +716,7 @@ def admin_operations_pulse(u=Depends(require("admin"))):
 @app.get("/me/eligibility")
 def account_eligibility(u=Depends(principal)):
     company_verified=u["role"]=="admin"
-    if u["company_id"] is not None:
+    if u["role"]!="admin" and u["company_id"] is not None:
         with db() as c:
             company=c.execute("select active from ptp_companies where id=%s",(u["company_id"],)).fetchone()
             company_verified=bool(company and company["active"])
