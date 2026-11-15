@@ -373,5 +373,20 @@
     "partner": "AnnyIA",
     "needsValidation": false,
     "public_action": "Consultar condições e solicitar habilitação"
+  },
+  {
+    "id": 26,
+    "title": "FalaBoss — Recrutamento",
+    "group": "Parceiros",
+    "category": "Recursos Humanos",
+    "description": "Acesso gratuito à plataforma FalaBoss até 31/12/2027, incluindo publicação de vagas, contato com candidatos e suporte de headhunting.",
+    "action": "Ativar acesso FalaBoss",
+    "status": "Benefício declarado",
+    "conditions": "Para startups, empreendedores e empresas residentes ou associadas ao PTP, mediante CNPJ. Cadastro pelo link exclusivo.",
+    "page": 32,
+    "logo": "assets/logos/26.png",
+    "partner": "FalaBoss",
+    "needsValidation": false,
+    "public_action": "Consultar condições e ativar benefício"
   }
 ]
