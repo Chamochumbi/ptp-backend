@@ -1,0 +1,47 @@
+[
+  {
+    "label": "♧ Vitrine de Talentos",
+    "url": "https://headless-imjmmxsthlj-pedrousinae-140b.wix-site-host.com/index.html#ecTalentDirectory",
+    "view": "Entrar / criar conta\n    - generic: Visitante\n  - heading \"Vitrine de Talentos\" [level=2]\n  - paragraph: Perfis e currículos profissionais publicados por seus titulares. O menu de navegação do ecossistema permanece disponível.\n  - button \"Cadastrar ou atualizar currículo →\"\n  - iframe\n- status"
+  },
+  {
+    "label": "▣ Vitrine de Empresas",
+    "url": "https://headless-imjmmxsthlj-pedrousinae-140b.wix-site-host.com/index.html#ecCompaniesDirectory",
+    "view": "Entrar / criar conta\n    - generic: Visitante\n  - heading \"Vitrine de Empresas\" [level=2]\n  - paragraph: Organizações e empresas que autorizaram a divulgação de suas fichas institucionais e foram publicadas por seus representantes.\n  - button \"Cadastrar empresa →\"\n  - button \"Atualizar vitrine ↻\"\n  - generic: Nenhum cadastro publicado nesta vitrine até o momento. A divulgação depende da escolha do responsável pela ficha.\n- status"
+  },
+  {
+    "label": "◉ Vitrine de Comunidades",
+    "url": "https://headless-imjmmxsthlj-pedrousinae-140b.wix-site-host.com/index.html#ecCommunitiesDirectory",
+    "view": "Entrar / criar conta\n    - generic: Visitante\n  - heading \"Vitrine de Comunidades\" [level=2]\n  - paragraph: Comunidades publicadas por seus representantes, redes e canais de participação.\n  - generic: Nenhum cadastro publicado nesta vitrine até o momento. A divulgação depende da escolha do responsável pela ficha.\n- status"
+  },
+  {
+    "label": "✧ Vitrine de Projetos / Startups",
+    "url": "https://headless-imjmmxsthlj-pedrousinae-140b.wix-site-host.com/index.html#ecProjects",
+    "view": "Entrar / criar conta\n    - generic: Visitante\n  - generic: VITRINE DE PROJETOS\n  - heading \"Projetos e startups do ecossistema\" [level=2]\n  - paragraph: Projetos com autorização expressa do proponente e aprovação da curadoria.\n  - button \"Cadastrar projeto\"\n  - button \"Explorar conexões\"\n  - heading \"Nenhuma publicação disponível\" [level=3]\n  - paragraph: Não exibimos registros pendentes ou privados.\n  - heading \"Empresas e startups em destaque\" [level=2]\n  - paragraph: Somente perfis institucionais aprovados.\n  - generic: Ainda não existem empresas com ficha pública nesta vitrine.\n- status"
+  },
+  {
+    "label": "✦ Vitrine NEXT",
+    "url": "https://headless-imjmmxsthlj-pedrousinae-140b.wix-site-host.com/index.html#ecNext",
+    "view": "Entrar / criar conta\n    - generic: Visitante\n  - generic: VITRINE DE PROJETOS\n  - heading \"Vitrine NEXT\" [level=2]\n  - paragraph: Projetos com autorização expressa do proponente e aprovação da curadoria.\n  - button \"Cadastrar projeto\"\n  - button \"Explorar conexões\"\n  - heading \"Nenhuma publicação disponível\" [level=3]\n  - paragraph: Não exibimos registros pendentes ou privados.\n  - heading \"Empresas e startups em destaque\" [level=2]\n  - paragraph: Somente perfis institucionais aprovados.\n  - generic: Ainda não existem empresas com ficha pública nesta vitrine.\n- status"
+  },
+  {
+    "label": "◌ Vitrine Escola de Inovadores",
+    "url": "https://headless-imjmmxsthlj-pedrousinae-140b.wix-site-host.com/index.html#ecEscola",
+    "view": "Entrar / criar conta\n    - generic: Visitante\n  - generic: VITRINE DE PROJETOS\n  - heading \"Vitrine Escola de Inovadores\" [level=2]\n  - paragraph: Projetos com autorização expressa do proponente e aprovação da curadoria.\n  - button \"Cadastrar projeto\"\n  - button \"Explorar conexões\"\n  - heading \"Nenhuma publicação disponível\" [level=3]\n  - paragraph: Não exibimos registros pendentes ou privados.\n  - heading \"Empresas e startups em destaque\" [level=2]\n  - paragraph: Somente perfis institucionais aprovados.\n  - generic: Ainda não existem empresas com ficha pública nesta vitrine.\n- status"
+  },
+  {
+    "label": "▤ Vitrine de Vagas",
+    "url": "https://headless-imjmmxsthlj-pedrousinae-140b.wix-site-host.com/index.html#ecJobs",
+    "view": "Entrar / criar conta\n    - generic: Visitante\n  - generic: PRATELEIRA DE VAGAS\n  - heading \"Oportunidades profissionais\" [level=2]\n  - paragraph: Vagas publicadas e aprovadas por empresas do ecossistema.\n  - heading \"Seu próximo passo profissional começa aqui.\" [level=2]\n  - paragraph: Busque oportunidades por setor, localização e competências e conecte-se com a empresa responsável.\n  - button \"Cadastrar CV →\"\n  - button \"Publicar vaga →\"\n  - textbox \"Buscar vagas por competência ou setor\"\n  - heading \"Nenhuma vaga aprovada\" [level=3]\n  - paragraph: Vagas pendentes não são exibidas.\n- status"
+  },
+  {
+    "label": "⚑ Vitrine de Desafios",
+    "url": "https://headless-imjmmxsthlj-pedrousinae-140b.wix-site-host.com/index.html#ecChallenges",
+    "view": "Entrar / criar conta\n    - generic: Visitante\n  - generic: PRATELEIRA DE INOVAÇÃO\n  - heading \"Desafios empresariais\" [level=2]\n  - paragraph: Desafios cadastrados por empresas, com premiação opcional, prazos, requisitos e curadoria.\n  - button \"＋ Lançar desafio\"\n  - button \"Encontrar solucionadores →\"\n  - textbox \"Buscar desafios por setor, tecnologia ou prêmio\"\n  - heading \"Nenhuma publicação disponível\" [level=3]\n  - paragraph: Não exibimos registros pendentes ou privados.\n- status"
+  },
+  {
+    "label": "♙ Mentores do Ecossistema",
+    "url": "https://headless-imjmmxsthlj-pedrousinae-140b.wix-site-host.com/index.html#fxMentors",
+    "view": "Entrar / criar conta\n    - generic: Visitante\n  - generic: MENTORES E ESPECIALISTAS · PTP\n  - heading \"Vitrine de Mentores\" [level=2]\n  - paragraph: Encontre profissionais que escolheram divulgar suas especialidades e canais profissionais. A conexão é direta, sem intermediação obrigatória do PTP.\n  - button \"Cadastrar ou atualizar meu perfil\"\n  - button \"Atualizar vitrine ↻\"\n  - textbox \"Buscar mentores\":\n    - /placeholder: Buscar nome, especialidade, organização ou município\n  - generic: Ainda não há mentores com ficha pública. Cadastre seu perfil e escolha se deseja aparecer na vitrine.\n  - paragraph: 0 perfil(is) público(s)\n- status"
+  }
+]

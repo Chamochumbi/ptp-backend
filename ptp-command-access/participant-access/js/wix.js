@@ -7,12 +7,16 @@ let sdkClient;
 let refreshing;
 let visitorPending;
 let verificationState=null;
+let authEpoch=0;
+export const sessionVersion=()=>authEpoch;
+function assertSession(epoch){if(epoch!==authEpoch||!memberToken())throw new WixError('Sua sessão mudou. Entre novamente antes de continuar.',401,'SESSION_CHANGED');}
 const DIRECT_KEY='ptp:v2:direct-login';
 export class WixError extends Error{constructor(message,status,code){super(message);this.name='WixError';this.status=status;this.code=code;}}
 function load(key){try{return JSON.parse(sessionStorage.getItem(key)||'null')}catch{return null}}
-function save(key,value){sessionStorage.setItem(key,JSON.stringify(value));}
-export async function request(url,{method='GET',body,token}={}){
-  if(token&&token===memberToken())token=await validMemberToken();
+function save(key,value,{renew=false}={}){sessionStorage.setItem(key,JSON.stringify(value));if(key===KEYS.member&&!renew)authEpoch++;}
+export async function request(url,{method='GET',body,token,sessionEpoch}={}){
+  const expected=sessionEpoch??(token&&token===memberToken()?authEpoch:undefined);
+  if(expected!==undefined){assertSession(expected);token=await validMemberToken();assertSession(expected);}
   const headers={'Content-Type':'application/json'};
   if(token)headers.Authorization=token;
   const controller=new AbortController();
@@ -26,7 +30,8 @@ export async function request(url,{method='GET',body,token}={}){
     if(write)throw new WixError('Não foi possível confirmar a gravação. Confira seus registros antes de reenviar.',0,'UNCERTAIN_WRITE');
     throw new WixError(controller.signal.aborted?'O serviço demorou para responder. Tente novamente.':'Não foi possível acessar o serviço. Confira sua conexão.',0,controller.signal.aborted?'TIMEOUT':'NETWORK');
   }finally{clearTimeout(deadline);}
-  if(!response.ok){const msg=String(data.message||data.error_description||'Não foi possível concluir a operação').slice(0,220);throw new WixError(msg,response.status,data.details?.applicationError?.code||'WIX_API');}
+  if(expected!==undefined)assertSession(expected);
+  if(!response.ok){if(response.status===401&&expected!==undefined)logout();const msg=String(data.message||data.error_description||'Não foi possível concluir a operação').slice(0,220);throw new WixError(msg,response.status,data.details?.applicationError?.code||'WIX_API');}
   return data;
 }
 export async function visitorToken(){
@@ -186,16 +191,17 @@ export async function validMemberToken(){
     const client=await sdk();const next=await client.auth.renewToken(current.refreshToken);
     if(load(KEYS.member)?.refreshToken?.value!==current.refreshToken.value)throw new Error('A conta foi alterada. Tente novamente.');
     if(!next?.accessToken?.value)throw new Error('Não foi possível renovar sua sessão.');
-    save(KEYS.member,next);client.auth.setTokens(next);return next.accessToken.value;
+    save(KEYS.member,next,{renew:true});client.auth.setTokens(next);return next.accessToken.value;
   })().finally(()=>{refreshing=undefined;});
   return refreshing;
 }
 export function logout(){
-  verificationState=null;
+  verificationState=null;authEpoch++;
   sessionStorage.removeItem(KEYS.member);
   sessionStorage.removeItem(KEYS.oauth);
   sessionStorage.removeItem(DIRECT_KEY);
   sdkClient=undefined;
+  if(typeof document!=='undefined'&&typeof CustomEvent==='function')document.dispatchEvent(new CustomEvent('ptp:session-cleared'));
 }
 export function memberToken(){return load(KEYS.member)?.accessToken?.value||'';}
 export async function adminRequest(path,body={}){
@@ -217,34 +223,37 @@ export const adminQuery=collection=>adminRequest('query',{collection});
 export const adminReview=(id,status)=>adminRequest('review',{id,status});
 export const adminPublish=id=>adminRequest('publish',{id});
 export async function myMember(){
-  const token=memberToken();if(!token)return null;
-  try{const res=await request('/members/v1/members/my?fieldsets=FULL',{token});return res.member||null;}
-  catch(e){if(e.status===403){const simpler=await request('/members/v1/members/my',{token});return simpler.member||null;}if(e.status===401)logout();throw e;}
+  const token=memberToken(),epoch=authEpoch;if(!token)return null;
+  try{const res=await request('/members/v1/members/my?fieldsets=FULL',{token,sessionEpoch:epoch});return res.member||null;}
+  catch(e){if(e.status===403){const simpler=await request('/members/v1/members/my',{token,sessionEpoch:epoch});return simpler.member||null;}if(e.status===401&&epoch===authEpoch)logout();throw e;}
 }
 export async function cmsQuery(collection,{authenticated=false,limit=100}={}){
-  const token=authenticated?memberToken():await visitorToken();
+  if(!Number.isInteger(limit)||limit<1||limit>100)throw new WixError('Use páginas de 1 a 100 registros.',400,'INVALID_PAGE_SIZE');
+  const epoch=authenticated?authEpoch:undefined,token=authenticated?memberToken():await visitorToken();
   if(!token)throw new WixError('Entre na sua conta PTP para acessar estes dados.',401,'LOGIN_REQUIRED');
   let records=[],total=0;
   for(let offset=0;offset<2000;offset+=limit){
     const payload={dataCollectionId:collection,query:{paging:{limit,offset}},returnTotalCount:true};
-    const result=await request('/wix-data/v2/items/query',{method:'POST',body:payload,token});
-    const batch=result.dataItems||[];
+    const result=await request('/wix-data/v2/items/query',{method:'POST',body:payload,token,sessionEpoch:epoch});
+    if(!Array.isArray(result.dataItems))throw new WixError('O serviço retornou dados incompletos. Tente novamente.',502,'INVALID_RESPONSE');
+    const batch=result.dataItems;
     records.push(...batch);const advertised=Number(result.pagingMetadata?.total??result.pagingMetadata?.totalCount??0);if(Number.isFinite(advertised)&&advertised>0)total=advertised;
     if(batch.length<limit||(total>0&&records.length>=total))break;
   }
+  if(records.length>=2000&&(total===0||total>records.length))throw new WixError('A consulta excedeu o limite de registros. Solicite uma consulta filtrada à gestão.',413,'RESULT_LIMIT');
   return {items:records,total};
 }
 export async function cmsInsert(collection,data,{authenticated=false}={}){
-  const token=authenticated?memberToken():await visitorToken();
+  const epoch=authenticated?authEpoch:undefined,token=authenticated?memberToken():await visitorToken();
   if(!token)throw new WixError('Entre na sua conta PTP antes de salvar.',401,'LOGIN_REQUIRED');
-  const result=await request('/wix-data/v2/items',{method:'POST',body:{dataCollectionId:collection,dataItem:{data}},token});
+  const result=await request('/wix-data/v2/items',{method:'POST',body:{dataCollectionId:collection,dataItem:{data}},token,sessionEpoch:epoch});
   if(!result?.dataItem?.id)throw new WixError('O Wix não devolveu o protocolo. Não reenvie sem conferir o registro.',0,'UNCERTAIN_WRITE');
   return result.dataItem;
 }
 export async function cmsPatch(collection,id,fields){
-  const token=memberToken();if(!token)throw new WixError('Autenticação necessária.',401,'LOGIN_REQUIRED');
+  const epoch=authEpoch,token=memberToken();if(!token)throw new WixError('Autenticação necessária.',401,'LOGIN_REQUIRED');
   const fieldModifications=Object.entries(fields).map(([fieldPath,value])=>({fieldPath,action:'SET_FIELD',setFieldOptions:{value}}));
-  return request('/wix-data/v2/items/'+encodeURIComponent(id),{method:'PATCH',body:{dataCollectionId:collection,patch:{dataItemId:id,fieldModifications}},token});
+  return request('/wix-data/v2/items/'+encodeURIComponent(id),{method:'PATCH',body:{dataCollectionId:collection,patch:{dataItemId:id,fieldModifications}},token,sessionEpoch:epoch});
 }
 export function fileThumbnail(file){
   if(!file)return Promise.resolve('');

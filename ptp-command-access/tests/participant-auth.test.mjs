@@ -107,3 +107,26 @@ test('unexpected error codes cannot resolve inherited object properties',async()
   assert.equal((await e.api.accountAuth('login','test@example.invalid','synthetic')).errorCode,'serviceUnavailable');
  }
 });
+
+test('logout invalidates a private response already in flight',async()=>{
+ let resolve,started;const ready=new Promise(r=>started=r);const e=await setup({stored:{[memberKey]:{accessToken:{value:'test-member',expiresAt:Date.now()/1000+3600},refreshToken:{value:'refresh'}}}});
+ e.context.fetch=async()=>({ok:true,status:200,json:()=>{started();return new Promise(r=>resolve=r);}});
+ const pending=e.api.cmsQuery('PTPPerfisUsuarios',{authenticated:true});await ready;e.api.logout();resolve({dataItems:[{id:'private-a'}]});await assert.rejects(pending,err=>err.code==='SESSION_CHANGED');
+});
+test('a private 401 clears the session and notifies dependent modules',async()=>{
+ const e=await setup({stored:{[memberKey]:expired}}),events=[];e.context.CustomEvent=class{constructor(type){this.type=type;}};e.context.document={dispatchEvent:e=>events.push(e.type)};
+ e.context.fetch=async()=>({ok:false,status:401,json:async()=>({message:'Expired'})});await assert.rejects(e.api.cmsQuery('PTPPerfisUsuarios',{authenticated:true}),err=>err.status===401);assert.equal(e.api.memberToken(),'');assert.deepEqual(events,['ptp:session-cleared']);
+});
+test('pagination cannot continue with a captured token after logout',async()=>{
+ const e=await setup({stored:{[memberKey]:{accessToken:{value:'member-a',expiresAt:Date.now()/1000+3600}}}});let calls=0;
+ e.context.fetch=async()=>{calls++;return {ok:true,status:200,json:async()=>{e.api.logout();return {dataItems:Array.from({length:100},(_,i)=>({id:String(i)})),pagingMetadata:{total:200}};}};};
+ await assert.rejects(e.api.cmsQuery('PTPPerfisUsuarios',{authenticated:true}),err=>err.code==='SESSION_CHANGED');assert.equal(calls,1);
+});
+test('invalid pagination and incomplete server responses cannot masquerade as empty data',async()=>{
+ const e=await setup({respond:()=>({})});for(const limit of [0,-1,101,1.5])await assert.rejects(e.api.cmsQuery('PTPVitrinesPublicas',{limit}),err=>err.code==='INVALID_PAGE_SIZE');assert.equal(e.calls.length,0);
+ e.context.fetch=async(url)=>({ok:true,status:200,json:async()=>url.endsWith('/oauth2/token')?{access_token:'visitor',expires_in:3600}:{unexpected:true}});await assert.rejects(e.api.cmsQuery('PTPVitrinesPublicas'),err=>err.code==='INVALID_RESPONSE');
+});
+test('record cap is surfaced instead of silently returning partial results',async()=>{
+ const e=await setup({stored:{[memberKey]:{accessToken:{value:'member-a',expiresAt:Date.now()/1000+3600}}},respond:()=>({dataItems:Array.from({length:100},(_,i)=>({id:String(i)})),pagingMetadata:{total:2001}})});
+ await assert.rejects(e.api.cmsQuery('PTPPerfisUsuarios',{authenticated:true}),err=>err.code==='RESULT_LIMIT');assert.equal(e.calls.length,20);
+});
