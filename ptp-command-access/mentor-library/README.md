@@ -1,6 +1,34 @@
+# Biblioteca e Mentoria NEXT — revisão de 15/11/2026
+
+## Entrega publicada e verificada
+
+Publicação `6ba26812-8def-4fbe-a9b6-e995c6159d0e`, hash `3216522267`: substituição de `ptp_mentor_next.js` (130.937 bytes). Os 71 arquivos do site foram preservados. O conteúdo foi relido e comparado com a revisão testada.
+
+- Histórico e ciclos locais separados pelo ID de membro confirmado pelo módulo de conta. Enquanto a identidade carrega ou o token está ausente, não são lidos nem gravados registros de uma conta presumida.
+- Troca de conta limpa estado, resposta selecionada e plano da tela. Registros antigos sem identidade continuam no modo visitante, explicitamente compartilhados neste navegador; não são atribuídos automaticamente a uma conta.
+- Rascunho da pergunta e contexto recuperáveis após recarregar a mesma aba, via sessionStorage separado por contexto. Não há promessa de recuperação após fechar a aba ou em outro dispositivo.
+- Importação de backup interrompida se a identidade mudar durante a leitura, inclusive quando retorna à conta original. Documentos anteriores e dados corrompidos são preservados.
+- Converter a mesma consulta em plano abre o ciclo existente, preservando edições. Um novo plano é salvo já preenchido, em uma revisão, sem ciclo vazio intermediário.
+- Biblioteca com filtro por tipo de material, combinado com tema, origem e busca. Artigos acadêmicos, curso universitário, aulas e guias podem ser localizados diretamente.
+- Compilação verifica consistência do catálogo externo, URLs HTTPS sem credenciais, IDs de temas e referências existentes.
+
+## Validação
+
+159 testes aprovados: `node --experimental-vm-modules --test tests/*.test.mjs`. Treze casos novos cobrem contextos de contas, rascunhos, expiração de token, importações assíncronas, plano único e filtros da biblioteca. Os fluxos de conta são simulados, sem uso de credenciais reais.
+
+No site publicado: rascunho preservado após recarregar; orientação sobre MVP com referências; criação e reabertura do mesmo plano com nome editado; preservação dos dois ciclos antigos de teste; biblioteca com quatro artigos acadêmicos, um curso universitário e 128 materiais ao limpar os filtros. Nenhum erro do módulo foi retornado pelo filtro de console durante esses fluxos. Evidência visual em `verification-library.jpg`.
+
+## Limites e próximos bloqueios
+
+O armazenamento é local, sem criptografia e sem sincronização no servidor. A separação de chaves reduz mistura acidental entre contas na interface, mas não é uma fronteira de autorização contra acesso ao dispositivo, ferramentas de desenvolvimento ou scripts da mesma origem. O visitante compartilha registros com outros visitantes do navegador. Os dados não foram copiados para coleções públicas.
+
+Não houve homologação com duas contas reais nem teste em dispositivo móvel nesta revisão. O Centro de Comando continua dependente da configuração protegida e implantação do backend descritas no README principal. IA com recuperação de fontes e monitoramento automático do radar não foram ativados. Esta entrega não constitui certificação de toda a plataforma.
+
+---
+
 # Biblioteca e Mentoria NEXT — atualizações de 14/11/2026
 
-## Estado atual: pergunta primeiro, plano opcional
+## Histórico de 14/11: pergunta primeiro, plano opcional
 
 Publicação final de 14/11/2026: `025b763f-3726-40a9-ac23-a4fd5cf47d98`, hash `519480899`. Apenas `ptp_mentor_next.js` foi substituído, preservando os 71 arquivos do site. A entrada de mentoria passa a ter uma pergunta obrigatória, contexto opcional e orientações progressivas. Os ciclos anteriores permanecem disponíveis em Meus planos de ação.
 

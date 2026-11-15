@@ -100,3 +100,16 @@ test('pagination shows each catalog entry once across all pages',()=>{
  }
  assert.equal(ids.length,128);assert.equal(new Set(ids).size,128);
 });
+
+
+test('type filter finds the academic collection directly and combines with other filters',()=>{
+ const {api,ctx}=setup(),items=api.catalog();const academic=api.searchCatalog(items,'','','','Artigo acadêmico');assert.equal(academic.length,4);assert.ok(academic.every(x=>x.resourceType==='Artigo acadêmico'));
+ assert.equal(api.searchCatalog(items,'','','internal','Artigo acadêmico').length,0);
+ assert.equal(api.searchCatalog(items,'','','','Curso universitário').length,1);
+ ctx.state.libraryType='Artigo acadêmico';const html=ctx.library();assert.match(html,/4 materiais encontrados/);assert.match(html,/Tipo de material/);assert.doesNotMatch(html,/Página 1 de 8/);
+});
+test('clearing filters removes the material type as well as query, axis and origin',()=>{
+ const s=setup();for(const id of ['library-search','library-axis','library-origin','library-type'])s.nodes.set(id,{value:'Artigo acadêmico',focus(){}});
+ s.listeners.click({target:{closest:()=>({hasAttribute:x=>x==='data-next-clear'})}});
+ assert.equal(s.ctx.state.libraryType,'');assert.equal(s.nodes.get('library-type').value,'');assert.match(s.ctx.library(),/128 materiais encontrados/);
+});

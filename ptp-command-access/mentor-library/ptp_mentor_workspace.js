@@ -2,6 +2,9 @@
 (function () {
   'use strict';
   const KEY='ptp.mentoria.workspace.v1', VERSION=1, MAX=30;
+  const storage=window.PTPMentorStorage;
+  if(!storage||!window.PTPNext)return;
+  let store=storage.open(KEY);
   const txt=(x,n=1800)=>String(x??'').slice(0,n);
   const escape=x=>txt(x,100000).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const uuid=()=>globalThis.crypto?.randomUUID?.()||'cycle-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
@@ -14,7 +17,7 @@
   const evidenceTypes=['Não coletadas','Relatos e hipóteses','Observações documentadas','Experimento executado','Resultados recorrentes'];
   const actionStates=['A fazer','Em andamento','Concluída'];
   const decisionOptions=['Ainda em análise','Continuar','Ajustar hipótese','Mudar direção','Encerrar o ciclo'];
-  const fieldLimits={project:120,owner:100,stage:80,focus:80,challenge:1800,customer:700,evidence:1800,evidenceType:80,goal:700,metric:160,baseline:160,target:160,deadline:10,hypothesis:1000,experiment:1500,criterion:700,risk:700,answer1:1000,answer2:1000,answer3:1000,result:1800,learning:1800,decision:80,next:1000,reviewDate:10};
+  const fieldLimits={originQuestionId:100,project:120,owner:100,stage:80,focus:80,challenge:1800,customer:700,evidence:1800,evidenceType:80,goal:700,metric:160,baseline:160,target:160,deadline:10,hypothesis:1000,experiment:1500,criterion:700,risk:700,answer1:1000,answer2:1000,answer3:1000,result:1800,learning:1800,decision:80,next:1000,reviewDate:10};
   function blank(){return {id:uuid(),createdAt:now(),updatedAt:now(),status:'Em preparação',project:'',owner:'',stage:stageOptions[0],focus:focusOptions[0],challenge:'',customer:'',evidence:'',evidenceType:evidenceTypes[0],goal:'',metric:'',baseline:'',target:'',deadline:'',hypothesis:'',experiment:'',criterion:'',risk:'',answer1:'',answer2:'',answer3:'',result:'',learning:'',decision:decisionOptions[0],next:'',reviewDate:'',actions:[],reviews:[]};}
   function cleanRecord(value){
     if(!value||typeof value!=='object'||Array.isArray(value))throw Error('Ciclo inválido.');
@@ -39,20 +42,26 @@
     return {version:VERSION,revision:Number.isSafeInteger(data.revision)&&data.revision>=0?data.revision:0,sessions};
   }
   let db={version:VERSION,revision:0,sessions:[]}, activeId='', step=0, notice='', storageBlocked=false, conflict=false;
-  try {const raw=localStorage.getItem(KEY);if(raw)db=decode(raw);}catch{storageBlocked=true;notice='Não foi possível recuperar os ciclos deste navegador. Os dados existentes não serão sobrescritos; use um backup para recuperar seu trabalho.';}
-  activeId=db.sessions[0]?.id||'';
+  function loadContext(){
+    db={version:VERSION,revision:0,sessions:[]};activeId='';step=0;notice='';storageBlocked=false;conflict=false;store=storage.open(KEY);
+    if(!storage.ready())return;
+    try{const raw=store.get();if(raw)db=decode(raw);}catch{storageBlocked=true;notice='Não foi possível recuperar os ciclos deste navegador. Os dados existentes não serão sobrescritos; use um backup para recuperar seu trabalho.';}
+    activeId=db.sessions[0]?.id||'';
+  }
+  loadContext();storage.onChange(loadContext);
   const current=()=>db.sessions.find(s=>s.id===activeId)||null;
   function showNotice(message){notice=message;const node=document.getElementById('mp-notice');if(node)node.textContent=message;}
   function save(){
+    if(storage.refresh()||!storage.ready())return false;
     if(storageBlocked||conflict){showNotice(conflict?'Há alterações mais recentes em outra aba. Exporte seu trabalho antes de recarregar esta página.':'O navegador não confirmou o salvamento. Seu trabalho permanece nesta sessão; baixe um backup.');return false;}
     try {
-      const raw=localStorage.getItem(KEY), remote=raw?decode(raw):null;
+      const raw=store.get(), remote=raw?decode(raw):null;
       if((remote?.revision||0)!==db.revision){conflict=true;showNotice('Há alterações mais recentes em outra aba. Exporte seu trabalho antes de recarregar esta página.');return false;}
-      const next={...db,revision:db.revision+1};localStorage.setItem(KEY,JSON.stringify(next));db.revision=next.revision;showNotice('Salvo neste navegador.');return true;
+      const next={...db,revision:db.revision+1};store.set(JSON.stringify(next));db.revision=next.revision;showNotice('Salvo neste navegador.');return true;
     }catch{storageBlocked=true;showNotice('O navegador não confirmou o salvamento. Seu trabalho permanece nesta sessão; baixe um backup.');return false;}
   }
   function redraw(){if(typeof state!=='undefined'&&state.view==='mentor'&&typeof render==='function')render();}
-  function create(){if(db.sessions.length>=MAX){showNotice('Você atingiu o limite de 30 ciclos neste navegador. Exporte seus registros para preservar o histórico.');return;}const r=blank();db.sessions.unshift(r);activeId=r.id;step=0;save();redraw();}
+  function create(seed={}){if(storage.refresh()||!storage.ready()){showNotice(storage.message());return;}if(db.sessions.length>=MAX){showNotice('Você atingiu o limite de 30 ciclos neste navegador. Exporte seus registros para preservar o histórico.');return;}const r=cleanRecord({...blank(),...seed,id:uuid()});db.sessions.unshift(r);activeId=r.id;step=0;save();redraw();return r;}
   const promptSets={
     'Problema e evidências':['Em qual situação concreta o problema ocorre e qual é seu impacto?','Como as pessoas resolvem isso hoje e o que já tentaram?','Qual observação poderia demonstrar que sua hipótese está errada?'],
     'Negócios / Canvas':['Quem usa, quem decide e quem paga pela solução?','Qual hipótese de receita ou custo ameaça mais a viabilidade?','Que comportamento mostraria disposição real de pagar ou adotar?'],
@@ -123,7 +132,7 @@
   function insights(r){const ready=readiness(r), alerts=gaps(r);return `<div class="mp-preparation"><strong id="mp-ready">${ready.filled}/${ready.total} informações do diagnóstico registradas</strong><p>Indicador de preenchimento; não é nota de maturidade do negócio.</p></div><h3>Pontos para aprofundar</h3><ul>${alerts.length?alerts.map(t=>`<li>${escape(t)}</li>`).join(''):'<li>Os campos essenciais foram informados. Avalie a qualidade das evidências com seu mentor.</li>'}</ul><h3>Direção de trabalho</h3><p>${escape(plan(r).stage)}</p><p>${escape(plan(r).steps[0])}</p>`;}
   function view(){
     const r=current();
-    return `${pageHead('DESENVOLVIMENTO DE NEGÓCIOS · NEXT / PTP','Mentoria NEXT','Da pergunta ao experimento. Do aprendizado à próxima decisão.')}<section class="panel mp-intro"><div><h3>Um ciclo de trabalho para desenvolver seu negócio</h3><p>Prepare a conversa com seu mentor, organize hipóteses e acompanhe compromissos. O ambiente oferece orientação metodológica e referências; não é atendimento humano ou IA conversacional.</p><small>Seus registros ficam neste navegador, sem sincronização entre dispositivos. Evite dados confidenciais e baixe um backup para guardar seu trabalho.</small></div><div class="mp-toolbar">${button('new','Novo ciclo')}${button('backup','Baixar backup')}${button('import','Importar backup')}<input id="mp-import" type="file" accept="application/json,.json" hidden></div></section><p id="mp-notice" class="mp-notice" role="status" aria-live="polite">${escape(notice)}</p><div class="mp-cyclelist" aria-label="Ciclos de mentoria">${db.sessions.map(x=>`<button type="button" class="mp-cycle ${x.id===activeId?'selected':''}" data-mp-open="${x.id}" aria-pressed="${x.id===activeId}"><strong>${escape(x.project||'Novo ciclo')}</strong><span>${escape(x.focus)} · ${escape(x.status)}</span></button>`).join('')}</div>${r?`<section class="mp-workspace"><div><div class="panel"><div class="mp-sessionhead"><div><span class="eyebrow">${escape(r.status)}</span><h3>${escape(r.project||'Seu novo ciclo')}</h3></div><div class="mp-toolbar">${button('report','Baixar relatório')}${r.status==='Concluído'?button('reopen','Reabrir ciclo'):''}</div></div><nav class="mp-tabs" aria-label="Etapas da mentoria">${['Diagnóstico','Hipótese e teste','Plano de ação','Revisão'].map((label,i)=>`<button type="button" data-mp-step="${i}" aria-current="${step===i?'step':'false'}">${i+1}. ${label}</button>`).join('')}</nav><form id="mp-form" novalidate><fieldset style="border:0;padding:0;margin:0;min-width:0" ${r.status==='Concluído'?'disabled':''}>${[diagnosis,experiment,actionsView,reviewView][step](r)}<div class="mp-toolbar mp-bottom">${step>0?button('back','← Etapa anterior'):''}${step<3?button('next','Salvar e avançar →'):''}</div></fieldset></form></div></div><aside><section class="panel" id="mp-insights">${insights(r)}</section><section class="panel" id="mp-resources">${resources(r)}</section><section class="panel"><h3>Conversa com um especialista</h3><p>Leve o relatório para discutir evidências, escolhas e limites com um profissional.</p><button class="btn outline small" type="button" onclick="setView('fxMentors')">Encontrar mentores →</button></section></aside></section>`:`<section class="panel empty"><h3>Comece pelo desafio que precisa resolver</h3><p>Crie seu primeiro ciclo, defina o resultado esperado e prepare um experimento com critérios de decisão.</p>${button('new','Iniciar primeiro ciclo')}</section>`}${typeof state!=='undefined'&&Array.isArray(state.demoMentor)&&state.demoMentor.length?`<details class="panel"><summary>Consultas anteriores neste navegador (${state.demoMentor.length})</summary>${state.demoMentor.slice(0,8).map(x=>`<p><strong>${escape(x.question)}</strong><br><small>${escape(x.date)}</small></p>`).join('')}</details>`:''}`;
+    return `${pageHead('DESENVOLVIMENTO DE NEGÓCIOS · NEXT / PTP','Mentoria NEXT','Da pergunta ao experimento. Do aprendizado à próxima decisão.')}<section class="panel mp-intro"><div><h3>Um ciclo de trabalho para desenvolver seu negócio</h3><p>Prepare a conversa com seu mentor, organize hipóteses e acompanhe compromissos. O ambiente oferece orientação metodológica e referências; não é atendimento humano ou IA conversacional.</p><small>${escape(storage.message())} Evite dados confidenciais e baixe um backup para guardar seu trabalho.</small></div><div class="mp-toolbar">${button('new','Novo ciclo')}${button('backup','Baixar backup')}${button('import','Importar backup')}<input id="mp-import" type="file" accept="application/json,.json" hidden></div></section><p id="mp-notice" class="mp-notice" role="status" aria-live="polite">${escape(notice)}</p><div class="mp-cyclelist" aria-label="Ciclos de mentoria">${db.sessions.map(x=>`<button type="button" class="mp-cycle ${x.id===activeId?'selected':''}" data-mp-open="${x.id}" aria-pressed="${x.id===activeId}"><strong>${escape(x.project||'Novo ciclo')}</strong><span>${escape(x.focus)} · ${escape(x.status)}</span></button>`).join('')}</div>${r?`<section class="mp-workspace"><div><div class="panel"><div class="mp-sessionhead"><div><span class="eyebrow">${escape(r.status)}</span><h3>${escape(r.project||'Seu novo ciclo')}</h3></div><div class="mp-toolbar">${button('report','Baixar relatório')}${r.status==='Concluído'?button('reopen','Reabrir ciclo'):''}</div></div><nav class="mp-tabs" aria-label="Etapas da mentoria">${['Diagnóstico','Hipótese e teste','Plano de ação','Revisão'].map((label,i)=>`<button type="button" data-mp-step="${i}" aria-current="${step===i?'step':'false'}">${i+1}. ${label}</button>`).join('')}</nav><form id="mp-form" novalidate><fieldset style="border:0;padding:0;margin:0;min-width:0" ${r.status==='Concluído'?'disabled':''}>${[diagnosis,experiment,actionsView,reviewView][step](r)}<div class="mp-toolbar mp-bottom">${step>0?button('back','← Etapa anterior'):''}${step<3?button('next','Salvar e avançar →'):''}</div></fieldset></form></div></div><aside><section class="panel" id="mp-insights">${insights(r)}</section><section class="panel" id="mp-resources">${resources(r)}</section><section class="panel"><h3>Conversa com um especialista</h3><p>Leve o relatório para discutir evidências, escolhas e limites com um profissional.</p><button class="btn outline small" type="button" onclick="setView('fxMentors')">Encontrar mentores →</button></section></aside></section>`:`<section class="panel empty"><h3>Comece pelo desafio que precisa resolver</h3><p>Crie seu primeiro ciclo, defina o resultado esperado e prepare um experimento com critérios de decisão.</p>${button('new','Iniciar primeiro ciclo')}</section>`}${storage.context()==='visitor'&&typeof state!=='undefined'&&Array.isArray(state.demoMentor)&&state.demoMentor.length?`<details class="panel"><summary>Consultas anteriores neste navegador (${state.demoMentor.length})</summary>${state.demoMentor.slice(0,8).map(x=>`<p><strong>${escape(x.question)}</strong><br><small>${escape(x.date)}</small></p>`).join('')}</details>`:''}`;
   }
   function reportHtml(r){
     const lines=(label,value)=>`<h3>${escape(label)}</h3><p>${escape(value||'Não informado').replace(/\n/g,'<br>')}</p>`;
@@ -131,12 +140,14 @@
   }
   function download(content,name,type){try{const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);showNotice('Arquivo preparado para download.');}catch{showNotice('Não foi possível gerar o arquivo neste navegador. Tente novamente.');}}
   function importData(raw){
+    if(storage.refresh()||!storage.ready())throw Error(storage.message());
     if(typeof raw!=='string'||raw.length>10000000)throw Error('Use um backup JSON de até 10 MB.');
     const incoming=decode(raw), additions=incoming.sessions.filter(x=>!db.sessions.some(existing=>existing.id===x.id));
     if(db.sessions.length+additions.length>MAX)throw Error('O total ultrapassaria 30 ciclos. O backup não foi importado.');
     db.sessions=[...additions,...db.sessions];if(additions.length)activeId=additions[0].id;save();redraw();return additions.length;
   }
   function updateField(target){
+    if(storage.refresh()||!storage.ready())return;
     const r=current();if(!r||r.status==='Concluído')return;
     const key=target.dataset.mpField;
     if(key&&Object.hasOwn(fieldLimits,key)){
@@ -159,7 +170,7 @@
     if(event.target.id==='mp-import'){
       const file=event.target.files?.[0];if(!file)return;
       if(file.size>10000000){showNotice('Use um backup JSON de até 10 MB.');return;}
-      try{const count=importData(await file.text());showNotice(storageBlocked||conflict?'Backup aberto nesta sessão, mas o navegador não confirmou o salvamento. Baixe seu trabalho antes de fechar.':count?count+' ciclo(s) importado(s). Os ciclos existentes foram preservados.':'Todos os ciclos do arquivo já estão neste navegador.');}catch(error){showNotice('Importação não concluída: '+error.message);}return;
+      try{const ownerContext=storage.epoch(), raw=await file.text();if(storage.refresh()||storage.epoch()!==ownerContext)throw Error('A conta mudou durante a leitura. Selecione o arquivo novamente.');const count=importData(raw);showNotice(storageBlocked||conflict?'Backup aberto nesta sessão, mas o navegador não confirmou o salvamento. Baixe seu trabalho antes de fechar.':count?count+' ciclo(s) importado(s). Os ciclos existentes foram preservados.':'Todos os ciclos do arquivo já estão neste navegador.');}catch(error){showNotice('Importação não concluída: '+error.message);}return;
     }
     if(event.target.closest?.('#mp-form'))updateField(event.target);
   }
@@ -168,6 +179,7 @@
   document.addEventListener('submit',event=>{if(event.target.id==='mp-form')event.preventDefault();});
   document.addEventListener('click',event=>{
     const b=event.target.closest?.('button');if(!b)return;
+    if((b.dataset.mpAction||b.dataset.mpOpen||b.dataset.mpStep!==undefined)&&(storage.refresh()||!storage.ready())){showNotice(storage.message());return;}
     if(b.dataset.mpOpen){if(db.sessions.some(x=>x.id===b.dataset.mpOpen)){activeId=b.dataset.mpOpen;step=0;redraw();}return;}
     if(b.dataset.mpStep!==undefined){const n=Number(b.dataset.mpStep);if(Number.isInteger(n)&&n>=0&&n<=3){step=n;redraw();}return;}
     const action=b.dataset.mpAction,r=current();
@@ -187,7 +199,7 @@
   });
   const style=document.createElement('style');style.textContent=`.mp-intro{display:flex;justify-content:space-between;gap:24px;align-items:start}.mp-intro>div:first-child{max-width:760px}.mp-intro p{margin:8px 0}.mp-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.mp-intro .mp-toolbar{min-width:180px}.mp-notice{min-height:24px;color:#006b63;font-weight:600}.mp-cyclelist{display:flex;gap:10px;overflow:auto;margin:16px 0;padding:2px 2px 10px}.mp-cycle{background:white;border:1px solid #c8ddd6;border-radius:12px;padding:13px 16px;min-width:220px;text-align:left;color:#153e44;cursor:pointer}.mp-cycle strong,.mp-cycle span{display:block}.mp-cycle span{font-size:12px;margin-top:6px}.mp-cycle.selected{border:2px solid #18786e;background:#f0faf5}.mp-workspace{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(260px,1fr);gap:20px;align-items:start}.mp-workspace aside{display:grid;gap:16px}.mp-sessionhead{display:flex;justify-content:space-between;gap:14px;align-items:center}.mp-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;border-bottom:1px solid #d9e6e1;padding-bottom:14px;margin:16px 0 24px}.mp-tabs button{background:#f4f8f6;border:0;padding:12px 7px;border-radius:8px;font:inherit;font-size:12px;color:#355c60;cursor:pointer}.mp-tabs button[aria-current=step]{background:#146e65;color:white;font-weight:700}.mp-field{margin-bottom:18px}.mp-field label,.mp-action label{display:block;font-weight:600;color:#214e53;margin-bottom:7px;font-size:13px}.mp-field .field,.mp-field .select,.mp-action .field,.mp-action .select{width:100%;box-sizing:border-box}.mp-field textarea,.mp-action textarea{resize:vertical;min-height:76px;line-height:1.6}.mp-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px}.mp-preparation{border-left:4px solid #1c8973;background:#edf8f2;padding:12px;border-radius:8px}.mp-preparation p{font-size:12px;margin:5px 0 0}.mp-action{border:1px solid #d5e3dc;padding:18px;border-radius:12px;margin:16px 0}.mp-action .field,.mp-action .select{margin-bottom:14px}.mp-alert{color:#865513}.mp-review{padding:12px 0;border-bottom:1px solid #d5e3dc}.mp-bottom{margin-top:22px;justify-content:space-between}.mp-workspace li{margin-bottom:10px}.mp-workspace p{overflow-wrap:anywhere}.mp-workspace a{overflow-wrap:anywhere}.mp-workspace small{font-size:12px}#mp-form h3{margin-top:0}@media(max-width:920px){.mp-intro{display:block}.mp-intro .mp-toolbar{margin-top:16px}.mp-workspace{grid-template-columns:1fr}}@media(max-width:560px){.mp-columns{grid-template-columns:1fr;gap:0}.mp-tabs{grid-template-columns:1fr 1fr}.mp-sessionhead{align-items:start;flex-direction:column}.mp-action{padding:12px}}`;
   document.head.appendChild(style);
-  window.PTPMentoria={readiness,gaps,requirements,cleanRecord,decode,makeActions,completeAction,review,reportHtml,importData,create,snapshot:()=>JSON.parse(JSON.stringify(db)),current,save};
+  window.PTPMentoria={readiness,gaps,requirements,cleanRecord,decode,makeActions,completeAction,review,reportHtml,importData,create,open:id=>{if(storage.refresh()||!storage.ready())return false;if(!db.sessions.some(x=>x.id===id))return false;activeId=id;step=0;return true;},snapshot:()=>JSON.parse(JSON.stringify(db)),current,save};
   if(typeof navBtn==='function'){const previousNav=navBtn;navBtn=function(viewId,icon,label,count){return previousNav(viewId,icon,viewId==='mentor'?'Mentoria NEXT':label,count);};}
   if(typeof demoMentor==='function')demoMentor=view;
   redraw();

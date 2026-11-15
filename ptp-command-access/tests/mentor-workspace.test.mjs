@@ -10,8 +10,8 @@ function setup(values=new Map(),fail=false){
  const listeners={}, nodes=new Map([['mp-notice',{textContent:''}]]);let renders=0;
  const document={getElementById:id=>nodes.get(id),createElement:()=>({}),head:{appendChild(){}},addEventListener(name,fn){(listeners[name]??=[]).push(fn);}};
  const localStorage={getItem:key=>values.get(key)||null,setItem(key,value){if(fail)throw Error('QuotaExceeded');values.set(key,value);}};
- const ctx={URL,Set,Date,Intl,Blob,document,localStorage,DEMO_LIBRARY:catalog,state:{view:'home',demoMentor:[],libraryQ:'',libraryAxis:''},window:{},persist(){},pageHead:(...v)=>v.join(''),render(){renders++},demoMentor(){},library(){},askDemoMentor(){},searchDemoLibrary(){},setTimeout,clearTimeout};
- vm.createContext(ctx);vm.runInContext(core,ctx);vm.runInContext(source,ctx);
+ const ctx={URL,Set,Date,Intl,Blob,document,localStorage,DEMO_LIBRARY:catalog,state:{view:'home',demoMentor:[],libraryQ:'',libraryAxis:''},window:{PTPConta:{estado:()=>({autenticado:false,carregando:false})}},sessionStorage:{getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v)},persist(){},pageHead:(...v)=>v.join(''),render(){renders++},demoMentor(){},library(){},askDemoMentor(){},searchDemoLibrary(){},setTimeout,clearTimeout};
+ vm.createContext(ctx);vm.runInContext(core,ctx);vm.runInContext(readFileSync(new URL('../mentor-library/ptp_mentor_storage.js',import.meta.url),'utf8'),ctx);vm.runInContext(source,ctx);
  const event=(name,target)=>{for(const fn of listeners[name]||[])fn({target,preventDefault(){}})};
  const field=(key,value)=>event('input',{dataset:{mpField:key},value,tagName:'INPUT',closest:selector=>selector==='#mp-form'?{}:null});
  const click=action=>event('click',{closest:()=>({dataset:{mpAction:action},hasAttribute:()=>false})});

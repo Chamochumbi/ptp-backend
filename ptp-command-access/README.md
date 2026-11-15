@@ -134,3 +134,7 @@ Upload `0b53b825-8561-4c05-9c97-3fa6aca620ec`: a mentoria passa a organizar diag
 ### Mentoria simplificada e referências ampliadas — 14/11/2026
 
 Publicação `025b763f-3726-40a9-ac23-a4fd5cf47d98`: entrada com uma pergunta, 56 sugestões em 14 temas, orientações editoriais por assunto e próximos passos específicos. Planos completos preservados como opção. Biblioteca com 102 itens do acervo e 26 fontes externas, sendo 4 artigos acadêmicos. Busca na curadoria por tipo e atalhos de pesquisa externa claramente identificados. 146 testes passaram; consultas, filtros, histórico, download e conversão em plano conferidos em produção. Permanecem explícitos os limites de persistência local, ausência de IA conversacional e ausência de pesquisa automática em tempo real. A revisão desta sprint não certifica todas as integrações da plataforma.
+
+## Mentoria e biblioteca — revisão de 15/11/2026
+
+Publicada a separação local de registros por conta, recuperação de rascunhos na mesma aba, proteção contra importação durante troca de identidade, conversão em plano sem duplicação e filtro de tipo de material na biblioteca. Publicação `6ba26812-8def-4fbe-a9b6-e995c6159d0e`, 159 testes aprovados. Detalhes e limites em `mentor-library/README.md`. O armazenamento continua local; o backend gerencial permanece pendente.

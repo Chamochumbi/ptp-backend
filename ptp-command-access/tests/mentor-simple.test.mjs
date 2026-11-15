@@ -8,7 +8,7 @@ const KEY='ptp.mentoria.quick.v1';
 function setup(values=new Map(),fail=false){
  const nodes=new Map(),listeners={};let renders=0;
  const document={getElementById:id=>nodes.get(id),createElement:()=>({}),head:{appendChild(){}},addEventListener:(name,fn)=>(listeners[name]??=[]).push(fn)};
- const ctx={URL,Set,Map,Date,Intl,Blob,document,localStorage:{getItem:k=>values.get(k)||null,setItem(k,v){if(fail)throw Error('Quota');values.set(k,v);}},DEMO_LIBRARY:catalog,state:{view:'home',demoMentor:[],libraryQ:'',libraryAxis:''},window:{},persist(){},pageHead:(...a)=>a.join(''),render(){renders++},demoMentor(){},library(){},askDemoMentor(){},searchDemoLibrary(){},navBtn:(view,icon,label)=>label,setTimeout,clearTimeout};
+ const ctx={URL,Set,Map,Date,Intl,Blob,document,localStorage:{getItem:k=>values.get(k)||null,setItem(k,v){if(fail)throw Error('Quota');values.set(k,v);}},DEMO_LIBRARY:catalog,state:{view:'home',demoMentor:[],libraryQ:'',libraryAxis:''},window:{PTPConta:{estado:()=>({autenticado:false,carregando:false})}},sessionStorage:{getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v)},persist(){},pageHead:(...a)=>a.join(''),render(){renders++},demoMentor(){},library(){},askDemoMentor(){},searchDemoLibrary(){},navBtn:(view,icon,label)=>label,setTimeout,clearTimeout};
  vm.createContext(ctx);vm.runInContext(bundle,ctx);const api=ctx.window.PTPMentoriaQuick;
  const event=(name,target,key)=>{for(const fn of listeners[name]||[])fn({target,key,preventDefault(){}})};
  function ask(q,topic='auto',stage='Ainda explorando'){nodes.set('mq-question',{value:q});nodes.set('mq-topic',{value:topic});nodes.set('mq-stage',{value:stage});nodes.set('mq-notice',{textContent:''});return api.ask();}
