@@ -1154,7 +1154,7 @@ def central_providers():
              "providers":list(groups.values())}
 
 
-OFFER_CATEGORIES=["Comunicação","Desenvolvimento","Educação","Finanças","Gestão","Hospedagem","Infraestrutura","Internacionalização","Saúde","Serviços","Sustentabilidade","Tecnologia"]
+OFFER_CATEGORIES=["Comunicação","Desenvolvimento","Educação","Finanças","Gestão","Hospedagem","Infraestrutura","Internacionalização","Recursos Humanos","Saúde","Serviços","Sustentabilidade","Tecnologia"]
 
 @app.get("/offer-categories")
 def offer_categories():
