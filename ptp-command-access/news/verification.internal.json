@@ -1,0 +1,177 @@
+{
+  "date": "2026-11-16",
+  "queriesExecuted": 63,
+  "queryEngine": "system2_search_query",
+  "queryBatches": 16,
+  "actorsWithArticleEvidence": 21,
+  "actorsPendingArticleValidation": 42,
+  "fullCoverage": false,
+  "excluded": [
+    {
+      "url": "https://www.fop.unicamp.br/2026/11/03/fop-unicamp-promove-palestra-internacional-sobre-inteligencia-artificial-e-pesquisa-odontologica/",
+      "reason": "página específica retornou 404"
+    },
+    {
+      "url": "https://www.fumep.edu.br/post/eep-eng-eletrica",
+      "reason": "data relativa na página e conflitante com indexação; data absoluta não confirmada"
+    },
+    {
+      "url": "https://www.camarapiracicaba.sp.gov.br/forum-de-inovacao-reforca-discussoes-sobre-o-conceito-de-cidade-inteligente-72053",
+      "reason": "timeout ao abrir a publicação"
+    }
+  ],
+  "items": [
+    {
+      "id": "ccarbon-inovec",
+      "url": "https://ccarbon.usp.br/pt/inove-c-conclui-primeira-edicao-e-fortalece-a-cultura-de-inovacao-e-empreendedorismo-cientifico-no-ccarbon/",
+      "publishedAt": "2026-11-13",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "ccarbon",
+        "esalq",
+        "sebrae"
+      ]
+    },
+    {
+      "id": "simespi-ia-lupulo",
+      "url": "https://simespi.com.br/empresa-associada-ao-simespi-desenvolve-primeira-secadora-de-lupulo-operada-por-ia-do-brasil/",
+      "publishedAt": "2026-11-13",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "simespi"
+      ]
+    },
+    {
+      "id": "esalq-vaults",
+      "url": "https://www.esalq.usp.br/2026/11/06/pesquisa-da-esalq-usp-antecipa-descoberta-sobre-estruturas-celulares-que-intrigam-a-ciencia-ha-40-anos/",
+      "publishedAt": "2026-11-06",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "esalq"
+      ]
+    },
+    {
+      "id": "acipi-financas",
+      "url": "https://acipi.com.br/palestra-gratuita-na-acipi-apresenta-estrategias-para-empresas-enfrentarem-momentos-de-incerteza/",
+      "publishedAt": "2026-11-05",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "acipi"
+      ]
+    },
+    {
+      "id": "esalq-greening",
+      "url": "https://www.esalq.usp.br/2026/11/04/pesquisa-da-esalq-usp-propoe-nova-estrategia-de-convivencia-com-o-greening/",
+      "publishedAt": "2026-11-04",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "esalq"
+      ]
+    },
+    {
+      "id": "pecege-bolsa-digital",
+      "url": "https://pecege.com/noticias/pecege-firma-parceria-para-residencia-tecnologica-do-bolsa-futuro-digital-do-mcti",
+      "publishedAt": "2026-10-30",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "pecege",
+        "ifsp"
+      ]
+    },
+    {
+      "id": "fealq-spai",
+      "url": "https://fealq.org.br/fealq-fortalece-conexoes-com-ambientes-de-inovacao-em-encontro-estadual/",
+      "publishedAt": "2026-10-30",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "fealq",
+        "esalqtec",
+        "ccarbon",
+        "pin"
+      ]
+    },
+    {
+      "id": "sebrae-capacitacao",
+      "url": "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/",
+      "publishedAt": "2026-10-30",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "sebrae",
+        "senai",
+        "senac"
+      ]
+    },
+    {
+      "id": "caterpillar-operacoes",
+      "url": "https://www.caterpillar.com/pt/news/caterpillarNews/2026/caterpillar-celebra-marcos-de-suas-operacoes-no-brasil.html",
+      "publishedAt": "2026-10-25",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "caterpillar"
+      ]
+    },
+    {
+      "id": "pecege-foodtech",
+      "url": "https://pecege.com/noticias/instituto-pecege-e-parque-tecnologico-recebem-missao-europeia-de-foodtech",
+      "publishedAt": "2026-10-23",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "pecege",
+        "ptp"
+      ]
+    },
+    {
+      "id": "apm-sebrae",
+      "url": "https://www.apm.org.br/piracicaba-sela-parceria-estrategica-com-o-sebrae-sp/",
+      "publishedAt": "2026-10-19",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "apm",
+        "sebrae"
+      ]
+    },
+    {
+      "id": "ptp-experiencia3d",
+      "url": "https://pecege.com/noticias/parque-tecnologico-piracicaba-lanca-experiencia-3d-integrada-ao-portal-ptp",
+      "publishedAt": "2026-10-05",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "ptp",
+        "nucleo-ptp",
+        "pecege"
+      ]
+    },
+    {
+      "id": "fop-distrito",
+      "url": "https://www.fop.unicamp.br/2026/09/10/o-governo-de-estado-prefeitura-de-piracicaba-unicamp-e-usp-se-reunem-para-discutir-proposta-para-a-agendo-do-distrito-de-inovacao/",
+      "publishedAt": "2026-09-10",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "fop",
+        "esalq",
+        "prefeitura",
+        "semdec",
+        "pin"
+      ]
+    },
+    {
+      "id": "prefeitura-datacenter",
+      "url": "https://piracicaba.sp.gov.br/noticias/novo-data-center-vai-ampliar-a-capacidade-dos-servicos-digitais-da-prefeitura/",
+      "publishedAt": "2026-07-20",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "prefeitura",
+        "semad"
+      ]
+    },
+    {
+      "id": "pwc-embrapa",
+      "url": "https://www.pwc.com.br/pt/sala-de-imprensa/release/2026/pwc-agtech-innovation-e-embrapa-fortalecem-cooperacao-e-aceleram-a-aproximacao-entre-pesquisa-cientifica-e-o-agronegocio-brasileiro.html",
+      "publishedAt": "2026-07-16",
+      "verifiedAt": "2026-11-16",
+      "actorIds": [
+        "pwc-agtech"
+      ]
+    }
+  ]
+}

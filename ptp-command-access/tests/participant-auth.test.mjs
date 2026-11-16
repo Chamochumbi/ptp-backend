@@ -130,3 +130,29 @@ test('record cap is surfaced instead of silently returning partial results',asyn
  const e=await setup({stored:{[memberKey]:{accessToken:{value:'member-a',expiresAt:Date.now()/1000+3600}}},respond:()=>({dataItems:Array.from({length:100},(_,i)=>({id:String(i)})),pagingMetadata:{total:2001}})});
  await assert.rejects(e.api.cmsQuery('PTPPerfisUsuarios',{authenticated:true}),err=>err.code==='RESULT_LIMIT');assert.equal(e.calls.length,20);
 });
+
+test('admin responses arriving after logout are rejected',async()=>{
+ const e=await setup({stored:{[memberKey]:{accessToken:{value:'member-a',expiresAt:Date.now()/1000+3600}}}});let resolve;
+ e.context.fetch=async()=>new Promise(r=>resolve=r);const p=e.api.adminStatus();while(!resolve)await new Promise(setImmediate);e.api.logout();resolve({ok:true,status:200,json:async()=>({authorized:true,privateRows:['account-a']})});
+ await assert.rejects(p,err=>err.code==='SESSION_CHANGED');
+});
+test('admin network request has a deadline, rejects redirects and sends no cookies',async()=>{
+ const e=await setup({stored:{[memberKey]:{accessToken:{value:'member-a',expiresAt:Date.now()/1000+3600}}},respond:()=>({authorized:true})});await e.api.adminStatus();
+ assert(e.calls[0].options.signal);assert.equal(e.calls[0].options.redirect,'error');assert.equal(e.calls[0].options.credentials,'omit');
+});
+test('invalid successful admin responses cannot masquerade as completed operations',async()=>{
+ const e=await setup({stored:{[memberKey]:{accessToken:{value:'member-a',expiresAt:Date.now()/1000+3600}}}});e.context.fetch=async()=>({ok:true,status:200,json:async()=>{throw Error('html')}});
+ await assert.rejects(e.api.adminStatus(),err=>err.code==='INVALID_RESPONSE');
+});
+test('private query rejects a truncated page when the server advertises more records',async()=>{
+ const e=await setup({stored:{[memberKey]:{accessToken:{value:'member-a',expiresAt:Date.now()/1000+3600}}},respond:()=>({dataItems:[{id:'a'}],pagingMetadata:{total:3}})});
+ await assert.rejects(e.api.cmsQuery('PTPPerfisUsuarios',{authenticated:true}),err=>err.code==='INCOMPLETE_RESPONSE');
+});
+test('late OAuth token exchange cannot sign in after logout',async()=>{
+ const e=await setup({stored:{[directKey]:{state:'expected',createdAt:Date.now(),verifier:'test-verifier',redirectUri:'https://ptp.example/'}}});e.context.location.search='?code=once&state=expected';let resolve;e.context.fetch=async()=>new Promise(r=>resolve=r);
+ const p=e.api.completeOAuth();while(!resolve)await new Promise(setImmediate);e.api.logout();resolve({ok:true,status:200,json:async()=>({access_token:'late-member',refresh_token:'late-refresh',expires_in:3600})});await assert.rejects(p,err=>err.code==='SESSION_CHANGED');assert.equal(e.api.memberToken(),'');
+});
+test('admin unauthorized response ends the current session and does not expose server text',async()=>{
+ const e=await setup({stored:{[memberKey]:{accessToken:{value:'member-a',expiresAt:Date.now()/1000+3600}}}});e.context.fetch=async()=>({ok:false,status:401,json:async()=>({error:'private-stack-trace'})});
+ await assert.rejects(e.api.adminStatus(),err=>err.status===401&&!err.message.includes('private-stack'));assert.equal(e.api.memberToken(),'');
+});

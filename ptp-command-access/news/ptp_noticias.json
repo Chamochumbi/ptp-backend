@@ -1,0 +1,486 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-11-16T08:15:00-03:00",
+  "groups": {
+    "A": "Poder público e governança",
+    "B": "Universidades, ensino e pesquisa",
+    "C": "Entidades empresariais e profissionais",
+    "D": "Ambientes de inovação e empreendedorismo",
+    "E": "Redes, comunidades e articulação",
+    "F": "Empresas e organizações tecnológicas"
+  },
+  "actors": [
+    {
+      "id": "prefeitura",
+      "name": "Prefeitura Municipal de Piracicaba",
+      "group": "A"
+    },
+    {
+      "id": "semdec",
+      "name": "SEMDEC e programas de apoio ao empreendedorismo",
+      "group": "A"
+    },
+    {
+      "id": "semad",
+      "name": "Secretaria Municipal de Administração",
+      "group": "A"
+    },
+    {
+      "id": "esalq",
+      "name": "ESALQ / USP",
+      "group": "B"
+    },
+    {
+      "id": "fop",
+      "name": "FOP / Unicamp",
+      "group": "B"
+    },
+    {
+      "id": "ifsp",
+      "name": "IFSP Piracicaba",
+      "group": "B"
+    },
+    {
+      "id": "pecege",
+      "name": "Faculdade Pecege e Instituto Pecege",
+      "group": "B"
+    },
+    {
+      "id": "fealq",
+      "name": "FEALQ",
+      "group": "B"
+    },
+    {
+      "id": "senai",
+      "name": "SENAI Piracicaba",
+      "group": "B"
+    },
+    {
+      "id": "senac",
+      "name": "SENAC Piracicaba",
+      "group": "B"
+    },
+    {
+      "id": "acipi",
+      "name": "ACIPI e Inova ACIPI",
+      "group": "C"
+    },
+    {
+      "id": "simespi",
+      "name": "SIMESPI",
+      "group": "C"
+    },
+    {
+      "id": "sebrae",
+      "name": "Sebrae",
+      "group": "C"
+    },
+    {
+      "id": "apm",
+      "name": "APM Piracicaba",
+      "group": "C"
+    },
+    {
+      "id": "ptp",
+      "name": "Parque Tecnológico Piracicaba",
+      "group": "D"
+    },
+    {
+      "id": "nucleo-ptp",
+      "name": "Núcleo do PTP",
+      "group": "D"
+    },
+    {
+      "id": "esalqtec",
+      "name": "ESALQTec",
+      "group": "D"
+    },
+    {
+      "id": "pwc-agtech",
+      "name": "PwC Agtech Innovation",
+      "group": "D"
+    },
+    {
+      "id": "pin",
+      "name": "PiN — Piracicaba Innovation",
+      "group": "E"
+    },
+    {
+      "id": "caterpillar",
+      "name": "Caterpillar",
+      "group": "F"
+    },
+    {
+      "id": "ccarbon",
+      "name": "CCARBON / USP",
+      "group": "F"
+    }
+  ],
+  "publishers": [
+    {
+      "id": "acipi",
+      "name": "ACIPI e Inova ACIPI",
+      "domains": [
+        "acipi.com.br"
+      ]
+    },
+    {
+      "id": "apm",
+      "name": "APM Piracicaba",
+      "domains": [
+        "apm.org.br"
+      ]
+    },
+    {
+      "id": "caterpillar",
+      "name": "Caterpillar",
+      "domains": [
+        "caterpillar.com"
+      ]
+    },
+    {
+      "id": "ccarbon",
+      "name": "CCARBON / USP",
+      "domains": [
+        "ccarbon.usp.br"
+      ]
+    },
+    {
+      "id": "esalq",
+      "name": "ESALQ / USP",
+      "domains": [
+        "esalq.usp.br"
+      ]
+    },
+    {
+      "id": "fealq",
+      "name": "FEALQ",
+      "domains": [
+        "fealq.org.br"
+      ]
+    },
+    {
+      "id": "fop",
+      "name": "FOP / Unicamp",
+      "domains": [
+        "fop.unicamp.br"
+      ]
+    },
+    {
+      "id": "pecege",
+      "name": "Faculdade Pecege e Instituto Pecege",
+      "domains": [
+        "pecege.com"
+      ]
+    },
+    {
+      "id": "prefeitura",
+      "name": "Prefeitura Municipal de Piracicaba",
+      "domains": [
+        "piracicaba.sp.gov.br"
+      ]
+    },
+    {
+      "id": "pwc-agtech",
+      "name": "PwC Agtech Innovation",
+      "domains": [
+        "pwc.com.br"
+      ]
+    },
+    {
+      "id": "sebrae",
+      "name": "Sebrae",
+      "domains": [
+        "sp.agenciasebrae.com.br"
+      ]
+    },
+    {
+      "id": "simespi",
+      "name": "SIMESPI",
+      "domains": [
+        "simespi.com.br"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "ccarbon-inovec",
+      "title": "Inove.C aproxima pesquisadores do empreendedorismo científico",
+      "publishedAt": "2026-11-13",
+      "publisherId": "ccarbon",
+      "actorIds": [
+        "ccarbon",
+        "esalq",
+        "sebrae"
+      ],
+      "topics": [
+        "ciencia",
+        "inovacao",
+        "universidades"
+      ],
+      "url": "https://ccarbon.usp.br/pt/inove-c-conclui-primeira-edicao-e-fortalece-a-cultura-de-inovacao-e-empreendedorismo-cientifico-no-ccarbon/",
+      "description": "A primeira edição abordou mercado, propriedade intelectual e financiamento da inovação. O centro sediado na ESALQ certificou 26 participantes.",
+      "localRelevance": "Programa do CCARBON/USP, sediado na ESALQ em Piracicaba.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "simespi-ia-lupulo",
+      "title": "Parceria empresarial desenvolve secadora de lúpulo com inteligência artificial",
+      "publishedAt": "2026-11-13",
+      "publisherId": "simespi",
+      "actorIds": [
+        "simespi"
+      ],
+      "topics": [
+        "tecnologia",
+        "inovacao"
+      ],
+      "url": "https://simespi.com.br/empresa-associada-ao-simespi-desenvolve-primeira-secadora-de-lupulo-operada-por-ia-do-brasil/",
+      "description": "Usilev e HOPS Mococa desenvolvem equipamento a partir de uma conexão promovida pelo sindicato. A chegada ao mercado é prevista para 2027.",
+      "localRelevance": "Desenvolvimento de empresa associada ao Simespi, articulado na cadeia produtiva local.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "esalq-vaults",
+      "title": "Pesquisa da ESALQ contribui para avanço no estudo de estruturas celulares",
+      "publishedAt": "2026-11-06",
+      "publisherId": "esalq",
+      "actorIds": [
+        "esalq"
+      ],
+      "topics": [
+        "ciencia",
+        "universidades"
+      ],
+      "url": "https://www.esalq.usp.br/2026/11/06/pesquisa-da-esalq-usp-antecipa-descoberta-sobre-estruturas-celulares-que-intrigam-a-ciencia-ha-40-anos/",
+      "description": "Trabalho do Departamento de Genética identificou proteínas associadas aos vaults em vírus e ganhou destaque no debate científico internacional.",
+      "localRelevance": "Pesquisa desenvolvida na ESALQ/USP, em Piracicaba.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "acipi-financas",
+      "title": "ACIPI anuncia capacitação em estratégia financeira empresarial",
+      "publishedAt": "2026-11-05",
+      "publisherId": "acipi",
+      "actorIds": [
+        "acipi"
+      ],
+      "topics": [
+        "inovacao",
+        "empregabilidade"
+      ],
+      "url": "https://acipi.com.br/palestra-gratuita-na-acipi-apresenta-estrategias-para-empresas-enfrentarem-momentos-de-incerteza/",
+      "description": "A iniciativa aborda decisões financeiras, reorganização de negócios e possibilidades de crescimento. Consulte as condições na publicação original.",
+      "localRelevance": "Capacitação anunciada pela associação empresarial de Piracicaba.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "esalq-greening",
+      "title": "Estudo da ESALQ investiga manejo integrado para convivência com o greening",
+      "publishedAt": "2026-11-04",
+      "publisherId": "esalq",
+      "actorIds": [
+        "esalq"
+      ],
+      "topics": [
+        "ciencia",
+        "tecnologia",
+        "universidades"
+      ],
+      "url": "https://www.esalq.usp.br/2026/11/04/pesquisa-da-esalq-usp-propoe-nova-estrategia-de-convivencia-com-o-greening/",
+      "description": "Pesquisa de pós-doutorado examina reguladores vegetais e nutrição foliar como parte do manejo de doenças vasculares em plantas.",
+      "localRelevance": "Pesquisa de pós-doutorado realizada na ESALQ/USP.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "pecege-bolsa-digital",
+      "title": "Pecege conecta formação em programação à residência tecnológica",
+      "publishedAt": "2026-10-30",
+      "publisherId": "pecege",
+      "actorIds": [
+        "pecege",
+        "ifsp"
+      ],
+      "topics": [
+        "tecnologia",
+        "empregabilidade",
+        "universidades"
+      ],
+      "url": "https://pecege.com/noticias/pecege-firma-parceria-para-residencia-tecnologica-do-bolsa-futuro-digital-do-mcti",
+      "description": "Acordo com o Instituto Hardware BR prevê desafios de desenvolvimento de sistemas e experiência profissional supervisionada em Piracicaba, no programa Bolsa Futuro Digital.",
+      "localRelevance": "Residência tecnológica com atividades profissionais previstas em Piracicaba.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "fealq-spai",
+      "title": "FEALQ amplia diálogo com ambientes de inovação paulistas",
+      "publishedAt": "2026-10-30",
+      "publisherId": "fealq",
+      "actorIds": [
+        "fealq",
+        "esalqtec",
+        "ccarbon",
+        "pin"
+      ],
+      "topics": [
+        "ciencia",
+        "inovacao",
+        "universidades"
+      ],
+      "url": "https://fealq.org.br/fealq-fortalece-conexoes-com-ambientes-de-inovacao-em-encontro-estadual/",
+      "description": "Participação no encontro do SPAI discute colaboração e desenvolvimento tecnológico, com conexão à ESALQTec, ao CCARBON e à articulação do ecossistema local.",
+      "localRelevance": "Atuação da FEALQ em apoio a ambientes de pesquisa e inovação de Piracicaba.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "sebrae-capacitacao",
+      "title": "Sebrae divulga capacitações de fim de ano na região de Piracicaba",
+      "publishedAt": "2026-10-30",
+      "publisherId": "sebrae",
+      "actorIds": [
+        "sebrae",
+        "senai",
+        "senac"
+      ],
+      "topics": [
+        "empregabilidade",
+        "inovacao"
+      ],
+      "url": "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/",
+      "description": "Programação regional reúne oficinas técnicas e de gestão em novembro e dezembro. A matéria discrimina os municípios; confirme a atividade local e a disponibilidade.",
+      "localRelevance": "A programação inclui atividades em Piracicaba, além de outros municípios.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "caterpillar-operacoes",
+      "title": "Caterpillar destaca tecnologia e formação de talentos em trajetória industrial",
+      "publishedAt": "2026-10-25",
+      "publisherId": "caterpillar",
+      "actorIds": [
+        "caterpillar"
+      ],
+      "topics": [
+        "tecnologia",
+        "empregabilidade",
+        "inovacao"
+      ],
+      "url": "https://www.caterpillar.com/pt/news/caterpillarNews/2026/caterpillar-celebra-marcos-de-suas-operacoes-no-brasil.html",
+      "description": "Comunicado sobre os 50 anos da fábrica de Piracicaba aborda evolução tecnológica, cadeia de fornecedores e desenvolvimento de profissionais.",
+      "localRelevance": "Fábrica e operação de geradores instaladas em Piracicaba.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "pecege-foodtech",
+      "title": "PTP e Pecege recebem empresas europeias de foodtech",
+      "publishedAt": "2026-10-23",
+      "publisherId": "pecege",
+      "actorIds": [
+        "pecege",
+        "ptp"
+      ],
+      "topics": [
+        "ciencia",
+        "tecnologia",
+        "inovacao"
+      ],
+      "url": "https://pecege.com/noticias/instituto-pecege-e-parque-tecnologico-recebem-missao-europeia-de-foodtech",
+      "description": "Missão do EIT Food GO Brazil promoveu imersão no ecossistema local e aproximação com oportunidades de negócios e cooperação.",
+      "localRelevance": "Visita ao Instituto Pecege e ao Parque Tecnológico Piracicaba.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "apm-sebrae",
+      "title": "APM Piracicaba e Sebrae articulam inovação nos negócios de saúde",
+      "publishedAt": "2026-10-19",
+      "publisherId": "apm",
+      "actorIds": [
+        "apm",
+        "sebrae"
+      ],
+      "topics": [
+        "inovacao",
+        "empregabilidade"
+      ],
+      "url": "https://www.apm.org.br/piracicaba-sela-parceria-estrategica-com-o-sebrae-sp/",
+      "description": "Parceria aproxima profissionais, clínicas e empresas de iniciativas de gestão, produtividade e empreendedorismo, incluindo apoio à cadeia produtiva da saúde.",
+      "localRelevance": "Parceria da regional Piracicaba da Associação Paulista de Medicina.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "ptp-experiencia3d",
+      "title": "Núcleo do PTP ganha visita virtual com experiência em 3D",
+      "publishedAt": "2026-10-05",
+      "publisherId": "pecege",
+      "actorIds": [
+        "ptp",
+        "nucleo-ptp",
+        "pecege"
+      ],
+      "topics": [
+        "tecnologia",
+        "inovacao"
+      ],
+      "url": "https://pecege.com/noticias/parque-tecnologico-piracicaba-lanca-experiencia-3d-integrada-ao-portal-ptp",
+      "description": "Ambientes e conteúdos interativos foram integrados ao portal do Parque. A iniciativa amplia o acesso à infraestrutura e explora aplicações de digitalização espacial.",
+      "localRelevance": "Representação digital dos ambientes do Núcleo PTP.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "fop-distrito",
+      "title": "Universidades e poder público discutem Distrito de Inovação de Piracicaba",
+      "publishedAt": "2026-09-10",
+      "publisherId": "fop",
+      "actorIds": [
+        "fop",
+        "esalq",
+        "prefeitura",
+        "semdec",
+        "pin"
+      ],
+      "topics": [
+        "inovacao",
+        "universidades"
+      ],
+      "url": "https://www.fop.unicamp.br/2026/09/10/o-governo-de-estado-prefeitura-de-piracicaba-unicamp-e-usp-se-reunem-para-discutir-proposta-para-a-agendo-do-distrito-de-inovacao/",
+      "description": "Reunião aproxima USP, Unicamp, município e Estado para discutir a proposta do distrito e a integração entre pesquisa, empresas e sociedade.",
+      "localRelevance": "Proposta de Distrito de Inovação em Piracicaba; a notícia não comprova sua implantação.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "prefeitura-datacenter",
+      "title": "Piracicaba investe em infraestrutura para serviços públicos digitais",
+      "publishedAt": "2026-07-20",
+      "publisherId": "prefeitura",
+      "actorIds": [
+        "prefeitura",
+        "semad"
+      ],
+      "topics": [
+        "tecnologia",
+        "inovacao"
+      ],
+      "url": "https://piracicaba.sp.gov.br/noticias/novo-data-center-vai-ampliar-a-capacidade-dos-servicos-digitais-da-prefeitura/",
+      "description": "Prefeitura anuncia obras de modernização do Data Center Municipal para ampliar capacidade e continuidade dos serviços. Publicação histórica; não comprova conclusão das obras.",
+      "localRelevance": "Infraestrutura digital da administração municipal de Piracicaba.",
+      "verifiedAt": "2026-11-16"
+    },
+    {
+      "id": "pwc-embrapa",
+      "title": "PwC Agtech Innovation e Embrapa ampliam cooperação com a pesquisa",
+      "publishedAt": "2026-07-16",
+      "publisherId": "pwc-agtech",
+      "actorIds": [
+        "pwc-agtech"
+      ],
+      "topics": [
+        "ciencia",
+        "tecnologia",
+        "inovacao"
+      ],
+      "url": "https://www.pwc.com.br/pt/sala-de-imprensa/release/2026/pwc-agtech-innovation-e-embrapa-fortalecem-cooperacao-e-aceleram-a-aproximacao-entre-pesquisa-cientifica-e-o-agronegocio-brasileiro.html",
+      "description": "Cooperação aproxima conhecimento científico, demandas de empresas e inovação aberta no hub de Piracicaba, com iniciativas conjuntas de articulação.",
+      "localRelevance": "Atividades de cooperação vinculadas ao hub de Piracicaba.",
+      "verifiedAt": "2026-11-16"
+    }
+  ]
+}

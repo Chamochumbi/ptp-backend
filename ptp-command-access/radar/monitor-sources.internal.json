@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-11-15",
-  "purpose": "Mapa operacional interno. Não implantar no site nem carregar no frontend.",
+  "updatedAt": "2026-11-16",
+  "purpose": "Mapa operacional compartilhado dos radares de eventos e notícias. Não implantar no site público.",
   "institutionalRule": "Lista inicial de monitoramento, não prova participação formal no CMCTI, vínculo com PTP ou operação atual. Validar existência, vínculo e canais separadamente.",
   "groups": {
     "A": "Poder público e governança",
@@ -37,6 +37,14 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "CMCTI Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -64,6 +72,17 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "Prefeitura Municipal de Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://www.fop.unicamp.br/2026/09/10/o-governo-de-estado-prefeitura-de-piracicaba-unicamp-e-usp-se-reunem-para-discutir-proposta-para-a-agendo-do-distrito-de-inovacao/",
+          "https://piracicaba.sp.gov.br/noticias/novo-data-center-vai-ampliar-a-capacidade-dos-servicos-digitais-da-prefeitura/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -87,6 +106,16 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "SEMDEC e programas de apoio ao empreendedorismo Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://www.fop.unicamp.br/2026/09/10/o-governo-de-estado-prefeitura-de-piracicaba-unicamp-e-usp-se-reunem-para-discutir-proposta-para-a-agendo-do-distrito-de-inovacao/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -110,6 +139,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Estruturas municipais de inovação Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -133,6 +170,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Secretaria Municipal de Educação Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -156,6 +201,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Secretaria municipal vinculada à agricultura Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -179,6 +232,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Secretaria municipal vinculada ao meio ambiente Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -202,6 +263,16 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Secretaria Municipal de Administração Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://piracicaba.sp.gov.br/noticias/novo-data-center-vai-ampliar-a-capacidade-dos-servicos-digitais-da-prefeitura/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -225,6 +296,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Câmara Municipal de Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -252,6 +331,14 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "Conselhos de desenvolvimento econômico, tecnologia e sustentabilidade Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -284,6 +371,19 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "ESALQ / USP Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://ccarbon.usp.br/pt/inove-c-conclui-primeira-edicao-e-fortalece-a-cultura-de-inovacao-e-empreendedorismo-cientifico-no-ccarbon/",
+          "https://www.esalq.usp.br/2026/11/06/pesquisa-da-esalq-usp-antecipa-descoberta-sobre-estruturas-celulares-que-intrigam-a-ciencia-ha-40-anos/",
+          "https://www.esalq.usp.br/2026/11/04/pesquisa-da-esalq-usp-propoe-nova-estrategia-de-convivencia-com-o-greening/",
+          "https://www.fop.unicamp.br/2026/09/10/o-governo-de-estado-prefeitura-de-piracicaba-unicamp-e-usp-se-reunem-para-discutir-proposta-para-a-agendo-do-distrito-de-inovacao/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -307,6 +407,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "CENA / USP Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -332,6 +440,16 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "FOP / Unicamp Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://www.fop.unicamp.br/2026/09/10/o-governo-de-estado-prefeitura-de-piracicaba-unicamp-e-usp-se-reunem-para-discutir-proposta-para-a-agendo-do-distrito-de-inovacao/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -355,6 +473,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "FATEC Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -378,6 +504,16 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "IFSP Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://pecege.com/noticias/pecege-firma-parceria-para-residencia-tecnologica-do-bolsa-futuro-digital-do-mcti"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -405,6 +541,14 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "FUMEP e Escola de Engenharia de Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -428,6 +572,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "UNIMEP Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -459,6 +611,18 @@
       "lastScan": {
         "status": "confirmed_events_found",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "Faculdade Pecege e Instituto Pecege Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://pecege.com/noticias/pecege-firma-parceria-para-residencia-tecnologica-do-bolsa-futuro-digital-do-mcti",
+          "https://pecege.com/noticias/instituto-pecege-e-parque-tecnologico-recebem-missao-europeia-de-foodtech",
+          "https://pecege.com/noticias/parque-tecnologico-piracicaba-lanca-experiencia-3d-integrada-ao-portal-ptp"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -484,6 +648,16 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "FEALQ Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://fealq.org.br/fealq-fortalece-conexoes-com-ambientes-de-inovacao-em-encontro-estadual/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -507,6 +681,16 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "SENAI Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -534,6 +718,16 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "SENAC Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -557,6 +751,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Universidade Anhembi Morumbi — Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -582,6 +784,16 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "ACIPI e Inova ACIPI Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://acipi.com.br/palestra-gratuita-na-acipi-apresenta-estrategias-para-empresas-enfrentarem-momentos-de-incerteza/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -605,6 +817,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "CIESP Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -630,6 +850,16 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "SIMESPI Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://simespi.com.br/empresa-associada-ao-simespi-desenvolve-primeira-secadora-de-lupulo-operada-por-ia-do-brasil/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -653,6 +883,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "APLA Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -676,6 +914,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "ATEPI Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -685,7 +931,9 @@
       "required": true,
       "query": "Sebrae Piracicaba eventos agenda ciência tecnologia inovação empregabilidade universidades",
       "channels": [
-        "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/"
+        "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/",
+        "https://ccarbon.usp.br/pt/inove-c-conclui-primeira-edicao-e-fortalece-a-cultura-de-inovacao-e-empreendedorismo-cientifico-no-ccarbon/",
+        "https://www.apm.org.br/piracicaba-sela-parceria-estrategica-com-o-sebrae-sp/"
       ],
       "validation": {
         "status": "official_source_identified",
@@ -706,6 +954,18 @@
       "lastScan": {
         "status": "confirmed_events_found",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "Sebrae Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://ccarbon.usp.br/pt/inove-c-conclui-primeira-edicao-e-fortalece-a-cultura-de-inovacao-e-empreendedorismo-cientifico-no-ccarbon/",
+          "https://sp.agenciasebrae.com.br/cultura-empreendedora/sebrae-sp-tem-mais-de-500-vagas-em-oficinas-e-cursos-gratuitos-no-fim-do-ano-na-regiao-de-piracicaba/",
+          "https://www.apm.org.br/piracicaba-sela-parceria-estrategica-com-o-sebrae-sp/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -729,6 +989,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "AEAP Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -752,6 +1020,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "APCD Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -775,6 +1051,16 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "APM Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://www.apm.org.br/piracicaba-sela-parceria-estrategica-com-o-sebrae-sp/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -798,6 +1084,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Conselho Coordenador das Entidades Civis Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -828,6 +1122,17 @@
       "lastScan": {
         "status": "confirmed_events_found",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "Parque Tecnológico Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://pecege.com/noticias/instituto-pecege-e-parque-tecnologico-recebem-missao-europeia-de-foodtech",
+          "https://pecege.com/noticias/parque-tecnologico-piracicaba-lanca-experiencia-3d-integrada-ao-portal-ptp"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -855,6 +1160,16 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Núcleo do PTP Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://pecege.com/noticias/parque-tecnologico-piracicaba-lanca-experiencia-3d-integrada-ao-portal-ptp"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -882,6 +1197,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Hub Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -909,6 +1232,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Container ParkLab Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -936,6 +1267,16 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "ESALQTec Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://fealq.org.br/fealq-fortalece-conexoes-com-ambientes-de-inovacao-em-encontro-estadual/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -963,7 +1304,15 @@
         "status": "pending",
         "checkedAt": null
       },
-      "possibleSuccessor": "pwc-agtech"
+      "possibleSuccessor": "pwc-agtech",
+      "newsQuery": "AgTech Garage Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
+      }
     },
     {
       "id": "pulse",
@@ -990,6 +1339,14 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "Pulse / Raízen Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1017,6 +1374,16 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "PwC Agtech Innovation Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://www.pwc.com.br/pt/sala-de-imprensa/release/2026/pwc-agtech-innovation-e-embrapa-fortalecem-cooperacao-e-aceleram-a-aproximacao-entre-pesquisa-cientifica-e-o-agronegocio-brasileiro.html"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1044,6 +1411,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Inova Park Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1071,6 +1446,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Avance Hub Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1098,6 +1481,14 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "Gazebo / Koppert Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1125,6 +1516,17 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "PiN — Piracicaba Innovation Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://fealq.org.br/fealq-fortalece-conexoes-com-ambientes-de-inovacao-em-encontro-estadual/",
+          "https://www.fop.unicamp.br/2026/09/10/o-governo-de-estado-prefeitura-de-piracicaba-unicamp-e-usp-se-reunem-para-discutir-proposta-para-a-agendo-do-distrito-de-inovacao/"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1148,6 +1550,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Pira 21 Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1171,6 +1581,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Vale do Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1197,6 +1615,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Corredor de Inovação Agropecuária do Estado de São Paulo Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1220,6 +1646,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Tinspira / CPL TIC Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1243,6 +1677,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "DEVPIRA Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1270,6 +1712,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "WBGI Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1293,6 +1743,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Raízen Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1319,6 +1777,16 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Caterpillar Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://www.caterpillar.com/pt/news/caterpillarNews/2026/caterpillar-celebra-marcos-de-suas-operacoes-no-brasil.html"
+        ],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1345,6 +1813,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "CTC Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1372,6 +1848,14 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "Gênica Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1399,6 +1883,14 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "Smartbreeder Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1426,6 +1918,14 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "IdeeLab Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1453,6 +1953,14 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "BRCarbon Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1480,6 +1988,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "DELTA CO2 Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1509,7 +2025,18 @@
         "status": "partial_research",
         "checkedAt": "2026-11-15"
       },
-      "organizationType": "research_center"
+      "organizationType": "research_center",
+      "newsQuery": "C Carbon Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "articles_verified",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [
+          "https://ccarbon.usp.br/pt/inove-c-conclui-primeira-edicao-e-fortalece-a-cultura-de-inovacao-e-empreendedorismo-cientifico-no-ccarbon/",
+          "https://fealq.org.br/fealq-fortalece-conexoes-com-ambientes-de-inovacao-em-encontro-estadual/"
+        ],
+        "completeChannelCoverage": false
+      }
     },
     {
       "id": "neocert",
@@ -1536,6 +2063,14 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "Neo Cert Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1563,6 +2098,14 @@
       "lastScan": {
         "status": "partial_research",
         "checkedAt": "2026-11-15"
+      },
+      "newsQuery": "Universidade do Carbono Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1590,6 +2133,14 @@
       "lastScan": {
         "status": "pending",
         "checkedAt": null
+      },
+      "newsQuery": "Empresas residentes, associadas ou participantes de programas do PTP Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     },
     {
@@ -1612,6 +2163,14 @@
         "status": "source_unavailable",
         "checkedAt": "2026-11-15",
         "note": "Pesquisa encontrou CONIPE 25–27/11/2026; abertura retornou 403. Evento não publicado nesta entrega."
+      },
+      "newsQuery": "Sesc Piracicaba Piracicaba notícias pesquisa tecnologia inovação 2026",
+      "newsScan": {
+        "checkedAt": "2026-11-16",
+        "status": "discovery_searched_pending_validation",
+        "method": "busca individual por ator; resultados agrupados em lotes de quatro; confirmação editorial por página específica",
+        "evidenceUrls": [],
+        "completeChannelCoverage": false
       }
     }
   ],
@@ -1651,5 +2210,9 @@
       "event": "Senac — jornadas estaduais",
       "reason": "Não substituir confirmação de programação em Piracicaba por data estadual."
     }
+  ],
+  "scope": [
+    "events",
+    "news"
   ]
 }

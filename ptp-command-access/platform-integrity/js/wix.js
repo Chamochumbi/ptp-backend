@@ -54,6 +54,8 @@ export async function sdk(){
   return sdkClient;
 }
 export async function completeOAuth(){
+  const expectedEpoch=authEpoch;
+  const assertFlow=()=>{if(expectedEpoch!==authEpoch)throw new WixError('O acesso foi cancelado. Entre novamente.',401,'SESSION_CHANGED');};
   if(!/\bcode=/.test(location.hash)&&!/\bcode=/.test(location.search))return false;
   const direct=load(DIRECT_KEY);
   if(direct){
@@ -63,6 +65,7 @@ export async function completeOAuth(){
     }
     sessionStorage.removeItem(DIRECT_KEY);
     const result=await request('/oauth2/token',{method:'POST',body:{clientId:CLIENT_ID,grantType:'authorization_code',code:params.get('code'),codeVerifier:direct.verifier,redirectUri:direct.redirectUri}});
+    assertFlow();
     if(!result.access_token||!result.refresh_token)throw new Error('Não foi possível confirmar a sessão. Entre novamente.');
     const tokens={accessToken:{value:result.access_token,expiresAt:Math.floor(Date.now()/1000)+Number(result.expires_in||3600)},refreshToken:{value:result.refresh_token,role:'member'}};
     save(KEYS.member,tokens);if(sdkClient)sdkClient.auth.setTokens(tokens);
@@ -75,6 +78,7 @@ export async function completeOAuth(){
   if(code.error)throw new Error('O login com Google foi cancelado.');
   if(!code.code||!code.state)throw new Error('Não foi possível concluir o login Google.');
   const tokens=await client.auth.getMemberTokens(code.code,code.state,saved);
+  assertFlow();
   if(!tokens?.accessToken?.value)throw new Error('O Wix não confirmou a sessão de membro.');
   save(KEYS.member,tokens);client.auth.setTokens(tokens);
   sessionStorage.removeItem(KEYS.oauth);
@@ -83,14 +87,16 @@ export async function completeOAuth(){
   return true;
 }
 export async function loginGoogle(backTo=location.pathname){
+  logout();
   const client=await sdk();
-  sessionStorage.removeItem(KEYS.member);
   const callback=new URL(location.pathname,location.origin).href;
   const oauth=client.auth.generateOAuthData(callback,callback);
   save(KEYS.oauth,oauth);save(KEYS.returnTo,location.pathname.endsWith('admin360.html')?'':'#perfil');
   const response=await client.auth.getAuthUrl(oauth,{idp:'google'});
   if(!response?.authUrl)throw new Error('O provedor Google não retornou um endereço de login.');
-  location.assign(response.authUrl);
+  const target=new URL(response.authUrl);
+  if(!trustedAuthTarget(target))throw new Error('Endereço de autenticação inválido.');
+  location.assign(target.href);
 }
 // Participant access is independent of the administrative Google login above.
 export async function loginAccount(mode='login'){
@@ -182,14 +188,14 @@ export async function accountPasswordReset(email){
   if(result.accountError)throw new WixError('Não foi possível enviar a recuperação.',0,result.accountError);
 }
 export async function validMemberToken(){
-  const current=load(KEYS.member);
+  const current=load(KEYS.member),expectedEpoch=authEpoch;
   if(!current?.accessToken?.value)return '';
   if(Number(current.accessToken.expiresAt)>Math.floor(Date.now()/1000)+90)return current.accessToken.value;
   if(refreshing)return refreshing;
   refreshing=(async()=>{
     if(!current.refreshToken?.value){logout();throw new Error('Sua sessão expirou. Entre novamente.');}
-    const client=await sdk();const next=await client.auth.renewToken(current.refreshToken);
-    if(load(KEYS.member)?.refreshToken?.value!==current.refreshToken.value)throw new Error('A conta foi alterada. Tente novamente.');
+    const client=await sdk();assertSession(expectedEpoch);const next=await client.auth.renewToken(current.refreshToken);
+    if(expectedEpoch!==authEpoch||load(KEYS.member)?.refreshToken?.value!==current.refreshToken.value)throw new Error('A conta foi alterada. Tente novamente.');
     if(!next?.accessToken?.value)throw new Error('Não foi possível renovar sua sessão.');
     save(KEYS.member,next,{renew:true});client.auth.setTokens(next);return next.accessToken.value;
   })().finally(()=>{refreshing=undefined;});
@@ -205,16 +211,28 @@ export function logout(){
 }
 export function memberToken(){return load(KEYS.member)?.accessToken?.value||'';}
 export async function adminRequest(path,body={}){
-  const token=await validMemberToken();
-  if(!token)throw new WixError('Faça login Google com uma conta administrativa autorizada.',401,'LOGIN_REQUIRED');
-  let response;
-  try{response=await fetch(SECURE_API+'/api/admin/'+path,{method:'POST',headers:{'Content-Type':'application/json',Authorization:token},body:JSON.stringify(body),cache:'no-store'});}
-  catch{throw new WixError('O serviço de gestão PTP não respondeu. Tente novamente.',503,'BACKEND_OFFLINE');}
-  let data={};try{data=await response.json()}catch{}
+  if(!['status','query','review','publish'].includes(path))throw new WixError('Operação administrativa inválida.',400,'INVALID_ACTION');
+  const epoch=authEpoch,token=await validMemberToken();
+  if(!token)throw new WixError('Entre com uma conta administrativa autorizada.',401,'LOGIN_REQUIRED');
+  assertSession(epoch);
+  const controller=new AbortController(),deadline=setTimeout(()=>controller.abort(),15000);
+  let response,data;
+  try{
+    response=await fetch(SECURE_API+'/api/admin/'+path,{method:'POST',headers:{'Content-Type':'application/json',Authorization:token},body:JSON.stringify(body),cache:'no-store',credentials:'omit',redirect:'error',signal:controller.signal});
+    try{data=await response.json();}catch(error){if(controller.signal.aborted)throw error;throw new WixError('O serviço retornou uma resposta inválida. Confira o resultado antes de repetir a operação.',502,'INVALID_RESPONSE');}
+  }catch(error){
+    assertSession(epoch);
+    if(error instanceof WixError)throw error;
+    if(['review','publish'].includes(path))throw new WixError('Não foi possível confirmar a alteração. Consulte o registro antes de reenviar.',0,'UNCERTAIN_WRITE');
+    throw new WixError(controller.signal.aborted?'O serviço de gestão demorou a responder. Tente novamente.':'Não foi possível acessar o serviço de gestão.',503,controller.signal.aborted?'TIMEOUT':'BACKEND_OFFLINE');
+  }finally{clearTimeout(deadline);}
+  assertSession(epoch);
+  if(!data||Array.isArray(data)||typeof data!=='object')throw new WixError('O serviço retornou uma resposta inválida.',502,'INVALID_RESPONSE');
   if(!response.ok){
-    const errors={admin_server_credentials_not_configured:'O servidor PTP precisa receber uma credencial administrativa Wix nas configurações protegidas do Render.',google_login_required:'Faça login novamente com Google.',admin_not_authorized:'Esta conta não está autorizada para a Gestão 360.',member_identity_permission_denied:'O Wix recusou a validação da identidade Google pelo backend. Faça um novo login. Se persistir, a integração precisa de permissão de leitura de membros.',wix_request_denied_403:'O Wix recusou a permissão do serviço administrativo. Verifique o escopo do cliente Headless.',wix_request_denied_401:'A credencial administrativa do Wix foi recusada.',duplicate_publication:'Registro já publicado. Confira a vitrine.',publication_consent_missing:'Não existe autorização específica para divulgar este registro.',already_published:'Registro já aprovado ou publicado.',admin_token_unavailable:'Falha na credencial de serviço Wix.'};
-    const msg=errors[data.error]||('Falha de integração: '+String(data.error||'HTTP '+response.status));
-    throw new WixError(msg,response.status,String(data.error||'PTP_API'));
+    if(response.status===401){logout();throw new WixError('Sua sessão expirou. Entre novamente.',401,'LOGIN_REQUIRED');}
+    const errors={admin_server_credentials_not_configured:'A integração administrativa aguarda configuração protegida.',google_login_required:'Faça login novamente com Google.',admin_not_authorized:'Esta conta não está autorizada para a Gestão 360.',member_identity_permission_denied:'Não foi possível validar sua identidade para a gestão.',wix_request_denied_403:'A integração de gestão precisa ter sua permissão restabelecida.',wix_request_denied_401:'A credencial do serviço precisa ser restabelecida.',duplicate_publication:'Registro já publicado. Confira a vitrine.',publication_consent_missing:'Não existe autorização específica para divulgar este registro.',already_published:'Registro já aprovado ou publicado.',admin_token_unavailable:'O serviço de gestão está temporariamente indisponível.'};
+    const known=Object.hasOwn(errors,String(data.error));
+    throw new WixError(known?errors[data.error]:'Não foi possível concluir a operação administrativa. Tente novamente.',response.status,known?String(data.error):'PTP_API');
   }
   return data;
 }
@@ -238,6 +256,7 @@ export async function cmsQuery(collection,{authenticated=false,limit=100}={}){
     if(!Array.isArray(result.dataItems))throw new WixError('O serviço retornou dados incompletos. Tente novamente.',502,'INVALID_RESPONSE');
     const batch=result.dataItems;
     records.push(...batch);const advertised=Number(result.pagingMetadata?.total??result.pagingMetadata?.totalCount??0);if(Number.isFinite(advertised)&&advertised>0)total=advertised;
+    if(batch.length<limit&&total>records.length)throw new WixError('A consulta retornou registros incompletos. Tente novamente.',502,'INCOMPLETE_RESPONSE');
     if(batch.length<limit||(total>0&&records.length>=total))break;
   }
   if(records.length>=2000&&(total===0||total>records.length))throw new WixError('A consulta excedeu o limite de registros. Solicite uma consulta filtrada à gestão.',413,'RESULT_LIMIT');
