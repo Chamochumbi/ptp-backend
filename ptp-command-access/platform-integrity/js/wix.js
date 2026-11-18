@@ -8,6 +8,15 @@ let refreshing;
 let visitorPending;
 let verificationState=null;
 let authEpoch=0;
+let accountFlow=0;
+export function cancelAccountFlow(){
+  accountFlow++;verificationState=null;
+  for(const key of [KEYS.oauth,KEYS.returnTo,DIRECT_KEY])sessionStorage.removeItem(key);
+}
+function beginAccountFlow(){cancelAccountFlow();return {id:accountFlow,epoch:authEpoch};}
+function assertAccountFlow(flow){
+  if(flow.id!==accountFlow||flow.epoch!==authEpoch)throw new WixError('O acesso foi cancelado. Entre novamente.',401,'SESSION_CHANGED');
+}
 export const sessionVersion=()=>authEpoch;
 function assertSession(epoch){if(epoch!==authEpoch||!memberToken())throw new WixError('Sua sessão mudou. Entre novamente antes de continuar.',401,'SESSION_CHANGED');}
 const DIRECT_KEY='ptp:v2:direct-login';
@@ -21,16 +30,24 @@ export async function request(url,{method='GET',body,token,sessionEpoch}={}){
   if(token)headers.Authorization=token;
   const controller=new AbortController();
   const deadline=setTimeout(()=>controller.abort(),15000);
-  let response,data;
+  let response,data,invalid=false;
+  const write=(method==='POST'&&url==='/wix-data/v2/items')||method==='PATCH';
   try{
-    response=await fetch(BASE+url,{method,headers,body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',signal:controller.signal});
-    try{data=await response.json();}catch(error){if(controller.signal.aborted)throw error;data={};}
-  }catch{
-    const write=(method==='POST'&&url==='/wix-data/v2/items')||method==='PATCH';
+    response=await fetch(BASE+url,{method,headers,body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',credentials:'omit',redirect:'error',signal:controller.signal});
+    if(expected!==undefined){assertSession(expected);if(response.status===401){logout();throw new WixError('Sua sessão expirou. Entre novamente.',401,'LOGIN_REQUIRED');}}
+    try{data=await response.json();}catch(error){if(controller.signal.aborted)throw error;invalid=true;}
+  }catch(error){
+    if(error instanceof WixError)throw error;
+    if(expected!==undefined)assertSession(expected);
     if(write)throw new WixError('Não foi possível confirmar a gravação. Confira seus registros antes de reenviar.',0,'UNCERTAIN_WRITE');
     throw new WixError(controller.signal.aborted?'O serviço demorou para responder. Tente novamente.':'Não foi possível acessar o serviço. Confira sua conexão.',0,controller.signal.aborted?'TIMEOUT':'NETWORK');
   }finally{clearTimeout(deadline);}
   if(expected!==undefined)assertSession(expected);
+  if(!data||Array.isArray(data)||typeof data!=='object')invalid=true;
+  if(invalid){
+    if(!response.ok)throw new WixError('O serviço não concluiu a solicitação. Tente novamente.',response.status,'WIX_API');
+    throw new WixError(write?'Não foi possível confirmar a gravação. Confira seus registros antes de reenviar.':'O serviço retornou uma resposta inválida. Tente novamente.',write?0:502,write?'UNCERTAIN_WRITE':'INVALID_RESPONSE');
+  }
   if(!response.ok){if(response.status===401&&expected!==undefined)logout();const msg=String(data.message||data.error_description||'Não foi possível concluir a operação').slice(0,220);throw new WixError(msg,response.status,data.details?.applicationError?.code||'WIX_API');}
   return data;
 }
@@ -55,7 +72,8 @@ export async function sdk(){
 }
 export async function completeOAuth(){
   const expectedEpoch=authEpoch;
-  const assertFlow=()=>{if(expectedEpoch!==authEpoch)throw new WixError('O acesso foi cancelado. Entre novamente.',401,'SESSION_CHANGED');};
+  const flow={id:accountFlow,epoch:expectedEpoch};
+  const assertFlow=()=>assertAccountFlow(flow);
   if(!/\bcode=/.test(location.hash)&&!/\bcode=/.test(location.search))return false;
   const direct=load(DIRECT_KEY);
   if(direct){
@@ -88,11 +106,14 @@ export async function completeOAuth(){
 }
 export async function loginGoogle(backTo=location.pathname){
   logout();
+  const flow=beginAccountFlow();
   const client=await sdk();
+  assertAccountFlow(flow);
   const callback=new URL(location.pathname,location.origin).href;
   const oauth=client.auth.generateOAuthData(callback,callback);
   save(KEYS.oauth,oauth);save(KEYS.returnTo,location.pathname.endsWith('admin360.html')?'':'#perfil');
   const response=await client.auth.getAuthUrl(oauth,{idp:'google'});
+  assertAccountFlow(flow);
   if(!response?.authUrl)throw new Error('O provedor Google não retornou um endereço de login.');
   const target=new URL(response.authUrl);
   if(!trustedAuthTarget(target))throw new Error('Endereço de autenticação inválido.');
@@ -103,9 +124,12 @@ export async function loginAccount(mode='login'){
   const {openAccount}=await import('../ptp_account.js?v=ptp-20261028-final');openAccount(mode);
 }
 export async function loginHostedAccount(){
+  const flow=beginAccountFlow();
   const client=await sdk(),callback=new URL('/',location.origin).href;
+  assertAccountFlow(flow);
   const oauth=client.auth.generateOAuthData(callback,callback);
   const response=await client.auth.getAuthUrl(oauth,{responseMode:'query',prompt:'login'});
+  assertAccountFlow(flow);
   const target=new URL(response?.authUrl||'');
   if(!trustedAuthTarget(target))throw new Error('Endereço de autenticação inválido.');
   sessionStorage.removeItem(DIRECT_KEY);
@@ -113,11 +137,12 @@ export async function loginHostedAccount(){
   location.assign(target.href);
 }
 function trustedAuthTarget(target){
-  if(target.protocol!=='https:'||target.username||target.password)return false;
+  if(target.protocol!=='https:'||target.username||target.password||target.port)return false;
   return target.hostname==='wix.com'||target.hostname.endsWith('.wix.com')||(target.origin===location.origin&&target.pathname==='/_api/oauth2/authorize');
 }
 function randomString(){return Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('');}
-async function finishAccount(response){
+async function finishAccount(response,flow){
+  assertAccountFlow(flow);
   const state=response?.loginState||'FAILURE';
   if(state!=='SUCCESS')return {state,errorCode:response?.errorCode};
   const sessionToken=response?.data?.sessionToken;
@@ -126,7 +151,9 @@ async function finishAccount(response){
   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(verifier));
   const challenge=btoa(String.fromCharCode(...new Uint8Array(digest))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
   const token=await visitorToken();
+  assertAccountFlow(flow);
   const result=await request('/headless/v1/redirect-session',{method:'POST',token,body:{auth:{authRequest:{clientId:CLIENT_ID,codeChallenge:challenge,codeChallengeMethod:'S256',responseMode:'query',responseType:'code',scope:'offline_access',redirectUri,sessionToken,state:oauthState}},callbacks:{postFlowUrl:redirectUri}}});
+  assertAccountFlow(flow);
   const target=new URL(result?.redirectSession?.fullUrl||'');
   if(!trustedAuthTarget(target))throw new Error('Endereço de autenticação inválido.');
   save(DIRECT_KEY,{verifier,state:oauthState,redirectUri,createdAt:Date.now()});
@@ -147,11 +174,15 @@ const accountErrorCodes=Object.freeze({
   THROTTLED_FEATURE:'tooManyAttempts',
   REENROLLMENT_REQUIRED_BY_ADMIN:'additionalVerification'
 });
-async function accountCall(path,body){
+async function accountCall(path,body,flow){
   try{
     const token=await visitorToken();
-    return await request(path,{method:'POST',token,body});
+    if(flow)assertAccountFlow(flow);
+    const response=await request(path,{method:'POST',token,body});
+    if(flow)assertAccountFlow(flow);
+    return response;
   }catch(error){
+    if(flow)assertAccountFlow(flow);
     const code=Object.hasOwn(accountErrorCodes,String(error.code))?accountErrorCodes[String(error.code)]:undefined;
     if(code)return {accountError:code};
     if(error.status===429)return {accountError:'tooManyAttempts'};
@@ -159,29 +190,32 @@ async function accountCall(path,body){
     return {accountError:'serviceUnavailable'};
   }
 }
-async function accountResult(response){
+async function accountResult(response,flow){
+  assertAccountFlow(flow);
   if(response.accountError)return {state:'FAILURE',errorCode:response.accountError};
   if(response.state==='REQUIRE_EMAIL_VERIFICATION'){
     if(!response.stateToken)return {state:'FAILURE',errorCode:'serviceUnavailable'};
-    verificationState={token:response.stateToken,createdAt:Date.now()};
+    verificationState={token:response.stateToken,createdAt:Date.now(),flow};
     return {state:'EMAIL_VERIFICATION_REQUIRED'};
   }
   verificationState=null;
   if(response.state==='REQUIRE_OWNER_APPROVAL')return {state:'OWNER_APPROVAL_REQUIRED'};
   if(response.state!=='SUCCESS')return {state:'FAILURE',errorCode:'additionalVerification'};
-  try{return await finishAccount({loginState:'SUCCESS',data:{sessionToken:response.sessionToken}});}
-  catch{return {state:'FAILURE',errorCode:'sessionUnavailable'};}
+  try{return await finishAccount({loginState:'SUCCESS',data:{sessionToken:response.sessionToken}},flow);}
+  catch(error){if(error.code==='SESSION_CHANGED')throw error;return {state:'FAILURE',errorCode:'sessionUnavailable'};}
 }
 export async function accountAuth(mode,email,password){
   if(!['login','register'].includes(mode))throw new Error('Operação inválida.');
-  verificationState=null;
+  const flow=beginAccountFlow();
   const path=mode==='login'?'/_api/iam/authentication/v2/login':'/_api/iam/authentication/v2/register';
-  return accountResult(await accountCall(path,{loginId:{email:email.trim()},password}));
+  return accountResult(await accountCall(path,{loginId:{email:email.trim()},password},flow),flow);
 }
 export async function accountVerification(verificationCode){
   if(!verificationState||Date.now()-verificationState.createdAt>600000){verificationState=null;return {state:'FAILURE',errorCode:'verificationExpired'};}
   if(!/^\d{6}$/.test(verificationCode))return {state:'FAILURE',errorCode:'invalidVerification'};
-  return accountResult(await accountCall('/_api/iam/verification/v1/auth/verify',{code:verificationCode,stateToken:verificationState.token}));
+  const {token,flow}=verificationState;
+  assertAccountFlow(flow);
+  return accountResult(await accountCall('/_api/iam/verification/v1/auth/verify',{code:verificationCode,stateToken:token},flow),flow);
 }
 export async function accountPasswordReset(email){
   const result=await accountCall('/_api/iam/recovery/v1/send-email',{email:email.trim(),language:'pt',redirect:{url:new URL('/',location.origin).href,clientId:CLIENT_ID}});
@@ -202,7 +236,7 @@ export async function validMemberToken(){
   return refreshing;
 }
 export function logout(){
-  verificationState=null;authEpoch++;
+  cancelAccountFlow();authEpoch++;
   sessionStorage.removeItem(KEYS.member);
   sessionStorage.removeItem(KEYS.oauth);
   sessionStorage.removeItem(DIRECT_KEY);
@@ -219,8 +253,11 @@ export async function adminRequest(path,body={}){
   let response,data;
   try{
     response=await fetch(SECURE_API+'/api/admin/'+path,{method:'POST',headers:{'Content-Type':'application/json',Authorization:token},body:JSON.stringify(body),cache:'no-store',credentials:'omit',redirect:'error',signal:controller.signal});
+    assertSession(epoch);
+    if(response.status===401){logout();throw new WixError('Sua sessão expirou. Entre novamente.',401,'LOGIN_REQUIRED');}
     try{data=await response.json();}catch(error){if(controller.signal.aborted)throw error;throw new WixError('O serviço retornou uma resposta inválida. Confira o resultado antes de repetir a operação.',502,'INVALID_RESPONSE');}
   }catch(error){
+    if(error instanceof WixError&&error.code==='LOGIN_REQUIRED')throw error;
     assertSession(epoch);
     if(error instanceof WixError)throw error;
     if(['review','publish'].includes(path))throw new WixError('Não foi possível confirmar a alteração. Consulte o registro antes de reenviar.',0,'UNCERTAIN_WRITE');

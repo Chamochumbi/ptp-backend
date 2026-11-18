@@ -24,7 +24,7 @@ async function setup({stored={},answer={loginState:'FAILURE',errorCode:'invalidP
  const dynamic=async spec=>{imports++;const exports=spec.includes('@wix/sdk')?{createClient:()=>({auth}),OAuthStrategy:()=>({})}:{members:{}};const m=new vm.SyntheticModule(Object.keys(exports),function(){for(const [k,v]of Object.entries(exports))this.setExport(k,v)},{context});await m.link(()=>{});await m.evaluate();return m;};
  const m=new vm.SourceTextModule(source,{context,importModuleDynamically:dynamic});
  await m.link(()=>new vm.SyntheticModule(['COLLECTIONS'],function(){this.setExport('COLLECTIONS',{})},{context}));await m.evaluate();
- return {api:m.namespace,context,values,calls,redirects,imports:()=>imports,renewals:()=>renewals};
+ return {api:m.namespace,context,values,calls,redirects,auth,imports:()=>imports,renewals:()=>renewals};
 }
 test('invalid credentials never store tokens or redirect',async()=>{const e=await setup();const r=await e.api.accountAuth('login','test@example.invalid','synthetic-test-password');assert.equal(r.state,'FAILURE');assert.equal(e.calls.length,2);assert.equal(e.api.memberToken(),'');assert.ok(!e.values.has(directKey));assert.equal(e.redirects.length,0);assert.equal(e.imports(),0);});
 test('email verification state remains pending without granting a session',async()=>{const e=await setup({answer:{loginState:'EMAIL_VERIFICATION_REQUIRED'}});assert.equal((await e.api.accountAuth('register','test@example.invalid','synthetic')).state,'EMAIL_VERIFICATION_REQUIRED');assert.equal(e.api.memberToken(),'');assert.equal(e.redirects.length,0);});
@@ -155,4 +155,57 @@ test('late OAuth token exchange cannot sign in after logout',async()=>{
 test('admin unauthorized response ends the current session and does not expose server text',async()=>{
  const e=await setup({stored:{[memberKey]:{accessToken:{value:'member-a',expiresAt:Date.now()/1000+3600}}}});e.context.fetch=async()=>({ok:false,status:401,json:async()=>({error:'private-stack-trace'})});
  await assert.rejects(e.api.adminStatus(),err=>err.status===401&&!err.message.includes('private-stack'));assert.equal(e.api.memberToken(),'');
+});
+
+const validSession={accessToken:{value:'member-a',expiresAt:Date.now()/1000+3600}};
+const ok=data=>({ok:true,status:200,json:async()=>data});
+const tick=()=>new Promise(setImmediate);
+test('logout during password authentication prevents a late redirect',async()=>{
+ const e=await setup();await e.api.visitorToken();let resolve,calls=0;e.context.fetch=async()=>++calls===1?new Promise(r=>resolve=r):ok({redirectSession:{fullUrl:'https://users.wix.com/auth'}});
+ const pending=e.api.accountAuth('login','a@test.invalid','synthetic');await tick();e.api.logout();resolve(ok({state:'SUCCESS',sessionToken:'late'}));
+ await assert.rejects(pending,err=>err.code==='SESSION_CHANGED');assert.equal(e.redirects.length,0);assert.ok(!e.values.has(directKey));
+});
+test('a newer login attempt supersedes a late email verification challenge',async()=>{
+ const e=await setup();await e.api.visitorToken();let resolve,calls=0;
+ e.context.fetch=async()=>++calls===1?new Promise(r=>resolve=r):ok({state:'REQUIRE_OWNER_APPROVAL'});
+ const first=e.api.accountAuth('register','a@test.invalid','synthetic');await tick();
+ assert.equal((await e.api.accountAuth('login','b@test.invalid','synthetic')).state,'OWNER_APPROVAL_REQUIRED');
+ resolve(ok({state:'REQUIRE_EMAIL_VERIFICATION',stateToken:'old-account'}));await assert.rejects(first,err=>err.code==='SESSION_CHANGED');
+ assert.equal((await e.api.accountVerification('123456')).errorCode,'verificationExpired');assert.equal(calls,2);
+});
+test('cancel during redirect preparation prevents navigation and clears pending credentials',async()=>{
+ const e=await setup({answer:{loginState:'SUCCESS',data:{sessionToken:'synthetic'}}});await e.api.visitorToken();const original=e.context.fetch;let resolve;
+ e.context.fetch=async(url,options)=>url.endsWith('/redirect-session')?new Promise(r=>resolve=r):original(url,options);
+ const pending=e.api.accountAuth('login','a@test.invalid','synthetic');while(!resolve)await tick();e.api.cancelAccountFlow();resolve(ok({redirectSession:{fullUrl:'https://users.wix.com/auth'}}));
+ await assert.rejects(pending,err=>err.code==='SESSION_CHANGED');assert.equal(e.redirects.length,0);assert.ok(!e.values.has(directKey));
+});
+test('closing account access discards the verification challenge',async()=>{
+ const e=await setup({answer:{loginState:'EMAIL_VERIFICATION_REQUIRED'}});await e.api.accountAuth('register','a@test.invalid','synthetic');e.api.cancelAccountFlow();
+ assert.equal((await e.api.accountVerification('123456')).errorCode,'verificationExpired');
+});
+for(const action of ['loginGoogle','loginHostedAccount'])test(action+' cannot redirect after logout',async()=>{
+ const e=await setup();let resolve;e.auth.generateOAuthData=()=>({state:'synthetic'});e.auth.getAuthUrl=async()=>new Promise(r=>resolve=r);
+ const pending=e.api[action]();while(!resolve)await tick();e.api.logout();resolve({authUrl:'https://users.wix.com/auth'});
+ await assert.rejects(pending,err=>err.code==='SESSION_CHANGED');assert.equal(e.redirects.length,0);assert.ok(!e.values.has('ptp:v2:oauth'));
+});
+test('invalid successful JSON cannot masquerade as a completed read or write',async()=>{
+ const e=await setup();for(const value of [null,[],true,'html']){e.context.fetch=async()=>ok(value);await assert.rejects(e.api.request('/members/v1/members/my'),err=>err.code==='INVALID_RESPONSE');}
+ e.context.fetch=async()=>({ok:true,status:200,json:async()=>{throw Error('html');}});
+ await assert.rejects(e.api.request('/members/v1/members/my'),err=>err.code==='INVALID_RESPONSE');
+ await assert.rejects(e.api.request('/wix-data/v2/items/record',{method:'PATCH',body:{}}),err=>err.code==='UNCERTAIN_WRITE');
+});
+test('admin 401 ends the session even when the response body is not JSON',async()=>{
+ const e=await setup({stored:{[memberKey]:validSession}});e.context.fetch=async()=>({ok:false,status:401,json:async()=>{throw Error('html');}});
+ await assert.rejects(e.api.adminStatus(),err=>err.status===401);assert.equal(e.api.memberToken(),'');
+});
+test('a malformed recovery response does not tell the user an email was sent',async()=>{
+ const e=await setup();await e.api.visitorToken();e.context.fetch=async()=>({ok:true,status:200,json:async()=>{throw Error('html');}});
+ await assert.rejects(e.api.accountPasswordReset('a@test.invalid'));
+});
+test('member API calls reject redirects and omit ambient cookies',async()=>{
+ const e=await setup();await e.api.request('/members/v1/members/my');assert.equal(e.calls[0].options.redirect,'error');assert.equal(e.calls[0].options.credentials,'omit');
+});
+test('a trusted hostname with an unexpected port cannot receive a login redirect',async()=>{
+ const e=await setup({answer:{loginState:'SUCCESS',data:{sessionToken:'synthetic'}},respond:url=>url.endsWith('/oauth2/token')?{access_token:'visitor',expires_in:3600}:{redirectSession:{fullUrl:'https://users.wix.com:8443/auth'}}});
+ assert.equal((await e.api.accountAuth('login','a@test.invalid','synthetic')).state,'FAILURE');assert.equal(e.redirects.length,0);
 });
