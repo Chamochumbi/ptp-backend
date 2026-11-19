@@ -1,0 +1,27 @@
+✔ CORS denied, even to administrator (15.385715ms)
+✔ missing member identity denied (2.79349ms)
+✔ invalid token cannot read private data with credentials configured (2.477718ms)
+✔ no backend secrets returns safe 503 and does not read private data (1.957159ms)
+✔ status correctly reports missing backend credentials (1.91084ms)
+✔ client credentials allow protected read after identity validation (2.329957ms)
+✔ disallow other collections (1.600655ms)
+✔ approve and block duplicate public publications (4.947344ms)
+✔ reject unauthorized status patches (1.567666ms)
+✔ member FULL 403 falls back to least-privileged identity without bypassing whitelist (1.29619ms)
+✔ admin readiness requires a successful private CMS permission check, not merely a secret (1.496239ms)
+✔ member validation uses site context and reports member-level 403 accurately (1.305123ms)
+✔ only the verified PTP owner can access management (1.395929ms)
+✔ admin readiness rejects malformed CMS data (2.027684ms)
+✔ partial pagination is an error, never a complete dashboard (2.272261ms)
+✔ full pages without total count keep paginating (2.312601ms)
+✔ invalid successful Wix response cannot confirm an operation (1.407316ms)
+✔ publication strips links containing embedded credentials (1.455688ms)
+✔ admin requests reject arrays and null bodies (1.493465ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 221.886997
