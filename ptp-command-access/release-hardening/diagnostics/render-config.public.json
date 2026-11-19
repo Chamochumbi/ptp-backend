@@ -1,0 +1,10 @@
+{
+  "serviceId": "srv-db5uaoijnfac73boqkvg",
+  "liveCommit": "9e9dd504ac03e9280adc2ebe8e1229fe32c5df9a",
+  "sourceCommit": "9e9dd504ac03e9280adc2ebe8e1229fe32c5df9a",
+  "buildCommand": "python3 scripts/audit-source.py > audit-api.json",
+  "startCommand": "npm start",
+  "healthCheckPath": "",
+  "autoDeploy": "no",
+  "checkedAt": "2026-11-15"
+}

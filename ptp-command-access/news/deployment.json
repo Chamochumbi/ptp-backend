@@ -1,0 +1,59 @@
+{
+  "result": {
+    "siteId": "11bfcf84-d1f4-4604-bfcf-82c08b20f0d4",
+    "published": true,
+    "siteUrl": "https://headless-imjmmxsthlj-pedrousinae-140b.wix-site-host.com",
+    "uploadId": "094a18f3-52a1-4bb0-ab19-3d65d6a6016e",
+    "fileCount": 72,
+    "summary": {
+      "added": [
+        "ptp_noticias.json"
+      ],
+      "replaced": [
+        "ptp_observatorio.js",
+        "ptp_observatorio.css",
+        "noticias.html"
+      ],
+      "deleted": [],
+      "unchanged": [],
+      "missingDeletes": [],
+      "sizes": {
+        "ptp_observatorio.js": {
+          "before": 30037,
+          "after": 52724
+        },
+        "ptp_observatorio.css": {
+          "before": 6874,
+          "after": 7805
+        },
+        "noticias.html": {
+          "before": 7086,
+          "after": 7106
+        }
+      }
+    },
+    "atomic": false
+  },
+  "checks": [
+    {
+      "path": "ptp_observatorio.js",
+      "matches": true,
+      "hash": 3134978467
+    },
+    {
+      "path": "ptp_observatorio.css",
+      "matches": true,
+      "hash": 2114691157
+    },
+    {
+      "path": "noticias.html",
+      "matches": true,
+      "hash": 2108566700
+    },
+    {
+      "path": "ptp_noticias.json",
+      "matches": true,
+      "hash": 1922109206
+    }
+  ]
+}

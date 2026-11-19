@@ -1,0 +1,32 @@
+name: PTP module regression
+on:
+  push:
+    branches: [main, codex/ptp-command-20261109]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  modules:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ptp-command-access
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      # The module package has no external dependencies or lockfile.
+      - name: Run authentication, authorization and journey regressions
+        run: npm test
+      - name: Rebuild published bundles from their sources
+        run: |
+          python3 radar/build-radar.py
+          python3 mentor-library/build-mentor.py
+      - name: Reject uncommitted generated bundle differences
+        run: git diff --exit-code -- radar/ptp_observatorio.js mentor-library/ptp_mentor_next.js

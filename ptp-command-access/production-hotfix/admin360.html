@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="same-origin"><meta name="theme-color" content="#092f34">
+<title>Centro de Comando 360° · PTP</title>
+<link rel="stylesheet" href="./ptp_command.css?v=20261030-command3">
+<script type="module" src="./ptp_command.js?v=20261113-session5"></script>
+<style>
+
+:root{--navy:#092f34;--dark:#0b3c41;--teal:#126156;--mint:#d8eadd;--gold:#ec9448;--ink:#173d3d}
+*{box-sizing:border-box}body:has(#access:not([hidden])){min-height:100%;background:var(--navy)}body:has(#access:not([hidden])){margin:0;min-height:100svh;color:#fff;background:var(--navy);font-family:Inter,"Segoe UI",Arial,sans-serif}
+.page{min-height:100svh;display:grid;grid-template-columns:minmax(0,1.07fr) minmax(400px,.93fr);overflow:hidden}
+.visual{isolation:isolate;position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:100svh;padding:clamp(28px,4.1vw,66px);background:linear-gradient(112deg,rgba(5,35,42,.87),rgba(9,62,62,.65) 65%,rgba(16,89,73,.32)),url('./assets/10.jpg') center/cover no-repeat}
+.visual:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,39,43,.42),transparent 40%);z-index:-1}
+.topmark{display:flex;align-items:center;gap:12px;font-size:12px;letter-spacing:.12em;font-weight:800;text-transform:uppercase;color:#f2faf8}
+.topmark .mark{width:10px;height:10px;border-radius:50%;background:#e99a5b;box-shadow:0 0 0 5px #e99a5b28}
+.visualcopy{max-width:550px;position:relative;padding:20px 0 56px}
+.visualcopy:before{content:"";height:4px;width:62px;display:block;background:var(--gold);border-radius:20px;margin-bottom:32px}
+.visualcopy p{font-size:clamp(15px,1.5vw,19px);font-weight:500;line-height:1.68;color:#e5efeb;max-width:440px;margin:0 0 17px}
+.visualcopy strong{font-size:clamp(37px,4.6vw,72px);line-height:1.1;letter-spacing:-.055em;display:block;font-weight:800;color:white}
+.visualcopy strong em{font-style:normal;color:#d5ecda}
+.visualstamp{position:absolute;right:-7vw;bottom:-15vw;width:min(46vw,670px);aspect-ratio:1;border-radius:50%;border:1px solid #ffffff29;box-shadow:0 0 0 57px #ffffff0b,0 0 0 114px #ffffff08;pointer-events:none;z-index:-1}
+.visualnote{font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#d6e5dc;display:flex;gap:13px;align-items:center}.visualnote:before{content:"";display:block;height:1px;width:26px;background:#d6e5dc90}
+.legacy-access{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100svh;padding:40px clamp(24px,5vw,85px);background:linear-gradient(170deg,#f6f8f6 0%,#e7efea 100%);color:var(--ink)}
+.access-inner{width:100%;max-width:480px}.brandcard{display:flex;align-items:center;justify-content:center;gap:22px;min-height:124px;padding:21px 22px;background:linear-gradient(120deg,#0a333a,#175c56);border:1px solid #54827966;border-radius:20px;box-shadow:0 12px 34px #092f3428}
+.brandcard img{display:block;object-fit:contain;max-height:72px;max-width:43%;width:auto}.brandcard .branddivider{width:1px;height:54px;background:#f0f7f466;flex:0 0 1px}
+.sectionid{display:flex;gap:11px;align-items:center;margin-top:47px;font-size:11px;line-height:1.4;letter-spacing:.17em;font-weight:800;color:#2a7664;text-transform:uppercase}
+.sectionid:before{content:"";width:28px;height:2px;background:var(--gold)}
+#access h1{font-size:clamp(39px,3.35vw,54px);font-weight:800;letter-spacing:-.052em;line-height:1.06;margin:19px 0 20px;color:#123e40}
+.description{font-size:16px;line-height:1.72;color:#5e756f;margin:0 0 34px;max-width:440px}
+.cta{min-height:61px;border-radius:13px;display:flex;align-items:center;justify-content:center;gap:11px;width:100%;padding:16px 22px;color:#fff;background:#145c52;box-shadow:0 14px 26px #145c522b;font-size:15px;font-weight:800;text-decoration:none;transition:transform .15s,background .15s,box-shadow .15s}
+.cta:hover{transform:translateY(-2px);background:#0b453f;box-shadow:0 17px 30px #145c5235}.cta:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+.cta .arrow{font-size:22px;font-weight:500;line-height:1;transition:transform .15s}.cta:hover .arrow{transform:translateX(4px)}
+.finenote{display:flex;align-items:center;gap:8px;margin-top:22px;color:#728c80;font-size:12px}.lock{display:inline-block;width:12px;height:10px;border:1.9px solid #789388;border-radius:2px;position:relative;margin-top:4px}.lock:before{content:"";position:absolute;left:2px;top:-8px;width:5px;height:6px;border:1.9px solid #789388;border-radius:5px 5px 0 0;border-bottom:0}
+#access footer{margin-top:50px;font-size:11px;letter-spacing:.075em;color:#69837c;font-weight:700;text-align:center}
+@media(max-width:960px){.page{grid-template-columns:1fr}.visual{min-height:295px;padding:30px}.visualcopy{padding:20px 0 10px}.visualcopy strong{font-size:35px}.visualcopy p{font-size:15px;margin-bottom:7px}.visualnote{display:none}.legacy-access{min-height:unset;padding:36px 24px 48px}.access-inner{max-width:570px}.sectionid{margin-top:30px}#access footer{margin-top:30px}}
+@media(max-width:480px){.visual{min-height:260px;padding:22px}.topmark{font-size:10px}.visualcopy strong{font-size:30px}.visualcopy p{font-size:13px}.brandcard{min-height:99px;padding:17px}.brandcard img{max-height:58px}.legacy-access{padding:26px 21px 42px}#access h1{font-size:37px;margin-top:14px}.description{font-size:15px}.cta{min-height:56px}}
+@media(prefers-reduced-motion:reduce){.cta,.cta .arrow{transition:none}}
+
+#access .cta{border:0;cursor:pointer;font-family:inherit}#accessStatus{font-size:12px;line-height:1.6;color:#557168;margin:16px 0}#access .outline{margin:0 8px 10px 0}.legacy-back{display:block;margin-top:22px;font-size:12px;color:#557168;text-decoration:none}#access .finenote{margin-top:18px}
+.command-actions{display:flex;flex-wrap:wrap;gap:8px}.source-time{display:block;margin-top:8px;color:var(--muted);font-size:10px}.auto-note{margin:-10px 0 18px}#loadProgress{display:block;width:100%;height:7px;margin:0 0 18px;accent-color:var(--green)}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Ir para o conteúdo</a>
+<section id="access" class="page"><section class="visual" aria-label="Parque Tecnológico de Piracicaba"><div class="topmark"><span class="mark" aria-hidden="true"></span><span>PARQUE TECNOLÓGICO DE PIRACICABA</span></div><div class="visualcopy"><p>Gestão institucional</p><strong>Inteligência,<br><em>conexões e gestão.</em></strong></div><div class="visualnote">PARQUE TECNOLÓGICO · PIRACICABA</div><div class="visualstamp" aria-hidden="true"></div></section>
+<main class="legacy-access"><div class="access-inner">
+<div class="brandcard"><img src="./assets/08.png" alt="Logo oficial do Parque Tecnológico de Piracicaba" loading="eager"><span class="branddivider" aria-hidden="true"></span><img src="./assets/11.png" alt="Logo oficial do Instituto Pecege" loading="eager"></div>
+<div class="sectionid">ÁREA RESTRITA · PTP</div>
+<h1>Centro de Comando 360°</h1>
+<p class="description">Acesso exclusivo à conta institucional autorizada do Parque Tecnológico de Piracicaba.</p>
+<button class="cta" id="login" hidden><span>Acessar Centro de Comando</span><span class="arrow" aria-hidden="true">→</span></button>
+<p id="accessStatus" role="status" aria-live="polite">Verificando sua sessão…</p><button id="retry" class="outline" hidden>Tentar novamente</button><button id="switchAccount" class="outline" hidden>Trocar de conta</button>
+<div class="finenote"><span class="lock" aria-hidden="true"></span>Ambiente institucional de acesso restrito</div>
+<a class="legacy-back" href="./">← Voltar à plataforma</a><footer>PTP · Gestão e inteligência do ecossistema</footer>
+</div></main>
+</section>
+<div id="dashboard" class="layout" hidden>
+ <aside class="sidebar"><a class="brand" href="./"><img src="./assets/08.png" alt="PTP · Plataforma de inovação"></a><span class="eyebrow">CENTRO DE COMANDO</span><nav aria-label="Gestão"><a href="#overview" class="active">◫ <span>Visão geral</span></a><a href="#records">▤ <span>Central de registros</span></a><a href="#ecosystem">◈ <span>Ecossistema</span></a><a href="#sources">↗ <span>Fontes e serviços</span></a></nav><div class="sidebar-bottom"><span class="private-dot"></span> Área privada do proprietário<p>Informação para conectar<br>e transformar.</p><a href="./">← Abrir plataforma</a><img src="./assets/11.png" alt="Instituto Pecege"></div></aside>
+ <div class="workspace"><header class="topbar"><span>PTP <span class="muted">/ Gestão institucional</span></span><div class="user"><span class="avatar" aria-hidden="true">PF</span><span id="ownerName">Proprietário</span><button class="text-button" id="logout">Sair</button></div></header>
+ <main id="main"><section id="overview"><div class="page-title"><div><span class="eyebrow">INTELIGÊNCIA DO ECOSSISTEMA</span><h1>Centro de Comando <span>360°</span></h1><p>Cadastros, conexões e oportunidades em uma visão integrada.</p></div><div class="command-actions"><button id="retrySources" class="outline" hidden>Reconsultar fontes com falha</button><button id="refresh" class="outline">↻ Atualizar dados</button></div></div>
+ <div class="sync-line"><span class="private-dot"></span><span id="syncStatus" role="status" aria-live="polite">Conectando às fontes…</span></div>
+ <p class="caption auto-note">Atualização automática a cada 5 minutos enquanto o painel estiver aberto e em uso.</p><progress id="loadProgress" aria-label="Progresso da consulta às fontes" max="21" value="0" hidden></progress>
+ <div id="alerts" aria-live="polite"></div><div class="kpis" id="kpis"></div>
+ <div class="charts"><article class="card"><div class="card-head"><div><span class="eyebrow">MOVIMENTO DA PLATAFORMA</span><h2>Novas inscrições</h2></div><span class="tag">Últimos 30 dias</span></div><div id="trend" class="trend"></div><p class="caption">Inscrições recebidas por dia · horário de Brasília.</p></article><article class="card"><div class="card-head"><div><span class="eyebrow">DO CADASTRO À VITRINE</span><h2>Publicação e acompanhamento</h2></div></div><div id="pipeline" class="bars"></div><p class="caption">A presença na vitrine é conferida pelo protocolo do envio.</p></article></div>
+ </section>
+ <section id="records" class="card records"><div class="card-head"><div><span class="eyebrow">GESTÃO EM UM SÓ LUGAR</span><h2>Central de registros</h2></div><div class="command-actions"><button id="export" class="outline" disabled>↓ Exportar CSV</button><button id="exportJSON" class="outline" disabled>↓ Exportar JSON</button></div></div><div class="filters"><label>Fonte<select id="sourceFilter"></select></label><label class="search">Buscar<input id="search" type="search" placeholder="Nome, e-mail, cidade ou protocolo"></label><label>Situação<select id="statusFilter"><option value="">Todas</option></select></label><label>Período<select id="periodFilter"><option value="0">Todo o histórico</option><option value="7">Últimos 7 dias</option><option value="30">Últimos 30 dias</option><option value="90">Últimos 90 dias</option></select></label></div><p id="recordsNote" class="caption"></p><div class="table-scroll"><table><thead><tr><th>Registro</th><th>Categoria / tipo</th><th>Cidade</th><th>Situação</th><th>Data</th><th><span class="sr-only">Detalhes</span></th></tr></thead><tbody id="rows"></tbody></table></div><div class="pagination"><span id="range"></span><div><button id="prev" class="outline">← Anterior</button><button id="next" class="outline">Próxima →</button></div></div></section>
+ <section id="ecosystem" class="charts"><article class="card"><div class="card-head"><div><span class="eyebrow">COMPOSIÇÃO DO ECOSSISTEMA</span><h2>Inscrições por categoria</h2></div></div><div id="categories" class="bars"></div></article><article class="card"><div class="card-head"><div><span class="eyebrow">ALCANCE TERRITORIAL</span><h2>Cidades dos participantes</h2></div></div><div id="cities" class="bars"></div><p class="caption">Distribuição dos perfis cadastrados.</p></article></section>
+ <section id="sources" class="card"><div class="card-head"><div><span class="eyebrow">TRANSPARÊNCIA DOS INDICADORES</span><h2>Fontes e serviços</h2></div><span id="sourceCount" class="tag"></span></div><div id="sourceHealth" class="source-grid"></div><div class="services"><a href="./">Plataforma e ferramentas ↗</a><a href="./agenda.html">Agenda ↗</a><a href="./fomento.html">Fomento ↗</a><a href="./talentos.html">Talentos ↗</a><a href="./noticias.html">Notícias ↗</a></div><p class="caption">Indicadores baseados nas coleções conectadas. Acessos ao site, receita e desempenho de serviços externos não são medidos por este painel.</p></section>
+ <footer>PTP · Gestão e inteligência do ecossistema<span>Dados privados · sessão autenticada</span></footer></main></div>
+</div>
+<dialog id="detail" aria-labelledby="detailTitle"><div class="card-head"><h2 id="detailTitle">Detalhes do registro</h2><button id="closeDetail" class="outline">Fechar</button></div><div id="detailBody"></div></dialog>
+<noscript>Ative o JavaScript para acessar o Centro de Comando. Nenhum dado privado é exibido sem autenticação.</noscript>
+</body></html>

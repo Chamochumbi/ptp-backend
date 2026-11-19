@@ -1,0 +1,94 @@
+{
+  "checkedAt": "2026-11-14",
+  "items": [
+    {
+      "id": "ext-canvas",
+      "url": "https://www.strategyzer.com/library/the-business-model-canvas",
+      "status": 200,
+      "title": "Business Model Canvas – Download the Official Template",
+      "finalUrl": "https://www.strategyzer.com/library/the-business-model-canvas"
+    },
+    {
+      "id": "ext-value",
+      "url": "https://www.strategyzer.com/library/the-value-proposition-canvas",
+      "status": 200,
+      "title": "Value Proposition Canvas – Download the Official Template",
+      "finalUrl": "https://www.strategyzer.com/library/the-value-proposition-canvas"
+    },
+    {
+      "id": "ext-test",
+      "url": "https://www.strategyzer.com/library/validate-your-ideas-with-the-test-card",
+      "status": 200,
+      "title": "Validate Your Ideas with the Test Card",
+      "finalUrl": "https://www.strategyzer.com/library/validate-your-ideas-with-the-test-card"
+    },
+    {
+      "id": "ext-mvp",
+      "url": "https://www.ycombinator.com/library/6f-how-to-plan-an-mvp",
+      "status": 200,
+      "title": "How to plan an MVP  : YC Startup Library | Y Combinator",
+      "finalUrl": "https://www.ycombinator.com/library/6f-how-to-plan-an-mvp"
+    },
+    {
+      "id": "ext-pitch",
+      "url": "https://www.ycombinator.com/library/6q-how-to-pitch-your-startup",
+      "status": 200,
+      "title": "How to Pitch Your Startup  : YC Startup Library | Y Combinator",
+      "finalUrl": "https://www.ycombinator.com/library/6q-how-to-pitch-your-startup"
+    },
+    {
+      "id": "ext-sales",
+      "url": "https://www.ycombinator.com/library/dc-how-to-start-a-startup-sales-and-marketing-how-to-talk-to-investors",
+      "status": 200,
+      "title": "How to Start a Startup: Sales and Marketing; How to Talk to Investors  : YC Startup Library | Y Combinator",
+      "finalUrl": "https://www.ycombinator.com/library/dc-how-to-start-a-startup-sales-and-marketing-how-to-talk-to-investors"
+    },
+    {
+      "id": "ext-customer",
+      "url": "https://steveblank.com/slides/",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "id": "ext-lean",
+      "url": "https://theleanstartup.com/principles?level=1",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "id": "ext-embrapii",
+      "url": "https://embrapii.org.br/unidades-embrapii-concentram-conhecimento-e-tecnologia-para-as-empresas-inovarem/",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "id": "ext-pipe",
+      "url": "https://fapesp.br/pipe/faq/",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "id": "ext-gov",
+      "url": "https://inovagov.enap.gov.br/content/show/22",
+      "status": 200,
+      "title": "InovaGov",
+      "finalUrl": "https://inovagov.enap.gov.br/content/show/22"
+    },
+    {
+      "id": "ext-agro",
+      "url": "https://www.alice.cnptia.embrapa.br/alice/handle/doc/1126215",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "id": "ext-ods",
+      "url": "https://www.ipea.gov.br/ods/",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "id": "ext-marcas",
+      "url": "https://www.gov.br/inpi/pt-br/servicos/marcas/guia-basico",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "id": "ext-patentes",
+      "url": "https://www.gov.br/inpi/pt-br/servicos/patentes/guia-basico",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "checkedAt": "2026-11-15T20:25:04.171Z",
+  "status": "blocked",
+  "findings": [
+    {
+      "severity": "blocker",
+      "code": "START_ENTRY_MISSING",
+      "path": "src/server.js"
+    },
+    {
+      "severity": "blocker",
+      "code": "TEST_DIRECTORY_MISSING",
+      "path": "tests"
+    },
+    {
+      "severity": "blocker",
+      "code": "BUILD_ENTRY_MISSING",
+      "path": "scripts/audit-source.py"
+    },
+    {
+      "severity": "review",
+      "code": "HTTP_HEALTHCHECK_UNSET"
+    }
+  ]
+}

@@ -1,0 +1,471 @@
+{
+  "result": {
+    "siteId": "11bfcf84-d1f4-4604-bfcf-82c08b20f0d4",
+    "published": true,
+    "siteUrl": "https://headless-imjmmxsthlj-pedrousinae-140b.wix-site-host.com",
+    "uploadId": "a67c1419-4676-4d62-a258-ec5d4af04a42",
+    "fileCount": 71,
+    "summary": {
+      "added": [],
+      "replaced": [
+        "js/wix.js",
+        "ptp_member_sync.js",
+        "ptp_my_registrations.js",
+        "ptp_cv_private.js",
+        "ptp_release_navigation.js",
+        "ptp_matchmaking_direct.js"
+      ],
+      "deleted": [],
+      "unchanged": [],
+      "missingDeletes": [],
+      "sizes": {
+        "js/wix.js": {
+          "before": 17493,
+          "after": 18866
+        },
+        "ptp_member_sync.js": {
+          "before": 15173,
+          "after": 20146
+        },
+        "ptp_my_registrations.js": {
+          "before": 4866,
+          "after": 5302
+        },
+        "ptp_cv_private.js": {
+          "before": 6787,
+          "after": 7578
+        },
+        "ptp_release_navigation.js": {
+          "before": 3506,
+          "after": 4477
+        },
+        "ptp_matchmaking_direct.js": {
+          "before": 8682,
+          "after": 8708
+        }
+      }
+    },
+    "atomic": false
+  },
+  "before": [
+    {
+      "path": "js/wix.js",
+      "hash": 3295199376
+    },
+    {
+      "path": "ptp_member_sync.js",
+      "hash": 1946214863
+    },
+    {
+      "path": "ptp_my_registrations.js",
+      "hash": 2425328380
+    },
+    {
+      "path": "ptp_cv_private.js",
+      "hash": 2104928868
+    },
+    {
+      "path": "ptp_release_navigation.js",
+      "hash": 4068750003
+    },
+    {
+      "path": "ptp_matchmaking_direct.js",
+      "hash": 240255475
+    }
+  ],
+  "verified": [
+    {
+      "path": "js/wix.js",
+      "hash": 2176533553,
+      "verified": true
+    },
+    {
+      "path": "ptp_member_sync.js",
+      "hash": 484118463,
+      "verified": true
+    },
+    {
+      "path": "ptp_my_registrations.js",
+      "hash": 1126518610,
+      "verified": true
+    },
+    {
+      "path": "ptp_cv_private.js",
+      "hash": 1683851282,
+      "verified": true
+    },
+    {
+      "path": "ptp_release_navigation.js",
+      "hash": 1286544019,
+      "verified": true
+    },
+    {
+      "path": "ptp_matchmaking_direct.js",
+      "hash": 1826964476,
+      "verified": true
+    }
+  ],
+  "listing": {
+    "siteId": "11bfcf84-d1f4-4604-bfcf-82c08b20f0d4",
+    "total": 71,
+    "offset": 0,
+    "hasMore": false,
+    "files": [
+      {
+        "path": "_wix/pages.json",
+        "bytes": 185,
+        "contentType": "application/json"
+      },
+      {
+        "path": "admin360.html",
+        "bytes": 13360,
+        "contentType": "text/html"
+      },
+      {
+        "path": "agenda.html",
+        "bytes": 7060,
+        "contentType": "text/html"
+      },
+      {
+        "path": "assets/00.png",
+        "bytes": 19436,
+        "contentType": "image/png"
+      },
+      {
+        "path": "assets/01.png",
+        "bytes": 21406,
+        "contentType": "image/png"
+      },
+      {
+        "path": "assets/02.png",
+        "bytes": 177202,
+        "contentType": "image/png"
+      },
+      {
+        "path": "assets/03.png",
+        "bytes": 169524,
+        "contentType": "image/png"
+      },
+      {
+        "path": "assets/04.png",
+        "bytes": 12696,
+        "contentType": "image/png"
+      },
+      {
+        "path": "assets/05.png",
+        "bytes": 61449,
+        "contentType": "image/png"
+      },
+      {
+        "path": "assets/06.png",
+        "bytes": 63365,
+        "contentType": "image/png"
+      },
+      {
+        "path": "assets/07.png",
+        "bytes": 20918,
+        "contentType": "image/png"
+      },
+      {
+        "path": "assets/08.png",
+        "bytes": 440195,
+        "contentType": "image/png"
+      },
+      {
+        "path": "assets/09.png",
+        "bytes": 3963573,
+        "contentType": "image/png"
+      },
+      {
+        "path": "assets/10.jpg",
+        "bytes": 333881,
+        "contentType": "image/jpeg"
+      },
+      {
+        "path": "assets/11.png",
+        "bytes": 33670,
+        "contentType": "image/png"
+      },
+      {
+        "path": "assets/12.png",
+        "bytes": 166959,
+        "contentType": "image/png"
+      },
+      {
+        "path": "assets/13.png",
+        "bytes": 40189,
+        "contentType": "image/png"
+      },
+      {
+        "path": "assets/14.jpg",
+        "bytes": 904047,
+        "contentType": "image/jpeg"
+      },
+      {
+        "path": "assets/15.jpg",
+        "bytes": 184098,
+        "contentType": "image/jpeg"
+      },
+      {
+        "path": "assets/16.jpg",
+        "bytes": 657590,
+        "contentType": "image/jpeg"
+      },
+      {
+        "path": "assets/17.jpg",
+        "bytes": 467358,
+        "contentType": "image/jpeg"
+      },
+      {
+        "path": "assets/18.jpg",
+        "bytes": 908646,
+        "contentType": "image/jpeg"
+      },
+      {
+        "path": "assets/19.jpg",
+        "bytes": 169218,
+        "contentType": "image/jpeg"
+      },
+      {
+        "path": "css/original-visual.css",
+        "bytes": 13354,
+        "contentType": "text/css"
+      },
+      {
+        "path": "data/library.json",
+        "bytes": 31287,
+        "contentType": "application/json"
+      },
+      {
+        "path": "data/pira2035.json",
+        "bytes": 52131,
+        "contentType": "application/json"
+      },
+      {
+        "path": "data/v8-added.json",
+        "bytes": 18833,
+        "contentType": "application/json"
+      },
+      {
+        "path": "fomento.html",
+        "bytes": 7099,
+        "contentType": "text/html"
+      },
+      {
+        "path": "index.html",
+        "bytes": 660326,
+        "contentType": "text/html"
+      },
+      {
+        "path": "js/admin.js",
+        "bytes": 16934,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "js/app.js",
+        "bytes": 34858,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "js/core.js",
+        "bytes": 5299,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "js/original-home.js",
+        "bytes": 7140,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "js/restored.js",
+        "bytes": 13086,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "js/shelf.js",
+        "bytes": 6649,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "js/wix.js",
+        "bytes": 18866,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "noticias.html",
+        "bytes": 7086,
+        "contentType": "text/html"
+      },
+      {
+        "path": "ptp_account.js",
+        "bytes": 7353,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_admin_gateway.js",
+        "bytes": 1649,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_admin360_metrics.js",
+        "bytes": 2101,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_admin360.css",
+        "bytes": 1988,
+        "contentType": "text/css"
+      },
+      {
+        "path": "ptp_approved_restore.css",
+        "bytes": 895,
+        "contentType": "text/css"
+      },
+      {
+        "path": "ptp_approved_restore.js",
+        "bytes": 17809,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_asset_pipeline.js",
+        "bytes": 6438,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_command_data.js",
+        "bytes": 2465,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_command_model.js",
+        "bytes": 4297,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_command.css",
+        "bytes": 10897,
+        "contentType": "text/css"
+      },
+      {
+        "path": "ptp_command.js",
+        "bytes": 17420,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_cv_private.js",
+        "bytes": 7578,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_ecosystem_extensions.js",
+        "bytes": 15412,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_eventos.json",
+        "bytes": 19568,
+        "contentType": "application/json"
+      },
+      {
+        "path": "ptp_identity_flow.js",
+        "bytes": 7905,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_interests_catalog.js",
+        "bytes": 5994,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_live_shelves.js",
+        "bytes": 5994,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_matchmaking_direct.js",
+        "bytes": 8708,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_member_sync.js",
+        "bytes": 20146,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_mentor_next.js",
+        "bytes": 130937,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_mentor_selfservice.js",
+        "bytes": 9031,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_menu_journey.css",
+        "bytes": 1051,
+        "contentType": "text/css"
+      },
+      {
+        "path": "ptp_my_registrations.js",
+        "bytes": 5302,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_observatorio.css",
+        "bytes": 6874,
+        "contentType": "text/css"
+      },
+      {
+        "path": "ptp_observatorio.js",
+        "bytes": 31704,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_portal_nav.css",
+        "bytes": 1751,
+        "contentType": "text/css"
+      },
+      {
+        "path": "ptp_portal_original.css",
+        "bytes": 113614,
+        "contentType": "text/css"
+      },
+      {
+        "path": "ptp_registration_hub.js",
+        "bytes": 10865,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_release_navigation.js",
+        "bytes": 4477,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_role_taxonomy.js",
+        "bytes": 6231,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_talent_directory.js",
+        "bytes": 6392,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "ptp_talent_upgrade.js",
+        "bytes": 8015,
+        "contentType": "text/javascript"
+      },
+      {
+        "path": "styles.css",
+        "bytes": 24126,
+        "contentType": "text/css"
+      },
+      {
+        "path": "talentos.html",
+        "bytes": 6134,
+        "contentType": "text/html"
+      }
+    ]
+  }
+}
