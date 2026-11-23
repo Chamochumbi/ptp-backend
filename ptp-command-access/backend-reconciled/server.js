@@ -1,4 +1,5 @@
 import http from 'node:http';
+import {handleMentor} from './mentor.js';
 
 const CLIENT_ID = '33921d68-22e1-4e95-b38a-d8f4c70aa416';
 const SITE_ID = '11bfcf84-d1f4-4604-bfcf-82c08b20f0d4';
@@ -124,6 +125,7 @@ async function manage(cfg,path,req,body){
 }
 async function handle(req,res){
  const cfg=settings(),url=new URL(req.url,'http://localhost'),path=url.pathname,origin=req.headers.origin,headers=cors(origin,cfg.origin);
+ if(await handleMentor(req,res,cfg))return;
  if(req.method==='GET'&&path==='/health')return json(res,200,{status:'ok',service:'ptp-backend',version:'3.2.1',adminBackendEnabled:Boolean(cfg.apiKey||cfg.clientSecret)},headers);
  if(req.method==='OPTIONS'&&(path==='/api/requests'||path.startsWith('/api/admin/')))return json(res,origin===cfg.origin?204:403,origin===cfg.origin?{}:{error:'origin_denied'},headers);
  if(!['POST','GET'].includes(req.method)||(!path.startsWith('/api/admin/')&&path!=='/api/requests'))return json(res,404,{error:'not_found'},headers);

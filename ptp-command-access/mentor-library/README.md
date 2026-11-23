@@ -1,3 +1,15 @@
+# Mentor NEXT — interface simplificada de 23/11/2026
+
+Entrada centrada em conversa, 56 perguntas-guia e recomendações de materiais. A IA permanece desativada: o responsável confirmou que ainda não possui API contratada. Consulte [CHAT-20261123.md](CHAT-20261123.md) para a entrega atual e os passos de ativação. A jornada gamificada abaixo é histórica e não é mais a entrada principal.
+
+---
+
+# Mentor NEXT — atualização de 19/11/2026
+
+Jornada gamificada com seis missões, pontuação por conclusão salva, conquistas, backup e atalhos de navegação publicada no mesmo site. Consulte [JOURNEY-20261119.md](JOURNEY-20261119.md) para escopo, evidências, publicação e limites atuais. A sincronização entre dispositivos e a IA conversacional continuam pendentes.
+
+---
+
 # Biblioteca e Mentoria NEXT — revisão de 15/11/2026
 
 ## Entrega publicada e verificada

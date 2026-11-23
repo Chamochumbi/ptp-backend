@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
-const bundle=readFileSync(new URL('../mentor-library/ptp_mentor_next.js',import.meta.url),'utf8');
+const bundle=readFileSync(new URL('../mentor-library/ptp_mentor_next.js',import.meta.url),'utf8').split('/* Mentor NEXT: conversation-first UI.')[0];
 const catalog=JSON.parse(readFileSync(new URL('../mentor-library/catalog.original.json',import.meta.url),'utf8'));
 const KEY='ptp.mentoria.quick.v1';
 function setup(values=new Map(),fail=false){

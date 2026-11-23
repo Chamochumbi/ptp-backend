@@ -746,10 +746,175 @@
   });
   const style=document.createElement('style');style.textContent=`.mp-intro{display:flex;justify-content:space-between;gap:24px;align-items:start}.mp-intro>div:first-child{max-width:760px}.mp-intro p{margin:8px 0}.mp-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.mp-intro .mp-toolbar{min-width:180px}.mp-notice{min-height:24px;color:#006b63;font-weight:600}.mp-cyclelist{display:flex;gap:10px;overflow:auto;margin:16px 0;padding:2px 2px 10px}.mp-cycle{background:white;border:1px solid #c8ddd6;border-radius:12px;padding:13px 16px;min-width:220px;text-align:left;color:#153e44;cursor:pointer}.mp-cycle strong,.mp-cycle span{display:block}.mp-cycle span{font-size:12px;margin-top:6px}.mp-cycle.selected{border:2px solid #18786e;background:#f0faf5}.mp-workspace{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(260px,1fr);gap:20px;align-items:start}.mp-workspace aside{display:grid;gap:16px}.mp-sessionhead{display:flex;justify-content:space-between;gap:14px;align-items:center}.mp-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;border-bottom:1px solid #d9e6e1;padding-bottom:14px;margin:16px 0 24px}.mp-tabs button{background:#f4f8f6;border:0;padding:12px 7px;border-radius:8px;font:inherit;font-size:12px;color:#355c60;cursor:pointer}.mp-tabs button[aria-current=step]{background:#146e65;color:white;font-weight:700}.mp-field{margin-bottom:18px}.mp-field label,.mp-action label{display:block;font-weight:600;color:#214e53;margin-bottom:7px;font-size:13px}.mp-field .field,.mp-field .select,.mp-action .field,.mp-action .select{width:100%;box-sizing:border-box}.mp-field textarea,.mp-action textarea{resize:vertical;min-height:76px;line-height:1.6}.mp-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px}.mp-preparation{border-left:4px solid #1c8973;background:#edf8f2;padding:12px;border-radius:8px}.mp-preparation p{font-size:12px;margin:5px 0 0}.mp-action{border:1px solid #d5e3dc;padding:18px;border-radius:12px;margin:16px 0}.mp-action .field,.mp-action .select{margin-bottom:14px}.mp-alert{color:#865513}.mp-review{padding:12px 0;border-bottom:1px solid #d5e3dc}.mp-bottom{margin-top:22px;justify-content:space-between}.mp-workspace li{margin-bottom:10px}.mp-workspace p{overflow-wrap:anywhere}.mp-workspace a{overflow-wrap:anywhere}.mp-workspace small{font-size:12px}#mp-form h3{margin-top:0}@media(max-width:920px){.mp-intro{display:block}.mp-intro .mp-toolbar{margin-top:16px}.mp-workspace{grid-template-columns:1fr}}@media(max-width:560px){.mp-columns{grid-template-columns:1fr;gap:0}.mp-tabs{grid-template-columns:1fr 1fr}.mp-sessionhead{align-items:start;flex-direction:column}.mp-action{padding:12px}}`;
   document.head.appendChild(style);
-  window.PTPMentoria={readiness,gaps,requirements,cleanRecord,decode,makeActions,completeAction,review,reportHtml,importData,create,open:id=>{if(storage.refresh()||!storage.ready())return false;if(!db.sessions.some(x=>x.id===id))return false;activeId=id;step=0;return true;},snapshot:()=>JSON.parse(JSON.stringify(db)),current,save};
+  window.PTPMentoria={view,readiness,gaps,requirements,cleanRecord,decode,makeActions,completeAction,review,reportHtml,importData,create,open:id=>{if(storage.refresh()||!storage.ready())return false;if(!db.sessions.some(x=>x.id===id))return false;activeId=id;step=0;return true;},snapshot:()=>JSON.parse(JSON.stringify(db)),current,save};
   if(typeof navBtn==='function'){const previousNav=navBtn;navBtn=function(viewId,icon,label,count){return previousNav(viewId,icon,viewId==='mentor'?'Mentoria NEXT':label,count);};}
   if(typeof demoMentor==='function')demoMentor=view;
   redraw();
+})();
+
+/* Mentor NEXT: learning milestones, self-reported evidence, local account storage. */
+(function () {
+  'use strict';
+  const storage = window.PTPMentorStorage;
+  if (!storage) return;
+  const KEY = 'ptp.mentoria.journey.v1';
+  const missions = [
+    {id:'problem', topic:'discovery', title:'Entenda o problema', badge:'Escuta ativa', effort:'15 min para preparar',
+      task:'Escolha um público e investigue uma situação real em que o problema ocorreu. Ouça antes de apresentar sua solução.',
+      deliverable:'Descreva o público, o problema, o que observou e quando. Se ainda não conversou com ninguém, registre a hipótese e a entrevista que pretende fazer.',
+      example:'Ex.: produtores relatam dificuldade em comparar custos. Ainda é uma hipótese; vou entrevistar três pessoas e pedir um exemplo recente.',
+      question:'Como entrevistar clientes para descobrir um problema real sem induzir as respostas?'},
+    {id:'value', topic:'model', title:'Defina sua proposta de valor', badge:'Valor em foco', effort:'20 min para preparar',
+      task:'Explique quem usa, quem decide e quem paga. Compare sua proposta com a alternativa que esse público usa hoje.',
+      deliverable:'Registre público, benefício, alternativa atual e hipótese de receita ou adoção. Separe o que sabe do que precisa testar.',
+      example:'Ex.: uma ferramenta de gestão para pequenos produtores, contratada pelo proprietário. A alternativa é a planilha; a economia de tempo ainda precisa ser medida.',
+      question:'Como definir uma proposta de valor e testar as hipóteses do meu modelo de negócio?'},
+    {id:'test', topic:'mvp', title:'Desenhe um teste pequeno', badge:'Experimento preparado', effort:'20 min para preparar',
+      task:'Escolha uma hipótese. Planeje o menor teste possível, com uma métrica, um prazo e um critério para decidir o próximo passo.',
+      deliverable:'Registre hipótese, procedimento, participantes, métrica e critério de decisão. A missão reconhece o planejamento; não comprova que o MVP foi validado.',
+      example:'Ex.: testar um protótipo com cinco usuários até sexta. Observar quantos concluem a tarefa sem ajuda e registrar as dificuldades antes de decidir o que ajustar.',
+      question:'Como montar um experimento de MVP com hipótese, métrica e critério de decisão?'},
+    {id:'market', topic:'sales', title:'Prepare sua ida ao mercado', badge:'Conexão com o mercado', effort:'20 min para preparar',
+      task:'Escolha um segmento e um canal acessível. Prepare uma oferta clara e uma abordagem que permita aprender com as respostas.',
+      deliverable:'Registre segmento, canal, mensagem e próximo contato. Diferencie interesse declarado de intenção de compra ou venda realizada.',
+      example:'Ex.: abordar cinco empresas do segmento com uma demonstração breve. Registrar respostas, objeções e pedidos de proposta; não contar respostas como vendas.',
+      question:'Como escolher meu primeiro canal de vendas e organizar um funil comercial simples?'},
+    {id:'learn', topic:'traction', title:'Meça e aprenda', badge:'Aprendizado registrado', effort:'15 min para registrar',
+      task:'Reúna o que aconteceu em um teste ou ação. Compare o resultado com a expectativa e registre também o que contrariou sua hipótese.',
+      deliverable:'Informe período, resultado, fonte e limitação. Sem resultado ainda? Registre o plano de coleta e trate a decisão como provisória.',
+      example:'Ex.: no teste de 12/11, três de cinco participantes concluíram a tarefa. A amostra é pequena; vou ajustar as instruções e repetir antes de generalizar.',
+      question:'Quais métricas de tração devo acompanhar e como decidir se continuo ou ajusto meu teste?'},
+    {id:'pitch', topic:'pitch', title:'Conte sua história e peça apoio', badge:'Próximo passo claro', effort:'20 min para preparar',
+      task:'Monte uma apresentação curta: problema, público, proposta, evidências, limites e pedido. Escolha a decisão que deseja provocar.',
+      deliverable:'Escreva o roteiro do pitch e um pedido concreto. Identifique números medidos e projeções; não apresente hipóteses como resultados.',
+      example:'Ex.: buscamos três parceiros para um piloto de 30 dias. Temos um protótipo, ainda sem receita, e queremos medir tempo de execução antes de ampliar.',
+      question:'Como organizar um pitch claro com evidências, limitações e um pedido adequado ao estágio?'}
+  ];
+  const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const empty = () => ({version:1, records:[]});
+  const validText = (x, max) => typeof x === 'string' && x.length <= max;
+  const enough = r => r.evidence.trim().length >= 40 && r.learning.trim().length >= 20;
+  function decode(raw) {
+    const x = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    if (!x || x.version !== 1 || !Array.isArray(x.records) || x.records.length > missions.length) throw Error('Backup de jornada inválido.');
+    const ids = new Set();
+    const records = x.records.map(r => {
+      if (!r || !missions.some(m => m.id === r.id) || ids.has(r.id) || !validText(r.evidence,2400) || !validText(r.learning,1200) || typeof r.completed !== 'boolean') throw Error('Registro de missão inválido.');
+      if (r.completed && !enough(r)) throw Error('Missão concluída sem registro suficiente.');
+      ids.add(r.id);
+      return {id:r.id, evidence:r.evidence, learning:r.learning, completed:r.completed};
+    });
+    return {version:1, records};
+  }
+  let db = empty(), baseline = null, store, draftsStore, drafts = {}, selected = missions[0].id, message = '', blocked = false, draftBlocked = false;
+  const record = id => db.records.find(r => r.id === id) || {id, evidence:'', learning:'', completed:false};
+  function metrics(data = db) {
+    const clean = decode(data), completed = clean.records.filter(r => r.completed).length;
+    const xp = completed * 100;
+    return {completed, xp, total:600, percent:Math.round(completed/6*100), level:xp===600?'Jornada concluída':xp>=400?'Aprendizado em ação':xp>=200?'Experimentação em foco':'Primeiros passos'};
+  }
+  function load() {
+    db=empty(); baseline=null; drafts={}; selected=missions[0].id; message=''; blocked=false; draftBlocked=false;
+    store=storage.open(KEY); draftsStore=storage.open(KEY+'.draft',true);
+    if (!storage.ready()) return;
+    try { baseline=store.get(); if(baseline)db=decode(baseline); }
+    catch {blocked=true;message='Não foi possível recuperar a jornada. O registro anterior foi preservado.';}
+    try {const raw=draftsStore.get(); if(raw){const d=decode(raw);for(const r of d.records)drafts[r.id]={...r,completed:false};}}
+    catch {draftBlocked=true;message+=' O rascunho da aba não pôde ser recuperado e foi preservado. Use o backup para guardar novas edições.';}
+    selected=missions.find(m=>!record(m.id).completed)?.id||missions[0].id;
+  }
+  load(); storage.onChange(load);
+  function ready() {return !storage.refresh() && storage.ready();}
+  function say(value) {message=value;const el=document.getElementById('mj-notice');if(el)el.textContent=value;}
+  function redraw() {if(typeof state!=='undefined'&&state.view==='mentor'&&typeof render==='function')render();}
+  function rememberDraft() {
+    if (!ready()) return false;
+    if (draftBlocked) return false;
+    try {draftsStore.set(JSON.stringify({version:1,records:Object.values(drafts)}));return true;}
+    catch {say('O rascunho está apenas nesta tela. Salve a missão ou baixe um backup antes de sair.');return false;}
+  }
+  function edit(id, patch) {
+    if(!ready()||!missions.some(m=>m.id===id)||record(id).completed)return false;
+    const r={...(drafts[id]||record(id)),...patch,id,completed:false};
+    if(!validText(r.evidence,2400)||!validText(r.learning,1200))return false;
+    drafts[id]=r;rememberDraft();return true;
+  }
+  function commit(next) {
+    if (!ready()) {say(storage.message());return false;}
+    if(blocked){say('O salvamento está bloqueado para preservar seus registros. Baixe um backup antes de recarregar.');return false;}
+    try {
+      if(store.get()!==baseline){say('A jornada mudou em outra aba. Baixe o backup deste rascunho e recarregue para conferir a versão mais recente.');return false;}
+      const clean=decode(next), raw=JSON.stringify(clean);store.set(raw);db=clean;baseline=raw;return true;
+    } catch {say('O navegador não confirmou o salvamento. Os pontos não foram alterados; baixe um backup do rascunho.');return false;}
+  }
+  function save(id, complete=false) {
+    if(!ready()||!missions.some(m=>m.id===id))return false;
+    const old=record(id);
+    if(old.completed){say('Esta conquista já foi registrada. Não há pontos adicionais por repetir.');return true;}
+    const r={...(drafts[id]||old),completed:complete};
+    if(complete&&!enough(r)){say('Registre sua entrega com pelo menos 40 caracteres e o aprendizado ou próximo passo com pelo menos 20. Descreva fatos, hipóteses e limites com clareza.');return false;}
+    if(!commit({version:1,records:[...db.records.filter(x=>x.id!==id),r]}))return false;
+    delete drafts[id];rememberDraft();say(complete?'Conquista registrada: +100 XP. Você pode seguir para a próxima missão.':'Rascunho salvo neste navegador. Continue quando quiser.');redraw();return true;
+  }
+  function reopen(id) {
+    if(!ready()||!record(id).completed)return false;
+    const r={...record(id),completed:false};
+    if(!commit({version:1,records:db.records.map(x=>x.id===id?r:x)}))return false;
+    say('Missão reaberta. Os 100 XP voltam quando você registrar a conclusão novamente.');redraw();return true;
+  }
+  function select(id) {if(!ready()||!missions.some(m=>m.id===id))return false;selected=id;message='';redraw();document.getElementById('mj-title')?.focus?.({preventScroll:true});return true;}
+  function backup() {
+    if(!ready())return null;
+    const merged=new Map(db.records.map(r=>[r.id,r]));
+    for(const r of Object.values(drafts))if(!record(r.id).completed)merged.set(r.id,{...r,completed:false});
+    return JSON.stringify({version:1,records:[...merged.values()]},null,2);
+  }
+  function restore(raw) {
+    if(!ready())return false;
+    try {
+      const incoming=decode(raw), merged=new Map(db.records.map(r=>[r.id,r]));
+      for(const r of incoming.records){const old=drafts[r.id]||merged.get(r.id);if(old&&(old.evidence||old.learning||old.completed)&&JSON.stringify(old)!==JSON.stringify(r))throw Error('O backup tem uma missão diferente da já registrada. Nenhum dado foi substituído.');merged.set(r.id,r);}
+      if(!commit({version:1,records:[...merged.values()]}))return false;
+      for(const r of incoming.records)delete drafts[r.id];
+      rememberDraft();say('Backup importado. Pontos recalculados pelas missões concluídas, sem duplicação.');redraw();return true;
+    } catch(e){say(e.message||'Não foi possível importar este backup.');return false;}
+  }
+  function download() {
+    const data=backup();if(data===null)return;
+    try {const url=URL.createObjectURL(new Blob([data],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='mentor-next-jornada.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);say('Backup preparado. Guarde o arquivo em local seguro.');}
+    catch {say('Não foi possível baixar o backup neste navegador.');}
+  }
+  function view() {
+    if(!storage.ready())return `<section class="panel mj-panel"><h2>Sua jornada NEXT</h2><p>${esc(storage.message())}</p></section>`;
+    const m=missions.find(m=>m.id===selected), saved=record(m.id), r=saved.completed?saved:drafts[m.id]||saved, score=metrics();
+    const next=missions.find(m=>!record(m.id).completed);
+    return `<section class="panel mj-panel" aria-labelledby="mj-heading"><div class="mj-top"><div><span class="mq-tag">JORNADA NEXT · 6 MISSÕES</span><h2 id="mj-heading">Um passo de cada vez. Uma conquista de cada vez.</h2><p>Transforme orientação em uma entrega concreta. Comece pela missão sugerida ou escolha outra.</p></div><div class="mj-score"><strong>${score.xp}<small> / 600 XP</small></strong><span>${score.level}</span></div></div><label class="mj-progress-label" for="mj-progress">${score.completed} de 6 missões concluídas · ${score.percent}%</label><progress id="mj-progress" max="6" value="${score.completed}">${score.percent}%</progress><details class="mj-map"><summary>Escolher missão e ver conquistas</summary><div class="mj-missions">${missions.map((x,i)=>`<button type="button" data-mj-select="${x.id}" aria-pressed="${selected===x.id}"><span>${record(x.id).completed?'✓':i+1}</span><strong>${esc(x.title)}</strong><small>${record(x.id).completed?esc(x.badge)+' · 100 XP':'100 XP ao concluir'}</small></button>`).join('')}</div></details><article class="mj-mission"><div class="mj-meta">MISSÃO ${missions.indexOf(m)+1} / 6 · ${esc(m.effort)}${saved.completed?' · CONCLUÍDA':''}</div><h3 id="mj-title" tabindex="-1">${esc(m.title)}</h3><p>${esc(m.task)}</p><div class="mj-delivery"><strong>Sua entrega</strong><p>${esc(m.deliverable)}</p></div><div class="mq-actions"><button class="btn outline" type="button" data-mj="guidance">Ver orientação e referências</button></div><details><summary>Ver um exemplo de registro</summary><p>${esc(m.example)}</p></details><label for="mj-evidence">O que você preparou ou observou?</label><textarea class="field" id="mj-evidence" rows="3" maxlength="2400" aria-describedby="mj-evidence-help" ${saved.completed?'readonly':''}>${esc(r.evidence)}</textarea><small id="mj-evidence-help">Ao concluir, registre pelo menos 40 caracteres. Não inclua dados pessoais de clientes nem informações confidenciais.</small><label for="mj-learning">O que aprendeu e qual é o próximo passo?</label><textarea class="field" id="mj-learning" rows="2" maxlength="1200" aria-describedby="mj-learning-help" ${saved.completed?'readonly':''}>${esc(r.learning)}</textarea><small id="mj-learning-help">Pelo menos 20 caracteres para concluir. Se falta evidência, explicite a lacuna.</small><div class="mq-actions">${saved.completed?`<span class="mj-badge">✓ ${esc(m.badge)}</span><button class="btn outline" type="button" data-mj="reopen">Reabrir missão</button>${next?`<button class="btn" type="button" data-mj-select="${next.id}">Próxima missão →</button>`:''}`:'<button class="btn" type="button" data-mj="complete">Concluir missão · +100 XP</button><button class="btn outline" type="button" data-mj="save">Salvar rascunho</button>'}</div>${score.completed===6?'<p class="mj-finish"><strong>Você completou a jornada!</strong> Leve seus registros a um mentor e escolha o próximo experimento. As conquistas representam etapas de aprendizagem, não certificação ou validação do negócio.</p>':''}<p id="mj-notice" role="status" aria-live="polite">${esc(message)}</p></article><details class="mj-help"><summary>Como funcionam os pontos e o salvamento?</summary><p>Cada missão concluída vale 100 XP, uma única vez. Os pontos reconhecem registros de aprendizagem declarados por você; não avaliam a qualidade das evidências nem comprovam resultados. Reabrir uma missão retira seus pontos até uma nova conclusão. Você escolhe seu ritmo, sem ranking público ou penalidade por ficar ausente.</p><p>${esc(storage.message())} Use o backup para transportar seus registros. A importação não substitui missões diferentes já existentes.</p><div class="mq-actions"><button type="button" class="btn outline" data-mj="export">Baixar backup da jornada</button><label class="mj-import">Importar backup<input type="file" id="mj-import" accept=".json,application/json"></label></div></details><p class="mj-local">${esc(storage.message())}</p></section>`;
+  }
+  document.addEventListener('input',e=>{if(e.target.id==='mj-evidence')edit(selected,{evidence:e.target.value});if(e.target.id==='mj-learning')edit(selected,{learning:e.target.value});});
+  document.addEventListener('click',e=>{
+    const b=e.target.closest?.('button');if(!b||(!b.dataset.mj&&!b.dataset.mjSelect))return;
+    if(!ready()){say(storage.message());return;}
+    if(b.dataset.mjSelect){select(b.dataset.mjSelect);return;}
+    if(b.dataset.mj==='save')save(selected);
+    if(b.dataset.mj==='complete')save(selected,true);
+    if(b.dataset.mj==='reopen')reopen(selected);
+    if(b.dataset.mj==='export')download();
+    if(b.dataset.mj==='guidance'){const m=missions.find(x=>x.id===selected);window.PTPMentoriaQuick?.guide(m.question,m.topic);}
+  });
+  document.addEventListener('change',async e=>{
+    if(e.target.id!=='mj-import')return;
+    const file=e.target.files?.[0];if(!file)return;
+    if(!ready())return;
+    const epoch=storage.epoch();
+    if(file.size>100000){say('Escolha um backup JSON de até 100 KB.');e.target.value='';return;}
+    try {const raw=await file.text();if(!ready()||epoch!==storage.epoch())return;restore(raw);}
+    catch {if(epoch===storage.epoch())say('Não foi possível ler o arquivo de backup.');}
+    finally {e.target.value='';}
+  });
+  const style=document.createElement('style');
+  style.textContent=`.mj-panel{border:1px solid #c6dfd5;background:linear-gradient(130deg,#f1f8f3,#fff 65%)}.mj-top{display:flex;gap:24px;justify-content:space-between;align-items:center}.mj-top h2{font-size:26px;line-height:1.25;margin:10px 0}.mj-top p{max-width:620px}.mj-score{flex:0 0 180px;text-align:center;padding:20px;background:#104e46;color:#fff;border-radius:16px}.mj-score strong{font-size:36px;display:block}.mj-score strong small{font-size:15px}.mj-score span{font-size:13px}.mj-progress-label{display:block;margin:20px 0 8px;font-weight:650}.mj-panel progress{display:block;width:100%;height:12px;accent-color:#18765e}.mj-map{margin:12px 0}.mj-missions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.mj-missions button{font:inherit;text-align:left;border:1px solid #c9ded6;border-radius:12px;padding:14px;background:#fff;color:#214d45;cursor:pointer}.mj-missions button[aria-pressed=true]{border:2px solid #15725b;background:#edf7f0}.mj-missions button span{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#e4f1e9;margin-bottom:8px}.mj-missions button strong,.mj-missions button small{display:block;overflow-wrap:anywhere}.mj-missions button small{font-size:12px;margin-top:7px}.mj-mission{border-top:1px solid #cfdfd8;padding-top:22px}.mj-meta{font-size:12px;font-weight:650;color:#526c65}.mj-mission h3{font-size:24px;margin:9px 0 12px}.mj-delivery{background:#edf5ef;border-left:3px solid #248062;border-radius:8px;padding:15px}.mj-delivery p{margin:5px 0}.mj-mission>label{display:block;font-weight:650;margin:18px 0 8px}.mj-mission>small,.mj-local{font-size:12px;line-height:1.6;color:#516b64}.mj-panel textarea{font:inherit;line-height:1.6;resize:vertical}.mj-panel textarea[readonly]{background:#f1f4f1}.mj-badge{display:inline-block;padding:9px 13px;border-radius:20px;background:#e2f2e6;color:#1d6544;font-weight:650}.mj-finish{padding:18px;background:#e6f2e8;border-radius:12px}.mj-help{border-top:1px solid #cfdfd8}.mj-import{display:grid;gap:6px;font-size:14px;max-width:100%}.mj-import input{max-width:100%}.mj-local{margin:12px 0 0}.mj-panel p{overflow-wrap:anywhere;line-height:1.65}.mj-panel button{min-height:44px}.mj-panel button:focus-visible,.mj-panel input:focus-visible,.mj-panel textarea:focus-visible{outline:3px solid #cfaa40;outline-offset:3px}@media(max-width:620px){.mj-top{display:block}.mj-top h2{font-size:23px}.mj-score{margin-top:15px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left}.mj-score strong{font-size:28px}.mj-missions{grid-template-columns:repeat(2,minmax(0,1fr))}.mj-mission h3{font-size:22px}.mj-missions button{padding:11px}}`;
+  document.head.appendChild(style);
+  window.PTPMentorJourney={missions,view,metrics,decode,edit,save,reopen,select,backup,restore,snapshot:()=>JSON.parse(JSON.stringify(db))};
 })();
 
 /* Mentoria NEXT: entrada simples, orientação editorial e referências verificáveis.
@@ -852,7 +1017,7 @@
     const topic=detect(record.question,record.topic);
     if(!topic)return `<section class="panel mq-answer"><h3>Vamos delimitar sua dúvida</h3><p>Ainda não identifiquei um tema com orientação específica na base. Escolha um tema acima ou explique qual decisão precisa tomar. Assim evitamos apresentar um roteiro genérico como resposta ao seu caso.</p>${referenceMarkup(record,null)}</section>`;
     const stageNote=record.stage===stages[2]?'Como você já tem clientes, use dados reais da operação como ponto de partida e compare grupos e períodos equivalentes.':record.stage===stages[1]?'Como você já está testando, registre o que aconteceu, o que contrariou a hipótese e o que precisa mudar no próximo teste.':'Como você ainda está explorando, priorize uma dúvida importante e uma ação pequena antes de investir em uma solução completa.';
-    return `<section class="panel mq-answer" id="mq-guidance"><div class="mq-tag">Orientação prática · ${esc(topic.label)}</div><h3>Sua dúvida, um caminho para avançar</h3><p class="mq-question">${esc(record.question)}</p><p class="mq-lead">${esc(angle(topic,record.question))}</p><div class="mq-next"><strong>Comece por aqui</strong><p>${esc(nextFor(topic,record.question))}</p></div><details><summary>Como aplicar, com exemplo</summary><ol>${topic.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><h4>Exemplo</h4><p>${esc(topic.example)}</p><p>${esc(stageNote)}</p><p><strong>Cuidados na interpretação:</strong> ${esc(topic.caution)}</p></details>${referenceMarkup(record,topic)}<h4>Aprofundar a conversa</h4><div class="mq-suggestions">${topic.followups.map(q=>`<button type="button" class="mq-prompt" data-mq-question="${esc(q)}">${esc(q)}</button>`).join('')}</div><div class="mq-actions"><button class="btn outline" type="button" data-mq="plan">Transformar em plano de ação</button><button class="btn outline" type="button" data-mq="export">Baixar orientação</button><button class="btn outline" type="button" onclick="setView('fxMentors')">Encontrar um mentor</button></div><small class="mq-method">Orientação editorial selecionada por tema e estágio, sem IA conversacional ou análise automática das evidências do seu negócio.</small></section>`;
+    return `<section class="panel mq-answer" id="mq-guidance"><div class="mq-tag">Orientação prática · ${esc(topic.label)}</div><h3>Sua dúvida, um caminho para avançar</h3><p class="mq-question">${esc(record.question)}</p><p class="mq-lead">${esc(angle(topic,record.question))}</p><div class="mq-next"><strong>Comece por aqui</strong><p>${esc(nextFor(topic,record.question))}</p></div><details><summary>Como aplicar, com exemplo</summary><ol>${topic.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><h4>Exemplo</h4><p>${esc(topic.example)}</p><p>${esc(stageNote)}</p><p><strong>Cuidados na interpretação:</strong> ${esc(topic.caution)}</p></details>${referenceMarkup(record,topic)}<h4>Aprofundar a conversa</h4><div class="mq-suggestions">${topic.followups.map(q=>`<button type="button" class="mq-prompt" data-mq-question="${esc(q)}">${esc(q)}</button>`).join('')}</div><div class="mq-actions"><button class="btn" type="button" data-mq="mission">Voltar à missão</button><button class="btn outline" type="button" data-mq="plan">Transformar em plano de ação</button><button class="btn outline" type="button" data-mq="export">Baixar orientação</button><button class="btn outline" type="button" onclick="setView('fxMentors')">Encontrar um mentor</button></div><small class="mq-method">Orientação editorial selecionada por tema e estágio, sem IA conversacional ou análise automática das evidências do seu negócio.</small></section>`;
   }
   function prompts(filter=''){
     const q=norm(filter);
@@ -860,7 +1025,7 @@
   }
   function quickView(){
     const picks=['discovery','mvp','sales','traction','pitch','funding'].map(id=>topics.find(t=>t.id===id));
-    return `${pageHead('MENTORIA NEXT · PTP','Qual é sua dúvida de hoje?','Uma pergunta para começar. Orientação prática e referências para avançar.')}<div class="mq-wrap"><section class="panel"><form id="mq-form"><label class="mq-mainlabel" for="mq-question">O que você precisa resolver?</label><textarea id="mq-question" class="field" rows="3" minlength="10" maxlength="2500" required placeholder="Ex.: tenho um protótipo, mas não sei o que medir para validar a ideia.">${esc(question)}</textarea><details class="mq-context"><summary>Personalizar por tema e estágio (opcional)</summary><div class="mq-search-row"><div><label for="mq-topic">Tema</label><select id="mq-topic" class="select"><option value="auto">Identificar pela pergunta</option>${topics.map(t=>`<option value="${t.id}"${topicId===t.id?' selected':''}>${esc(t.label)}</option>`).join('')}</select></div><div><label for="mq-stage">Seu momento</label><select id="mq-stage" class="select">${stages.map(s=>`<option${stage===s?' selected':''}>${s}</option>`).join('')}</select></div></div></details><div class="mq-actions"><button type="submit" class="btn">Receber orientação →</button><button type="button" class="btn outline" data-mq="workspace">Meus planos de ação</button></div><p class="hint">Orientação por temas, sem IA conversacional. ${esc(storage.message())} Evite informações confidenciais.</p><p role="status" aria-live="polite" id="mq-notice">${esc(notice)}</p></form><h3>Precisa de uma ideia para começar?</h3><div class="mq-suggestions">${picks.map(t=>`<button type="button" class="mq-prompt" data-mq-topic="${t.id}" data-mq-question="${esc(t.questions[0])}">${esc(t.questions[0])}</button>`).join('')}</div><details><summary>Ver as 56 sugestões por tema</summary><label for="mq-prompt-filter">Filtrar sugestões</label><input class="field" id="mq-prompt-filter" type="search" maxlength="100" value="${esc(promptFilter)}" placeholder="Ex.: vendas, MVP, pesquisa, preço"><div id="mq-prompts" class="mq-suggestions">${prompts(promptFilter)}</div></details></section><div id="mq-answer" tabindex="-1">${selected?answerMarkup(selected):''}</div><details class="panel"><summary>Consultas recentes (${history.length})</summary><div id="mq-history">${history.map(r=>`<button type="button" class="mq-history" data-mq-history="${esc(r.id)}">${esc(r.question)}<small>${esc(new Date(r.date).toLocaleString('pt-BR'))}</small></button>`).join('')||'<p>Suas consultas aparecerão aqui depois da primeira orientação.</p>'}</div></details><div class="mq-links"><button class="btn outline" type="button" onclick="setView('library')">Explorar toda a biblioteca</button><button class="btn outline" type="button" onclick="setView('fxMentors')">Conversar com um mentor</button></div></div>`;
+    return `${pageHead('MENTOR NEXT · PTP','Aprenda, aplique e avance.','Missões curtas, orientação prática e referências para transformar sua ideia em ação.')}<div class="mq-wrap"><div class="mq-actions"><button type="button" class="btn" data-mq="mission">Seguir minha missão</button><button type="button" class="btn outline" data-mq="question">Tenho uma dúvida</button></div>${window.PTPMentorJourney?.view()||''}<section class="panel"><form id="mq-form"><label class="mq-mainlabel" for="mq-question">Qual é sua dúvida de hoje?</label><textarea id="mq-question" class="field" rows="3" minlength="10" maxlength="2500" required placeholder="Ex.: tenho um protótipo, mas não sei o que medir para validar a ideia.">${esc(question)}</textarea><details class="mq-context"><summary>Personalizar por tema e estágio (opcional)</summary><div class="mq-search-row"><div><label for="mq-topic">Tema</label><select id="mq-topic" class="select"><option value="auto">Identificar pela pergunta</option>${topics.map(t=>`<option value="${t.id}"${topicId===t.id?' selected':''}>${esc(t.label)}</option>`).join('')}</select></div><div><label for="mq-stage">Seu momento</label><select id="mq-stage" class="select">${stages.map(s=>`<option${stage===s?' selected':''}>${s}</option>`).join('')}</select></div></div></details><div class="mq-actions"><button type="submit" class="btn">Receber orientação →</button><button type="button" class="btn outline" data-mq="workspace">Meus planos de ação</button></div><p class="hint">Orientação por temas, sem IA conversacional. ${esc(storage.message())} Evite informações confidenciais.</p><p role="status" aria-live="polite" id="mq-notice">${esc(notice)}</p></form><h3>Precisa de uma ideia para começar?</h3><div class="mq-suggestions">${picks.map(t=>`<button type="button" class="mq-prompt" data-mq-topic="${t.id}" data-mq-question="${esc(t.questions[0])}">${esc(t.questions[0])}</button>`).join('')}</div><details><summary>Ver as 56 sugestões por tema</summary><label for="mq-prompt-filter">Filtrar sugestões</label><input class="field" id="mq-prompt-filter" type="search" maxlength="100" value="${esc(promptFilter)}" placeholder="Ex.: vendas, MVP, pesquisa, preço"><div id="mq-prompts" class="mq-suggestions">${prompts(promptFilter)}</div></details></section><div id="mq-answer" tabindex="-1">${selected?answerMarkup(selected):''}</div><details class="panel"><summary>Consultas recentes (${history.length})</summary><div id="mq-history">${history.map(r=>`<button type="button" class="mq-history" data-mq-history="${esc(r.id)}">${esc(r.question)}<small>${esc(new Date(r.date).toLocaleString('pt-BR'))}</small></button>`).join('')||'<p>Suas consultas aparecerão aqui depois da primeira orientação.</p>'}</div></details><div class="mq-links"><button class="btn outline" type="button" onclick="setView('library')">Explorar toda a biblioteca</button><button class="btn outline" type="button" onclick="setView('fxMentors')">Conversar com um mentor</button></div></div>`;
   }
   function view(){return mode==='advanced'?`<div class="mq-back"><button type="button" class="btn outline" data-mq="quick">← Voltar às perguntas</button><p>Use o plano quando quiser acompanhar ações, prazos e aprendizados.</p></div>`+advancedView():quickView();}
   function redraw(){if(typeof state!=='undefined'&&state.view==='mentor'&&typeof render==='function')render();}
@@ -872,6 +1037,13 @@
     selected={id:uid(),question,topic:topics.some(t=>t.id===topicId)?topicId:'auto',stage:stages.includes(stage)?stage:stages[0],date:new Date().toISOString()};
     saveDraft();const saved=remember(selected);notice=saved?'Orientação pronta. Consulta salva neste navegador.':'Orientação pronta. O navegador não confirmou o salvamento; baixe a orientação para guardar.';
     redraw();document.getElementById('mq-answer')?.focus?.({preventScroll:true});document.getElementById('mq-answer')?.scrollIntoView?.({block:'start',behavior:'smooth'});return true;
+  }
+  function guide(q,t){
+    if(storage.refresh()||!storage.ready())return false;
+    readDraft();question=q;topicId=t;mode='quick';
+    const field=document.getElementById('mq-question'),select=document.getElementById('mq-topic');
+    if(field)field.value=q;if(select)select.value=t;
+    return ask();
   }
   function toPlan(){
     if(storage.refresh()||!storage.ready()||!selected)return false;
@@ -906,14 +1078,141 @@
     if((b.dataset.mq||b.dataset.mqQuestion||b.dataset.mqHistory)&&(storage.refresh()||!storage.ready())){say(storage.message());return;}
     if(b.dataset.mqQuestion){readDraft();question=b.dataset.mqQuestion;topicId=b.dataset.mqTopic||'auto';const q=document.getElementById('mq-question'),t=document.getElementById('mq-topic');if(q){q.value=question;q.focus();}if(t)t.value=topicId;saveDraft();say('Pergunta selecionada. Você pode editar antes de receber a orientação.');return;}
     if(b.dataset.mqHistory){const r=history.find(x=>x.id===b.dataset.mqHistory);if(r){selected=r;question=r.question;stage=r.stage;topicId=r.topic;saveDraft();redraw();}return;}
+    if(['mission','question'].includes(b.dataset.mq)){const el=document.getElementById(b.dataset.mq==='mission'?'mj-title':'mq-question');el?.focus?.({preventScroll:true});el?.scrollIntoView?.({block:'start',behavior:'instant'});return;}
     if(b.dataset.mq==='workspace'){readDraft();mode='advanced';redraw();}
     if(b.dataset.mq==='quick'){mode='quick';redraw();}
     if(b.dataset.mq==='plan')toPlan();
     if(b.dataset.mq==='search')updateSearch();
     if(b.dataset.mq==='export')download();
   });
-  const style=document.createElement('style');style.textContent=`.mq-wrap{max-width:1080px;margin:auto;display:grid;gap:20px}.mq-wrap .panel{min-width:0}.mq-mainlabel{font-size:20px;font-weight:700;display:block;margin-bottom:12px}.mq-wrap .field,.mq-wrap .select{width:100%;box-sizing:border-box;max-width:100%}#mq-question{min-height:105px;resize:vertical;font:inherit;line-height:1.6}.mq-actions,.mq-links{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}.mq-wrap .btn{white-space:normal}.mq-context{margin:10px 0}.mq-wrap summary{cursor:pointer;font-weight:650;padding:14px 0;color:#126e64}.mq-wrap summary:focus-visible,.mq-wrap button:focus-visible,.mq-wrap a:focus-visible{outline:3px solid #e1b54c;outline-offset:3px}.mq-suggestions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}.mq-prompt{border:1px solid #cfe0db;background:#f6faf8;color:#21484e;border-radius:10px;text-align:left;padding:13px 15px;font:inherit;cursor:pointer;line-height:1.5;overflow-wrap:anywhere}.mq-prompt:hover{background:#eaf5f0;border-color:#7daa9d}.mq-prompt small{display:block;color:#51756f;margin-bottom:4px}.mq-search-row{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:14px 0}.mq-search-row>div{flex:1;min-width:min(220px,100%)}.mq-search-row label{display:block;margin:6px 0}.mq-tag{font-size:12px;font-weight:650;color:#216f65}.mq-lead{font-size:18px;line-height:1.75}.mq-question{border-left:3px solid #afcfc4;padding-left:13px;color:#536e71}.mq-next{padding:18px;background:#edf7f2;border-radius:12px;border-left:4px solid #268675}.mq-next p{margin:7px 0 0}.mq-answer li{margin:13px 0;line-height:1.65}.mq-answer p{overflow-wrap:anywhere}.mq-references{border-top:1px solid #dce7e3;margin-top:24px;padding-top:16px}.mq-source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.mq-source{border:1px solid #dce7e3;border-radius:12px;padding:16px;min-width:0}.mq-source h4{line-height:1.5;margin:8px 0}.mq-source a{color:#096b63;overflow-wrap:anywhere}.mq-source p{font-size:14px;line-height:1.6}.mq-source small,.mq-method{display:block;font-size:12px;line-height:1.6;color:#536d70;margin-top:7px}.mq-history{display:block;width:100%;background:white;border:0;border-bottom:1px solid #dce7e3;padding:14px 0;text-align:left;font:inherit;color:#175952;cursor:pointer}.mq-history small{display:block;margin-top:4px;color:#647b7d}.mq-back{margin-bottom:20px}.mq-wrap [role=status]{min-height:20px;color:#116d61}#mq-answer{scroll-margin-top:90px}#mq-prompts{max-height:440px;overflow:auto;padding:4px}@media(max-width:620px){.mq-suggestions,.mq-source-grid{grid-template-columns:1fr}.mq-search-row{display:block}.mq-search-row .btn{margin-top:12px}.mq-lead{font-size:16px}.mq-actions .btn{flex:1 1 160px}.mq-wrap{gap:14px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}}`;
+  const style=document.createElement('style');style.textContent=`.mq-wrap{max-width:1080px;margin:auto;display:grid;gap:20px}.mq-wrap .panel{min-width:0}.mq-mainlabel{font-size:20px;font-weight:700;display:block;margin-bottom:12px}.mq-wrap .field,.mq-wrap .select{width:100%;box-sizing:border-box;max-width:100%}#mq-question{min-height:105px;resize:vertical;font:inherit;line-height:1.6}.mq-actions,.mq-links{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}.mq-wrap .btn{white-space:normal}.mq-context{margin:10px 0}.mq-wrap summary{cursor:pointer;font-weight:650;padding:14px 0;color:#126e64}.mq-wrap summary:focus-visible,.mq-wrap button:focus-visible,.mq-wrap a:focus-visible{outline:3px solid #e1b54c;outline-offset:3px}.mq-suggestions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}.mq-prompt{border:1px solid #cfe0db;background:#f6faf8;color:#21484e;border-radius:10px;text-align:left;padding:13px 15px;font:inherit;cursor:pointer;line-height:1.5;overflow-wrap:anywhere}.mq-prompt:hover{background:#eaf5f0;border-color:#7daa9d}.mq-prompt small{display:block;color:#51756f;margin-bottom:4px}.mq-search-row{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:14px 0}.mq-search-row>div{flex:1;min-width:min(220px,100%)}.mq-search-row label{display:block;margin:6px 0}.mq-tag{font-size:12px;font-weight:650;color:#216f65}.mq-lead{font-size:18px;line-height:1.75}.mq-question{border-left:3px solid #afcfc4;padding-left:13px;color:#536e71}.mq-next{padding:18px;background:#edf7f2;border-radius:12px;border-left:4px solid #268675}.mq-next p{margin:7px 0 0}.mq-answer li{margin:13px 0;line-height:1.65}.mq-answer p{overflow-wrap:anywhere}.mq-references{border-top:1px solid #dce7e3;margin-top:24px;padding-top:16px}.mq-source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.mq-source{border:1px solid #dce7e3;border-radius:12px;padding:16px;min-width:0}.mq-source h4{line-height:1.5;margin:8px 0}.mq-source a{color:#096b63;overflow-wrap:anywhere}.mq-source p{font-size:14px;line-height:1.6}.mq-source small,.mq-method{display:block;font-size:12px;line-height:1.6;color:#536d70;margin-top:7px}.mq-history{display:block;width:100%;background:white;border:0;border-bottom:1px solid #dce7e3;padding:14px 0;text-align:left;font:inherit;color:#175952;cursor:pointer}.mq-history small{display:block;margin-top:4px;color:#647b7d}.mq-back{margin-bottom:20px}.mq-wrap [role=status]{min-height:20px;color:#116d61}#mq-answer,#mq-question,#mj-title{scroll-margin-top:90px}#mq-prompts{max-height:440px;overflow:auto;padding:4px}@media(max-width:620px){.mq-suggestions,.mq-source-grid{grid-template-columns:1fr}.mq-search-row{display:block}.mq-search-row .btn{margin-top:12px}.mq-lead{font-size:16px}.mq-actions .btn{flex:1 1 160px}.mq-wrap{gap:14px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}}`;
   document.head.appendChild(style);
-  window.PTPMentoriaQuick={topics,detect,rankSources,searchLinks,sourceType,saveDraft,angle,nextFor,answerMarkup,exportHtml,cleanHistory,remember,ask,toPlan,snapshot:()=>JSON.parse(JSON.stringify(history)),view};
+  window.PTPMentoriaQuick={topics,detect,rankSources,searchLinks,sourceType,saveDraft,angle,nextFor,answerMarkup,exportHtml,cleanHistory,remember,ask,guide,toPlan,snapshot:()=>JSON.parse(JSON.stringify(history)),view};
   demoMentor=view;redraw();
+})();
+
+
+/* Mentor NEXT: conversation-first UI. No simulated AI fallback. */
+(function(){
+  'use strict';
+  const core=window.PTPNext, quick=window.PTPMentoriaQuick, storage=window.PTPMentorStorage, plans=window.PTPMentoria;
+  if(!core||!quick||!storage||!plans)return;
+  const ENDPOINT='https://ptp-api.onrender.com/api/mentor';
+  const KEY='ptp.mentoria.chat.v1';
+  const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const stages=['Estou explorando uma ideia','Estou validando / prototipando','Já tenho clientes','Quero crescer ou inovar'];
+  let mode='chat', draft='',project='',stage=stages[0],topic='auto',filter='',kind='all',messages=[],notice='',busy=false,controller=null,generation=0,store,blocked=false,status='unknown',archive=null;
+  const safeURL=x=>{try{const u=new URL(x);return u.protocol==='https:'&&!u.username&&!u.password&&!u.port?u.href:'';}catch{return '';}};
+  function validateReply(data){
+    if(data?.version!==1||data?.kind!=='ai'||typeof data.text!=='string'||!data.text.trim()||data.text.length>16000||!Array.isArray(data.citations)||data.citations.length>30)throw Error('invalid_response');
+    const citations=data.citations.map(c=>{
+      if(!c||!safeURL(c.url)||typeof c.title!=='string'||c.title.length>300||!Number.isInteger(c.start)||!Number.isInteger(c.end)||c.start<0||c.end<c.start||c.end>data.text.length)throw Error('invalid_response');
+      return {url:safeURL(c.url),title:c.title,start:c.start,end:c.end};
+    }).sort((a,b)=>a.start-b.start);
+    if(citations.some((c,i)=>i&&c.start<citations[i-1].end))throw Error('invalid_response');
+    return {role:'assistant',text:data.text,citations,webSearched:data.webSearched===true};
+  }
+  function decode(raw){
+    const d=JSON.parse(raw);
+    if(d?.version!==1||!Array.isArray(d.messages)||d.messages.length>20||typeof d.draft!=='string'||d.draft.length>2500||typeof d.project!=='string'||d.project.length>700)throw Error('invalid_history');
+    const rows=d.messages.map((m,i)=>{
+      if(m.role!==(i%2?'assistant':'user'))throw Error('invalid_history');
+      if(m.role==='assistant')return validateReply({version:1,kind:'ai',...m});
+      if(typeof m.text!=='string'||!m.text.trim()||m.text.length>2500)throw Error('invalid_history');return{role:'user',text:m.text};
+    });
+    if(rows.length%2)throw Error('incomplete_history');
+    return{messages:rows,draft:d.draft,project:d.project,stage:stages.includes(d.stage)?d.stage:stages[0],topic:quick.topics.some(t=>t.id===d.topic)?d.topic:'auto'};
+  }
+  function cancel(){generation++;controller?.abort();controller=null;busy=false;}
+  function load(){
+    cancel();mode='chat';draft='';project='';stage=stages[0];topic='auto';filter='';kind='all';messages=[];notice='';blocked=false;archive=null;store=storage.open(KEY,true);
+    if(!storage.ready())return;
+    try{const raw=store.get();if(raw){const x=decode(raw);({draft,project,stage,topic,messages}=x);}}catch{blocked=true;notice='A conversa anterior não pôde ser recuperada e foi preservada. A nova conversa ficará apenas nesta tela.';}
+  }
+  load();storage.onChange(load);
+  function ready(){return !storage.refresh()&&storage.ready();}
+  function say(x){notice=x;const n=document.getElementById('mc-notice');if(n)n.textContent=x;}
+  function persistChat(){if(!ready()||blocked)return false;try{store.set(JSON.stringify({version:1,draft,project,stage,topic,messages}));return true;}catch{say('O navegador não confirmou o rascunho. Baixe a conversa para guardar.');return false;}}
+  function redraw(){if(typeof state!=='undefined'&&state.view==='mentor'&&typeof render==='function')render();}
+  const query=()=>draft.trim()||[...messages].reverse().find(m=>m.role==='user')?.text||'';
+  function recommendations(){
+    const q=query();if(!q)return [];
+    const selected=quick.detect(q,topic);
+    const rows=quick.rankSources(q+' '+project,selected,kind);
+    if(kind!=='all')return rows.slice(0,4);
+    const ext=quick.rankSources(q+' '+project,selected,'external')[0],internal=quick.rankSources(q+' '+project,selected,'internal')[0];
+    const first=[rows[0],ext,internal].filter(Boolean),seen=new Set();
+    return [...first,...rows].filter(x=>{if(seen.has(x.item.id))return false;seen.add(x.item.id);return true;}).slice(0,4);
+  }
+  function materialCards(){
+    const rows=recommendations();
+    return rows.length?rows.map(({item,reason})=>`<article class="mc-source"><small>${esc(quick.sourceType(item))} · ${esc(item.provider||'Biblioteca NEXT')}</small><a href="${esc(core.materialUrl(item))}" target="_blank" rel="noopener noreferrer">${esc(item.title)} ↗</a><p>${esc(item.note||reason)}</p><small>${esc(reason)}</small></article>`).join(''):`<p class="mc-muted">${query()?'Não encontrei uma correspondência suficiente neste filtro. Ajuste o tema ou consulte as buscas externas.':'Escreva sua dúvida ou escolha uma pergunta-guia. Os materiais relacionados aparecerão aqui.'}</p>`;
+  }
+  function refreshMaterials(){const n=document.getElementById('mc-materials');if(n)n.innerHTML=materialCards();const l=document.getElementById('mc-external');if(l)l.innerHTML=externalLinks();}
+  function externalLinks(){return quick.searchLinks(query()).map(x=>`<a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">${esc(x.name)} ↗</a>`).join('')||'<span>Escolha um assunto para pesquisar.</span>';}
+  function prompts(){const q=core.normalize(filter);return quick.topics.flatMap(t=>t.questions.map(text=>({t,text}))).filter(x=>(topic==='auto'||x.t.id===topic)&&(!q||core.normalize(x.text+' '+x.t.label).includes(q))).map(x=>`<button type="button" data-mc-prompt="${esc(x.text)}" data-topic="${x.t.id}"><small>${esc(x.t.label)}</small>${esc(x.text)}</button>`).join('')||'<p>Nenhuma pergunta encontrada. Escreva sua dúvida no chat.</p>';}
+  function answerHTML(m){
+    let start=0,html='';for(const c of m.citations||[]){html+=esc(m.text.slice(start,c.start))+`<a class="mc-citation" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">[${esc(c.title)} ↗]</a>`;start=c.end;}html+=esc(m.text.slice(start));
+    return html;
+  }
+  function transcript(){return messages.map(m=>`<article class="mc-message ${m.role==='user'?'mc-user':'mc-assistant'}"><strong>${m.role==='user'?'Você':'Mentor NEXT · IA'}</strong><div>${m.role==='user'?esc(m.text):answerHTML(m)}</div>${m.role==='assistant'?`<small>${m.webSearched?'Consulta externa realizada; veja as fontes citadas.':'Sem consulta externa nesta resposta. Confira recomendações antes de aplicá-las.'}</small>`:''}</article>`).join('');}
+  function archiveMarkup(record){
+    const t=quick.topics.find(t=>t.id===record.topic)||quick.detect(record.question,'auto');
+    if(!t)return `<section class="panel"><h3>${esc(record.question)}</h3><p>Registro preservado. Escolha um tema nas perguntas-guia para continuar.</p></section>`;
+    return `<section class="panel"><h3>${esc(record.question)}</h3><p>${esc(quick.angle(t,record.question))}</p><h4>Próximo passo</h4><p>${esc(quick.nextFor(t,record.question))}</p><details><summary>Ver o roteiro anterior</summary><ol>${t.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><p>${esc(t.caution)}</p></details></section>`;
+  }
+  function view(){
+    if(mode==='plans')return `<div class="mc-toolbar"><button class="btn outline" data-mc="back">← Voltar à mentoria</button></div>`+plans.view();
+    if(mode==='archive')return `<div class="mc-toolbar"><button class="btn outline" data-mc="back">← Voltar à mentoria</button></div><section class="panel"><h2>Orientações anteriores</h2><p>Registros da base editorial anterior, sem geração por IA.</p>${quick.snapshot().map(r=>`<button class="mq-history" data-mc-archive="${esc(r.id)}">${esc(r.question)}</button>`).join('')||'<p>Nenhuma orientação anterior nesta conta e navegador.</p>'}</section>${archive?archiveMarkup(archive):''}`;
+    const label=status==='ready'?'IA disponível':status==='checking'?'Verificando conexão de IA…':'IA aguarda ativação';
+    return `${pageHead('MENTOR NEXT · PTP','Vamos trabalhar na sua próxima decisão.','Conte seu desafio. Explore caminhos, perguntas e referências no seu ritmo.')}<div class="mc-shell"><div class="mc-toolbar"><span class="mc-status ${status==='ready'?'mc-online':''}">${label}</span><div><button class="btn outline" type="button" data-mc="plans">Meus planos</button><details class="mc-menu"><summary>Mais opções</summary><button type="button" data-mc="archive">Orientações anteriores</button><button type="button" data-mc="export">Baixar conversa</button><button type="button" data-mc="retry">Verificar conexão</button></details></div></div><div class="mc-layout"><section class="panel mc-chat" aria-label="Conversa de mentoria"><div class="mc-intro"><h3>O que você quer destravar?</h3><p>Comece por uma pergunta ou descreva a situação do seu projeto.</p><div class="mc-starters">${['discovery','mvp','sales','traction'].map(id=>{const t=quick.topics.find(t=>t.id===id);return `<button type="button" data-mc-prompt="${esc(t.questions[0])}" data-topic="${id}">${esc(t.questions[0])}</button>`;}).join('')}</div><details class="mc-guides"><summary>Explorar perguntas-guia · 56 sugestões</summary><div class="mc-filters"><label>Tema<select class="select" id="mc-topic"><option value="auto">Todos os temas</option>${quick.topics.map(t=>`<option value="${t.id}"${t.id===topic?' selected':''}>${esc(t.label)}</option>`).join('')}</select></label><label>Buscar pergunta<input class="field" type="search" id="mc-filter" value="${esc(filter)}" placeholder="Ex.: preço, pesquisa, MVP"></label></div><div id="mc-prompts">${prompts()}</div></details></div><div class="mc-transcript" id="mc-transcript" aria-label="Mensagens da conversa">${transcript()}</div>${busy?'<p class="mc-thinking" role="status">Analisando sua pergunta e o contexto da conversa…</p>':''}<form id="mc-form" aria-busy="${busy}"><label class="mc-label" for="mc-question">Sua pergunta para o mentor</label><textarea id="mc-question" class="field" ${busy?'readonly':''} rows="4" maxlength="2500" placeholder="Ex.: tenho um protótipo para produtores rurais. Como testar disposição a pagar antes de investir no produto?">${esc(draft)}</textarea><details class="mc-context"><summary>Adicionar contexto do projeto (opcional)</summary><label for="mc-project">Projeto, público, objetivo e o que já tentou</label><textarea id="mc-project" class="field" maxlength="700" rows="3" placeholder="Quanto mais específico o contexto, mais útil pode ser a orientação.">${esc(project)}</textarea><label for="mc-stage">Em que momento você está?</label><select id="mc-stage" class="select">${stages.map(s=>`<option${s===stage?' selected':''}>${esc(s)}</option>`).join('')}</select></details><div class="mc-send"><span>Ctrl + Enter para enviar</span><button class="btn" type="${busy?'button':'submit'}" ${busy?'data-mc="cancel"':''}>${busy?'Cancelar resposta':'Enviar ao mentor →'}</button></div><p id="mc-notice" role="status" aria-live="polite">${esc(notice)}</p>${status!=='ready'?'<p class="mc-availability">O chat de IA ainda não está ativo. Você já pode escolher perguntas e explorar os materiais relacionados.</p>':''}<small class="mc-privacy">Ao enviar com a IA ativa, sua pergunta, contexto e até 10 trocas desta conversa serão processados pelo provedor de IA. Não inclua informações confidenciais. O histórico desta conversa fica nesta aba, separado pelo contexto da conta.</small></form></section><aside class="panel mc-resources" aria-label="Materiais recomendados"><h3>Para aprofundar</h3><p class="mc-muted">Biblioteca e fontes externas relacionadas ao assunto. Recomendações por tema e palavras-chave.</p><label for="mc-kind">Tipo de material</label><select id="mc-kind" class="select">${[['all','Todas as fontes'],['internal','Biblioteca NEXT'],['external','Materiais externos'],['academic','Artigos acadêmicos']].map(([v,l])=>`<option value="${v}"${kind===v?' selected':''}>${l}</option>`).join('')}</select><div id="mc-materials">${materialCards()}</div><details><summary>Buscar além da curadoria</summary><div id="mc-external" class="mc-external">${externalLinks()}</div><small>Atalhos de pesquisa externa; não são resultados já consultados pelo mentor.</small></details><button class="btn outline" type="button" data-mc="library">Abrir biblioteca completa</button></aside></div></div>`;
+  }
+  async function checkStatus(){
+    if(status==='checking'||typeof fetch!=='function')return false;
+    status='checking';redraw();
+    try{const r=await fetch(ENDPOINT+'/status',{credentials:'omit',redirect:'error',signal:AbortSignal.timeout(12000)}),d=await r.json();status=r.ok&&d.version===1&&d.ready===true?'ready':'unavailable';}
+    catch{status='unavailable';}redraw();return status==='ready';
+  }
+  async function send(){
+    if(!ready()){say(storage.message());return false;}if(busy)return false;
+    const q=draft.trim();if(q.length<10||q.length>2500){say('Conte sua dúvida em pelo menos 10 caracteres.');return false;}
+    if(status!=='ready'){refreshMaterials();say('A IA ainda não está conectada. Os materiais ao lado foram selecionados para sua pergunta.');return false;}
+    const token=window.PTPConta?.token?.();if(!token){say('Entre na sua conta pelo botão Entrar / criar conta para conversar com a IA. Sua pergunta permanece no campo.');return false;}
+    const own=++generation,epoch=storage.epoch();busy=true;controller=new AbortController();const activeController=controller;notice='';persistChat();redraw();
+    const timer=setTimeout(()=>activeController.abort(),55000);
+    try{
+      const history=messages.slice(-18).map(m=>({role:m.role,content:m.text}));
+      while(history.reduce((n,m)=>n+m.content.length,0)>60000)history.splice(0,2);
+      const r=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},credentials:'omit',redirect:'error',signal:activeController.signal,body:JSON.stringify({question:q,context:project,stage,topic,history})});
+      const d=await r.json();if(!r.ok)throw Error(r.status===401||r.status===403?'login_required':r.status===429?'rate_limit':'unavailable');
+      const reply=validateReply(d);
+      if(!ready()||own!==generation||epoch!==storage.epoch())return false;
+      messages=[...messages,{role:'user',text:q},reply].slice(-20);draft='';persistChat();say('Resposta recebida. Confira as hipóteses e as fontes antes de decidir.');return true;
+    }catch(e){if(own===generation&&epoch===storage.epoch())say(e.message==='login_required'?'Sua sessão precisa ser renovada. Entre novamente; a pergunta foi preservada.':e.message==='rate_limit'?'O limite de consultas foi atingido. Tente mais tarde; sua pergunta foi preservada.':'Não foi possível obter uma resposta de IA. Sua pergunta foi preservada. Tente novamente ou consulte os materiais.');return false;}
+    finally{clearTimeout(timer);if(own===generation){busy=false;controller=null;redraw();document.getElementById('mc-transcript')?.scrollIntoView?.({block:'start',behavior:'instant'});}}
+  }
+  function choose(q,t='auto'){if(!ready()||busy)return false;draft=q;topic=t;persistChat();redraw();document.getElementById('mc-question')?.focus?.();return true;}
+  function download(){if(!ready())return;const text=['Mentor NEXT — conversa','Contexto: '+project,...messages.map(m=>(m.role==='user'?'VOCÊ':'MENTOR NEXT · IA')+'\n'+m.text+'\n'+(m.citations||[]).map(c=>c.title+': '+c.url).join('\n')),'Rascunho: '+draft].join('\n\n');try{const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='mentor-next-conversa.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch{say('Não foi possível baixar a conversa.');}}
+  document.addEventListener('input',e=>{const n=e.target;if(!['mc-question','mc-project','mc-filter'].includes(n.id)||!ready())return;if(n.id==='mc-question'){if(busy)return;draft=n.value.slice(0,2500);topic='auto';persistChat();refreshMaterials();}if(n.id==='mc-project'){project=n.value.slice(0,700);persistChat();refreshMaterials();}if(n.id==='mc-filter'){filter=n.value;const el=document.getElementById('mc-prompts');if(el)el.innerHTML=prompts();}});
+  document.addEventListener('change',e=>{if(!ready())return;const n=e.target;if(n.id==='mc-kind'){kind=n.value;refreshMaterials();}if(n.id==='mc-stage'){stage=n.value;persistChat();}if(n.id==='mc-topic'){topic=n.value;persistChat();refreshMaterials();const el=document.getElementById('mc-prompts');if(el)el.innerHTML=prompts();}});
+  document.addEventListener('submit',e=>{if(e.target.id==='mc-form'){e.preventDefault();send();}});
+  document.addEventListener('keydown',e=>{if(e.target.id==='mc-question'&&e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();send();}});
+  document.addEventListener('click',e=>{
+    const b=e.target.closest?.('button');if(!b)return;
+    if(b.dataset.mcPrompt){choose(b.dataset.mcPrompt,b.dataset.topic);return;}
+    if(!b.dataset.mc&&!b.dataset.mcArchive)return;if(!ready())return;
+    if(b.dataset.mcArchive){archive=quick.snapshot().find(r=>r.id===b.dataset.mcArchive)||null;redraw();return;}
+    const action=b.dataset.mc;
+    if(action==='cancel'){cancel();say('Solicitação cancelada. Sua pergunta foi preservada.');redraw();}
+    if(action==='retry')checkStatus();
+    if(action==='plans'||action==='archive'){cancel();mode=action;redraw();}
+    if(action==='back'){mode='chat';redraw();}
+    if(action==='export')download();
+    if(action==='library')window.setView?.('library');
+  });
+  const style=document.createElement('style');style.textContent=`.mc-shell{max-width:1160px;margin:auto;color:#23474b}.mc-toolbar,.mc-toolbar>div{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.mc-toolbar{margin:10px 0 22px}.mc-status{font-size:12px;color:#685e3e;background:#f6f0e3;padding:8px 12px;border-radius:20px}.mc-online{color:#166047;background:#e5f4e9}.mc-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:22px;align-items:start}.mc-layout .panel{min-width:0;background:#fff}.mc-chat{padding:28px!important}.mc-intro h3{font-size:26px;margin:0 0 10px}.mc-intro>p{color:#62797a}.mc-starters{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:22px 0 12px}.mc-starters button,#mc-prompts button{font:inherit;font-size:14px;text-align:left;border:1px solid #dce8e2;border-radius:12px;padding:12px;background:#f7faf8;color:#22584e;cursor:pointer;line-height:1.5;overflow-wrap:anywhere}.mc-shell button{min-height:42px;white-space:normal}.mc-shell summary{padding:12px 0;cursor:pointer;font-weight:650;color:#1b6b59}.mc-guides{border-bottom:1px solid #e5ece8;padding-bottom:12px}.mc-filters{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mc-filters label,.mc-context label{display:block;font-size:13px;margin:10px 0}#mc-prompts{display:grid;gap:8px;max-height:280px;overflow:auto;margin-top:12px}#mc-prompts small{display:block;color:#687f79;margin-bottom:5px}.mc-shell .field,.mc-shell .select{width:100%;max-width:100%;box-sizing:border-box}.mc-shell textarea{font:inherit;line-height:1.6;resize:vertical}.mc-label{display:block;font-size:17px;font-weight:650;margin:22px 0 10px}.mc-send{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px}.mc-send span{font-size:12px;color:#687f79}.mc-send .btn{min-width:170px}.mc-privacy,.mc-availability{display:block;font-size:12px;color:#647b76;line-height:1.65}.mc-availability{border-left:3px solid #c7aa67;padding:8px 12px;background:#fcf8ed}.mc-resources h3{font-size:20px;margin:0 0 10px}.mc-muted{font-size:13px;color:#627975;line-height:1.6}.mc-resources>label{display:block;font-size:12px;margin:16px 0 6px}.mc-source{padding:18px 0;border-bottom:1px solid #e3ebe6}.mc-source>a{display:block;font-weight:650;color:#146a58;margin:7px 0;text-decoration:none;line-height:1.5}.mc-source p{font-size:13px;line-height:1.6;margin:8px 0}.mc-source small,.mc-resources details small{font-size:11px;color:#657e75;line-height:1.6;display:block}.mc-external{display:grid;gap:10px;font-size:13px;padding:5px 0 14px}.mc-resources>.btn{margin-top:18px;width:100%}.mc-message{padding:18px;border-radius:14px;margin:18px 0;overflow-wrap:anywhere}.mc-message>strong{display:block;font-size:12px;margin-bottom:12px;color:#28715c}.mc-message>div{white-space:pre-wrap;line-height:1.8;font-size:15px}.mc-user{background:#f1f6f3}.mc-assistant{background:#fff;border:1px solid #dce8e0}.mc-message>small{display:block;margin-top:14px;color:#637c73;font-size:11px}.mc-citation{color:#096a53;text-decoration:underline}.mc-thinking,#mc-notice{font-size:14px;line-height:1.6;color:#276f5a}.mc-menu{position:relative}.mc-menu>summary{padding:9px 12px}.mc-menu[open]{background:white;border:1px solid #dce8e2;border-radius:10px;padding:0 10px}.mc-menu button{display:block;background:white;border:0;font:inherit;font-size:13px;cursor:pointer;padding:8px}.mc-shell :is(button,input,textarea,select,summary,a):focus-visible{outline:3px solid #c5a15a;outline-offset:3px}#mc-transcript,#mc-question{scroll-margin-top:100px}@media(max-width:950px){.mc-layout{grid-template-columns:1fr}.mc-resources{position:static}}@media(max-width:540px){.mc-chat{padding:18px!important}.mc-starters,.mc-filters{grid-template-columns:1fr}.mc-send{align-items:stretch;flex-direction:column}.mc-send .btn{width:100%}.mc-toolbar{gap:10px}.mc-intro h3{font-size:23px}}`;
+  document.head.appendChild(style);
+  window.PTPMentorChat={view,send,choose,checkStatus,decode,validateReply,answerHTML,recommendations,cancel,snapshot:()=>({messages:JSON.parse(JSON.stringify(messages)),draft,project,status,busy})};
+  demoMentor=view;redraw();
+  if(typeof fetch==='function'&&typeof AbortSignal!=='undefined')checkStatus();
 })();

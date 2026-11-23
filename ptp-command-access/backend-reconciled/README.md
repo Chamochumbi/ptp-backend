@@ -1,3 +1,5 @@
+> Atualização de 23/11/2026: adaptador Mentor NEXT preparado e testado com respostas simuladas, ainda não implantado. Veja [MENTOR-AI.md](MENTOR-AI.md). A configuração e a contratação da API permanecem pendentes.
+
 # Backend PTP 3.2.1 — candidato para revisão
 
 Registro de 19/11/2026. **Não publicado em produção.**

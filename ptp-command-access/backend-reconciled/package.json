@@ -6,7 +6,7 @@
   "engines": { "node": ">=22" },
   "scripts": {
     "start": "node server.js",
-    "test": "NODE_ENV=test node --test test/server.test.js",
-    "check": "node --check server.js && node --check test/server.test.js && npm test"
+    "test": "NODE_ENV=test node --test test/*.test.js",
+    "check": "node --check server.js && node --check mentor.js && node --check test/server.test.js && npm test"
   }
 }
