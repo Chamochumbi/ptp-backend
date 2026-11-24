@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
-const bundle=readFileSync(new URL('../mentor-library/ptp_mentor_next.js',import.meta.url),'utf8');
+// The inactive AI adapter remains tested separately from the published recommendations entry.
+const bundle=readFileSync(new URL('../mentor-library/ptp_mentor_next.js',import.meta.url),'utf8').split('/* Mentor NEXT: material recommendations.')[0]+readFileSync(new URL('../mentor-library/ptp_mentor_chat.js',import.meta.url),'utf8');
 const catalog=JSON.parse(readFileSync(new URL('../mentor-library/catalog.original.json',import.meta.url),'utf8'));
 const response={version:1,kind:'ai',text:'No seu caso, teste primeiro a disposição a pagar com uma oferta concreta.',citations:[],webSearched:false};
 function setup({values=new Map(),who='member-a',fetcher=async(url)=>({ok:true,json:async()=>url.endsWith('/status')?{version:1,ready:true}:response})}={}){

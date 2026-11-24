@@ -18,5 +18,5 @@ for topic in topics:
 workspace=(p/'ptp_mentor_workspace.js').read_text().rstrip()
 journey=(p/'ptp_mentor_journey.js').read_text().rstrip()
 quick=(p/'ptp_mentor_simple.js').read_text().replace('/*__MENTOR_TOPICS__*/[]',json.dumps(json.loads((p/'mentor-topics.json').read_text()),ensure_ascii=False))
-chat=(p/'ptp_mentor_chat.js').read_text().rstrip()
-(p/'ptp_mentor_next.js').write_text(core+'\n\n'+storage+'\n\n'+workspace+'\n\n'+journey+'\n\n'+quick+'\n\n'+chat)
+materials=(p/'ptp_mentor_materials.js').read_text().rstrip()
+(p/'ptp_mentor_next.js').write_text(core+'\n\n'+storage+'\n\n'+workspace+'\n\n'+journey+'\n\n'+quick+'\n\n'+materials)

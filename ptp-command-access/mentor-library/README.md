@@ -1,3 +1,9 @@
+# Mentor NEXT — recomendações por pergunta · 24/11/2026
+
+A entrada atual recomenda materiais da Biblioteca NEXT e da curadoria web sem depender de API de IA. O chat foi retirado do bundle público por decisão do usuário. Veja [MATERIALS-20261124.md](MATERIALS-20261124.md). Os registros e planos anteriores permanecem preservados.
+
+---
+
 # Mentor NEXT — interface simplificada de 23/11/2026
 
 Entrada centrada em conversa, 56 perguntas-guia e recomendações de materiais. A IA permanece desativada: o responsável confirmou que ainda não possui API contratada. Consulte [CHAT-20261123.md](CHAT-20261123.md) para a entrega atual e os passos de ativação. A jornada gamificada abaixo é histórica e não é mais a entrada principal.
