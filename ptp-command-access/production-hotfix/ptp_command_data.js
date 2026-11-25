@@ -2,17 +2,24 @@ import {authorized,readPages} from './ptp_command_model.js?v=20261113-session5';
 
 // The browser identity check improves UX. CMS permissions enforce data access.
 export async function verifyOwnerAccess(api) {
-  const member=await api.myMember();
+  let member;
+  try { member=await api.myMember(); }
+  catch(error) {
+    if(error.status===403)throw Object.assign(new Error('A sessão foi iniciada, mas o serviço não permitiu confirmar sua identidade. A integração de acesso precisa ser revisada.'),{status:403,code:'IDENTITY_PERMISSION_DENIED'});
+    throw error;
+  }
   if(!authorized(member))throw Object.assign(new Error('Esta conta não está autorizada a acessar a gestão da plataforma.'),{status:403,code:'OWNER_REQUIRED'});
   const token=await api.validMemberToken();
   if(!token)throw Object.assign(new Error('Sua sessão expirou. Entre novamente.'),{status:401});
-  // This collection is CMS_EDITOR with an explicit owner grant. Unlike a
-  // member-author collection, it cannot return another member's own rows.
-  // Querying it also works when empty; no admin-only permissions API is needed.
-  const result=await api.request('/data/v2/items/query',{
+  // Verify effective server permission; a configured grant alone is not proof.
+  let result;
+  try { result=await api.request('/data/v2/items/query',{
     method:'POST',token,
     body:{dataCollectionId:'PTPRegistrosMembros',query:{paging:{limit:1,offset:0}}}
-  });
+  }); } catch(error) {
+    if(error.status===403)throw Object.assign(new Error('Sua conta institucional foi reconhecida. O servidor ainda não liberou a leitura dos dados de gestão. É necessário concluir a configuração de autorização do painel.'),{status:403,code:'DATA_PERMISSION_DENIED'});
+    throw error;
+  }
   if(!Array.isArray(result.dataItems))throw new Error('O serviço retornou uma resposta de autorização inválida.');
   return member;
 }

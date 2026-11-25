@@ -27,6 +27,11 @@ test('server denial, expired session and malformed response fail closed',async()
  await assert.rejects(()=>dataModule.verifyOwnerAccess({...api,validMemberToken:async()=>''}),e=>e.status===401);
  await assert.rejects(()=>dataModule.verifyOwnerAccess({...api,request:async()=>({})}),/inválida/);
 });
+test('identity and collection denials remain closed and identify the failing stage without raw server text',async()=>{
+ const denied=()=>{throw Object.assign(new Error('private server details'),{status:403});};
+ await assert.rejects(()=>dataModule.verifyOwnerAccess({myMember:denied}),e=>e.code==='IDENTITY_PERMISSION_DENIED'&&!e.message.includes('private server details'));
+ await assert.rejects(()=>dataModule.verifyOwnerAccess({myMember:async()=>good,validMemberToken:async()=>'test',request:denied}),e=>e.code==='DATA_PERMISSION_DENIED'&&!e.message.includes('private server details'));
+});
 test('bounded loading retains successes, reports progress and isolates failed sources',async()=>{
  let active=0,peak=0;const progress=[];const ids=Array.from({length:21},(_,i)=>String(i));
  const result=await dataModule.loadSources(ids,{onProgress:p=>progress.push(p.completed),query:async id=>{active++;peak=Math.max(peak,active);await new Promise(resolve=>setImmediate(resolve));active--;if(id==='8')throw new Error('offline');return empty;}});

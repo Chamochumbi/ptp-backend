@@ -1,6 +1,6 @@
 import {completeOAuth,loginAccount,myMember,memberToken,logout,request,validMemberToken} from './js/wix.js?v=ptp-20261028-final';
 import {SOURCES,authorized,dateValue,created,parseJSON,nameOf,statusOf,groupCount,filterRows,csvCell,trend,readPages} from './ptp_command_model.js?v=20261113-session5';
-import {verifyOwnerAccess,loadSources,publicationIndex,accessRevoked} from './ptp_command_data.js?v=20261113-session5';
+import {verifyOwnerAccess,loadSources,publicationIndex,accessRevoked} from './ptp_command_data.js?v=20261125-access6';
 const api={myMember,validMemberToken,request};
 const $=id=>document.getElementById(id),fmt=new Intl.NumberFormat('pt-BR');
 const timeFmt=new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short',timeZone:'America/Sao_Paulo'});
@@ -23,7 +23,7 @@ async function start(){
   await refresh({verified:true});
  }catch(e){
   if(epoch!==generation)return;
-  locked(e.code==='OWNER_REQUIRED'?e.message:e.status===401?'Sua sessão expirou. Entre novamente.':e.status===403?'O servidor recusou o acesso gerencial. Seus dados continuam protegidos.':'Não foi possível validar o acesso. Confira sua conexão e tente novamente.',e.status===401);
+  locked(['OWNER_REQUIRED','IDENTITY_PERMISSION_DENIED','DATA_PERMISSION_DENIED'].includes(e.code)?e.message:e.status===401?'Sua sessão expirou. Entre novamente.':e.status===403?'O servidor recusou o acesso gerencial. Seus dados continuam protegidos.':'Não foi possível validar o acesso. Confira sua conexão e tente novamente.',e.status===401);
  }
 }
 async function query(source,limit,offset){if(!owner||!authorized(owner))throw new Error('Acesso encerrado');const token=await validMemberToken();if(!token)throw new Error('Sessão expirada');return request('/data/v2/items/query',{method:'POST',token,body:{dataCollectionId:source,query:{paging:{limit,offset}},returnTotalCount:true,consistentRead:true}});}
