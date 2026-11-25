@@ -1,31 +1,32 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node.js CI
-
+name: PTP module regression
 on:
   push:
-    branches: [ "main" ]
+    branches: [main, codex/ptp-command-20261109]
   pull_request:
-    branches: [ "main" ]
-
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
 jobs:
-  build:
-
+  modules:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+    defaults:
+      run:
+        working-directory: ptp-command-access
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      # The module package has no external dependencies or lockfile.
+      - name: Run authentication, authorization and journey regressions
+        run: npm test
+      - name: Rebuild published bundles from their sources
+        run: |
+          python3 radar/build-radar.py
+          python3 mentor-library/build-mentor.py
+      - name: Reject uncommitted generated bundle differences
+        run: git diff --exit-code -- radar/ptp_observatorio.js mentor-library/ptp_mentor_next.js

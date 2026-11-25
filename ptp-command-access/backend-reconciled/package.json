@@ -1,0 +1,12 @@
+{
+  "name": "ptp-backend",
+  "version": "3.2.1",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node server.js",
+    "test": "NODE_ENV=test node --test test/*.test.js",
+    "check": "node --check server.js && node --check mentor.js && node --check test/server.test.js && npm test"
+  }
+}

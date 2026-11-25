@@ -1,0 +1,111 @@
+{
+  "checkedAt": "2026-11-15T13:01:11.014669+00:00",
+  "access": "anonymous",
+  "results": [
+    {
+      "collection": "PTPEnviosEcossistema",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPPerfisUsuarios",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPVitrinesPublicas",
+      "status": 200,
+      "returned": 0
+    },
+    {
+      "collection": "PTPProjetosComunidade",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPDesafiosComunidade",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPOportunidadesComunidade",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPInteracoesPublicas",
+      "status": 200,
+      "returned": 0
+    },
+    {
+      "collection": "PTPRegistrosMembros",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPOrganizacoes",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPPerfis",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPProjetos",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPDesafios",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPVagas",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPMentoresPublicos",
+      "status": 200,
+      "returned": 0
+    },
+    {
+      "collection": "PTPMentorias",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPConexoes",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPSolicitacoesPublicas",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPPrivateMessages",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPNotificationSubscribers",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPNotificationDeliveries",
+      "status": 403,
+      "returned": null
+    },
+    {
+      "collection": "PTPAuditoria",
+      "status": 403,
+      "returned": null
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "recoveredFrom": "PTP-backend-3.2-github.zip",
+  "library_file_id": "libfile_5f08c39dc1d881918d51f6e2c6f41970",
+  "sha256": "7ec8899e99ddef8379795ea44cecc086ee802c024ef75a6befd48571396d20f9",
+  "originalVersion": "3.2.0",
+  "candidateVersion": "3.2.1",
+  "recoveredAt": "2026-11-18",
+  "matchesRunningArtifact": "not_verified",
+  "deployed": false,
+  "baselineTests": {
+    "passed": 12,
+    "regressionsFailed": 7
+  },
+  "candidateTests": {
+    "passed": 19,
+    "failed": 0
+  }
+}

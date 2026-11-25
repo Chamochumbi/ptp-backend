@@ -1,0 +1,28 @@
+{
+  "publication": {
+    "siteId": "11bfcf84-d1f4-4604-bfcf-82c08b20f0d4",
+    "published": true,
+    "siteUrl": "https://headless-imjmmxsthlj-pedrousinae-140b.wix-site-host.com",
+    "uploadId": "d129e7e3-5490-4229-9c04-2509ccb058f2",
+    "fileCount": 72,
+    "summary": {
+      "added": [],
+      "replaced": [
+        "ptp_mentor_next.js"
+      ],
+      "deleted": [],
+      "unchanged": [],
+      "missingDeletes": [],
+      "sizes": {
+        "ptp_mentor_next.js": {
+          "before": 151308,
+          "after": 151845
+        }
+      }
+    },
+    "atomic": false
+  },
+  "beforeHash": 2020553272,
+  "afterHash": 4048787444,
+  "verified": true
+}

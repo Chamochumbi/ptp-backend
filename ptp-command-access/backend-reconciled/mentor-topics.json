@@ -1,0 +1,561 @@
+[
+  {
+    "id": "discovery",
+    "label": "Clientes e problema",
+    "focus": "Mercado e clientes",
+    "keywords": [
+      "entrevista",
+      "cliente",
+      "publico alvo",
+      "dor",
+      "problema",
+      "descoberta",
+      "customer discovery"
+    ],
+    "search": "descoberta de clientes validação de problemas customer discovery",
+    "questions": [
+      "Como descobrir se o problema do cliente é real?",
+      "Que perguntas devo fazer em uma entrevista com clientes?",
+      "Como escolher meu primeiro público-alvo?",
+      "Como diferenciar interesse de intenção real de compra?"
+    ],
+    "answer": "Comece pelo comportamento atual do cliente: quando o problema aconteceu, como ele resolveu e qual foi a consequência. Opiniões sobre uma ideia são um indício; decisões, uso e compromissos concretos ajudam a investigar a demanda.",
+    "steps": [
+      "Escolha um público específico e convide pessoas que vivenciam o problema, incluindo quem não gostou da proposta.",
+      "Pergunte pela última ocorrência: o que aconteceu, o que foi tentado e quanto tempo ou recurso foi gasto. Registre fatos e interpretações separadamente.",
+      "Compare padrões e divergências; proponha um próximo compromisso observável, como experimentar uma tarefa ou discutir um piloto."
+    ],
+    "example": "Em vez de “você usaria meu aplicativo?”, experimente “conte a última vez em que precisou resolver isso e mostre o caminho que seguiu”.",
+    "caution": "Uma pequena rodada de entrevistas ajuda a aprender; não estima sozinha o tamanho do mercado nem prova disposição de pagar.",
+    "next": "Escreva três perguntas sobre fatos passados e teste o roteiro em uma conversa.",
+    "followups": [
+      "Como transformar entrevistas em hipóteses para um MVP?",
+      "Como definir uma proposta de valor para esse público?"
+    ],
+    "refs": [
+      "ext-customer",
+      "ext-value",
+      "ext-mit-course"
+    ]
+  },
+  {
+    "id": "mvp",
+    "label": "MVP e validação",
+    "focus": "Produto e MVP",
+    "keywords": [
+      "mvp",
+      "pmv",
+      "prototipo",
+      "produto minimo",
+      "validar",
+      "validacao",
+      "hipotese",
+      "experimento"
+    ],
+    "search": "produto mínimo viável experimentação lean startup validação",
+    "questions": [
+      "Como criar um MVP sem desenvolver o produto inteiro?",
+      "Como escolher a hipótese mais arriscada para testar?",
+      "Que critério define se um experimento funcionou?",
+      "Quando devo ajustar a ideia ou mudar de direção?"
+    ],
+    "answer": "O MVP deve produzir aprendizado sobre uma hipótese importante com o menor escopo que permita um teste válido. Primeiro escolha o que precisa descobrir; depois defina protótipo, simulação ou operação manual e como observar o resultado.",
+    "steps": [
+      "Declare a hipótese com público, comportamento e benefício esperado. Escolha a incerteza que mais ameaça o negócio.",
+      "Defina tarefa, participantes, métrica e limiar de decisão antes de executar. Registre a situação atual para comparação.",
+      "Observe o uso, inclua as falhas e compare com o critério. Decida entre repetir, ajustar ou avançar, registrando limites."
+    ],
+    "example": "Para testar uma recomendação de serviços, faça a seleção manualmente e acompanhe se o usuário realiza a próxima ação. Automatize somente depois de entender o que gera valor.",
+    "caution": "Cadastro, elogio e clique isolado não demonstram valor recorrente. O teste deve ser compatível com a decisão pretendida.",
+    "next": "Complete: acreditamos que [público] fará [ação]; testaremos por [método] e decidiremos usando [métrica e critério].",
+    "followups": [
+      "Que métricas de tração devo acompanhar depois do MVP?",
+      "Como entrevistar quem desistiu do protótipo?"
+    ],
+    "refs": [
+      "ext-test",
+      "ext-mvp",
+      "ext-uff-study",
+      "ext-ufg-case"
+    ]
+  },
+  {
+    "id": "model",
+    "label": "Modelo de negócio",
+    "focus": "Negócios / Canvas",
+    "keywords": [
+      "canvas",
+      "modelo de negocio",
+      "proposta de valor",
+      "monetizacao",
+      "assinatura",
+      "marketplace"
+    ],
+    "search": "business model canvas proposta de valor modelo de negócios",
+    "questions": [
+      "Como montar um Canvas que ajude a tomar decisões?",
+      "Como definir minha proposta de valor?",
+      "Qual modelo de receita faz sentido para minha solução?",
+      "Como validar um marketplace com dois públicos diferentes?"
+    ],
+    "answer": "Use o modelo de negócio para conectar quem recebe valor, quem paga e o que é necessário para entregar. Trate cada bloco do Canvas como hipótese e escolha quais relações precisam ser verificadas primeiro.",
+    "steps": [
+      "Descreva um segmento prioritário e sua tarefa. Diferencie usuário, comprador e decisor quando forem pessoas distintas.",
+      "Relacione proposta de valor, canal, receita e custo de entrega. Compare alternativas como assinatura, projeto ou transação.",
+      "Teste a hipótese mais incerta com clientes e parceiros. Atualize o modelo com evidências e datas."
+    ],
+    "example": "Em um marketplace, entrevistar compradores não valida a oferta. Teste também se os fornecedores participam nas condições propostas e se uma transação acontece.",
+    "caution": "Um Canvas preenchido não valida o negócio. Não confunda intenção de receita com vendas realizadas.",
+    "next": "Marque no seu Canvas três hipóteses sem evidência e escolha uma para testar nesta semana.",
+    "followups": [
+      "Como definir o preço da primeira oferta?",
+      "Como validar o interesse real de clientes?"
+    ],
+    "refs": [
+      "ext-canvas",
+      "ext-value",
+      "ext-yc-models"
+    ]
+  },
+  {
+    "id": "pricing",
+    "label": "Preço e caixa",
+    "focus": "Negócios / Canvas",
+    "keywords": [
+      "preco",
+      "precificacao",
+      "margem",
+      "custo",
+      "caixa",
+      "runway",
+      "burn rate",
+      "financeiro",
+      "markup"
+    ],
+    "search": "precificação margem de contribuição fluxo de caixa startups",
+    "questions": [
+      "Como definir o preço sem olhar só para o concorrente?",
+      "Qual a diferença entre margem e markup?",
+      "Como saber por quanto tempo meu caixa sustenta a operação?",
+      "Estou vendendo, mas por que o dinheiro não sobra?"
+    ],
+    "answer": "Cruze custo de entrega, valor percebido, alternativas do cliente e condições de pagamento. Separe resultado econômico de dinheiro disponível: uma venda a prazo pode gerar receita antes de gerar entrada no caixa.",
+    "steps": [
+      "Liste custos e despesas variáveis por venda, custos fixos e prazos de recebimento e pagamento.",
+      "Estime a contribuição de cada venda e compare cenários de preço e volume. Confira os tributos e as premissas aplicáveis com o responsável financeiro.",
+      "Projete entradas e saídas por período; teste a oferta com clientes e revise o efeito de descontos e inadimplência."
+    ],
+    "example": "Exemplo simplificado: vender por R$ 100 com R$ 60 de custos e despesas variáveis deixa R$ 40 para cobrir custos fixos e resultado. Isso não significa R$ 40 de lucro líquido.",
+    "caution": "Runway estimado = caixa disponível ÷ consumo líquido por período, quando esse consumo é positivo e razoavelmente estável. Variações de receita e despesas exigem cenários.",
+    "next": "Monte uma previsão curta de caixa com saldo inicial, recebimentos previstos, pagamentos e saldo final.",
+    "followups": [
+      "Como validar se o cliente aceita meu preço?",
+      "Que métricas mostram crescimento sustentável?"
+    ],
+    "refs": [
+      "ext-price",
+      "ext-cash",
+      "ext-yc-models"
+    ]
+  },
+  {
+    "id": "sales",
+    "label": "Vendas e funil",
+    "focus": "Mercado e clientes",
+    "keywords": [
+      "venda",
+      "funil",
+      "conversao",
+      "prospeccao",
+      "comercial",
+      "lead",
+      "marketing",
+      "canal",
+      "b2b"
+    ],
+    "search": "vendas B2B funil comercial conversão aquisição clientes",
+    "questions": [
+      "Como conquistar os primeiros clientes B2B?",
+      "Como montar um funil de vendas simples?",
+      "Como calcular o funil de trás para frente?",
+      "Em qual etapa estamos perdendo oportunidades?"
+    ],
+    "answer": "Um funil útil descreve decisões observáveis do comprador. Defina entrada, saída e responsável de cada etapa; depois observe onde oportunidades ficam paradas e por quê.",
+    "steps": [
+      "Escolha um perfil de cliente e uma oferta. Use poucas etapas, como contato, conversa qualificada, proposta e venda.",
+      "Registre volume, conversão e tempo em cada passagem, mantendo a mesma janela e acompanhando as mesmas oportunidades.",
+      "Trabalhe um gargalo por vez. Use as taxas históricas para estimar o esforço necessário e revise conforme novos dados chegarem."
+    ],
+    "example": "Funil invertido ilustrativo: para 10 vendas, com 25% das propostas convertidas, seriam 40 propostas. Se metade das conversas qualificadas gera proposta, seriam 80 conversas. As taxas são hipóteses do exemplo, não benchmarks.",
+    "caution": "Não divida vendas deste mês por leads deste mês se o ciclo comercial levar vários meses. Isso mistura grupos diferentes.",
+    "next": "Registre as próximas oportunidades com etapa, data, próximo compromisso e motivo de perda.",
+    "followups": [
+      "Como entrevistar clientes que não compraram?",
+      "Que métricas de retenção complementam o funil?"
+    ],
+    "refs": [
+      "ext-sales",
+      "ext-customer",
+      "ext-yc-growth"
+    ]
+  },
+  {
+    "id": "traction",
+    "label": "Tração e retenção",
+    "focus": "Mercado e clientes",
+    "keywords": [
+      "tracao",
+      "retencao",
+      "churn",
+      "coorte",
+      "cac",
+      "ltv",
+      "recorrencia",
+      "metricas",
+      "crescimento",
+      "escalar"
+    ],
+    "search": "startup retenção coortes métricas crescimento customer retention",
+    "questions": [
+      "Quais métricas de tração realmente importam?",
+      "Como medir retenção sem me enganar com cadastros?",
+      "Como calcular CAC e comparar com o retorno dos clientes?",
+      "Quando faz sentido investir para crescer?"
+    ],
+    "answer": "Tração depende de comportamento que representa valor para o negócio: uso relevante, compra, renovação ou outro compromisso verificável. Observe aquisição, ativação, retenção e receita juntos, separando grupos de entrada e canais.",
+    "steps": [
+      "Defina a ação que demonstra valor e a frequência esperada de uso. Uma solução mensal não deve ser avaliada como um aplicativo diário.",
+      "Agrupe clientes pela entrada e acompanhe quantos repetem a ação em períodos comparáveis. Registre cancelamentos e seus motivos.",
+      "Compare o custo de adquirir e atender com a contribuição observada. Só amplie o investimento após entender retenção, capacidade de entrega e caixa."
+    ],
+    "example": "Se 20 dos 50 clientes de uma mesma coorte voltaram a usar a função principal no período definido, a retenção observada dessa coorte é 40%. O resultado precisa ser comparado com o ciclo de uso e outros grupos.",
+    "caution": "Não use uma razão universal de LTV/CAC como prova de viabilidade. Estimativas de LTV ficam frágeis quando há pouco histórico ou retenção instável.",
+    "next": "Monte uma tabela com mês de entrada, número inicial de clientes e clientes ativos nos períodos seguintes.",
+    "followups": [
+      "Como investigar o motivo de abandono dos clientes?",
+      "Como projetar o caixa antes de escalar?"
+    ],
+    "refs": [
+      "ext-yc-growth",
+      "ext-yc-models",
+      "ext-lean",
+      "ext-cash"
+    ]
+  },
+  {
+    "id": "pitch",
+    "label": "Pitch e apresentação",
+    "focus": "Pitch Deck",
+    "keywords": [
+      "pitch",
+      "apresentacao",
+      "deck",
+      "investidor",
+      "captacao"
+    ],
+    "search": "startup pitch apresentação investidores evidências",
+    "questions": [
+      "Como estruturar um pitch claro em poucos minutos?",
+      "O que não pode faltar no meu pitch deck?",
+      "Como apresentar resultados quando ainda não tenho receita?",
+      "Como adaptar o pitch para parceiro, cliente ou investidor?"
+    ],
+    "answer": "Comece pela decisão que deseja provocar na audiência. Organize uma narrativa curta que ligue problema, evidências, proposta, modelo de negócio e pedido; a apresentação deve permitir entender o valor e a próxima conversa.",
+    "steps": [
+      "Defina audiência, tempo e pedido concreto: reunião, piloto, compra ou análise de investimento.",
+      "Mostre o problema e as evidências disponíveis, a solução, o público, a forma de receita e a capacidade da equipe.",
+      "Separe resultados medidos de projeções, explique as premissas e ensaie. Peça a alguém que repita a proposta e o pedido."
+    ],
+    "example": "Sem receita, apresente o que foi observado em entrevistas e testes, inclusive limites. “Realizamos um teste com participantes do público” é mais preciso que anunciar tração sem uso ou compra.",
+    "caution": "Não transforme estimativas de mercado em receita provável nem liste parceiros sem explicar o vínculo real.",
+    "next": "Escreva uma frase para problema, solução, evidência e pedido. Corte o que não ajuda a audiência a decidir.",
+    "followups": [
+      "Que métricas posso levar para investidores?",
+      "Como preparar um piloto com uma empresa?"
+    ],
+    "refs": [
+      "ext-pitch",
+      "ext-sales",
+      "ext-mit-course"
+    ]
+  },
+  {
+    "id": "funding",
+    "label": "Fomento e recursos",
+    "focus": "Fomento e capital",
+    "keywords": [
+      "fomento",
+      "edital",
+      "pipe",
+      "fapesp",
+      "financiamento",
+      "subvencao",
+      "recurso",
+      "capital"
+    ],
+    "search": "fomento inovação pesquisa empresa FAPESP PIPE",
+    "questions": [
+      "Como preparar meu projeto para buscar fomento?",
+      "O que verificar antes de me candidatar a um edital?",
+      "Como organizar orçamento e cronograma de pesquisa?",
+      "Como comparar fomento, receita própria e investimento?"
+    ],
+    "answer": "Comece pela atividade que precisa financiar, seu estágio e as evidências técnicas e comerciais. Depois compare instrumentos compatíveis: pesquisa, desenvolvimento, operação e expansão podem exigir fontes e condições diferentes.",
+    "steps": [
+      "Defina entregas, equipe, prazo e orçamento, com premissas explícitas. Separe pesquisa de despesas operacionais.",
+      "Leia o instrumento oficial vigente: elegibilidade, itens financiáveis, contrapartida, prazos e obrigações.",
+      "Prepare documentação e evidências, compare custo e compromissos de cada alternativa e confira condições antes da candidatura."
+    ],
+    "example": "Uma dúvida técnica que exige pesquisa deve ser descrita como pergunta investigável, método e resultado esperado; comprar um equipamento por si só não descreve um projeto de pesquisa.",
+    "caution": "A indicação de FAPESP ou Embrapii não significa edital aberto, enquadramento ou aprovação. Confirme regras e prazos diretamente na fonte oficial.",
+    "next": "Faça uma página com problema, hipótese técnica, método, entregas, equipe e estimativa de recursos.",
+    "followups": [
+      "Como transformar pesquisa em um piloto de inovação aberta?",
+      "Como comunicar evidências no pitch?"
+    ],
+    "refs": [
+      "ext-pipe",
+      "ext-embrapii",
+      "ext-cash"
+    ]
+  },
+  {
+    "id": "open",
+    "label": "Pilotos e parcerias",
+    "focus": "Inovação aberta empresarial",
+    "keywords": [
+      "inovacao aberta",
+      "piloto",
+      "poc",
+      "prova de conceito",
+      "parceria",
+      "corporacao",
+      "desafio empresarial"
+    ],
+    "search": "inovação aberta prova de conceito piloto parceria empresa universidade",
+    "questions": [
+      "Como propor um piloto para uma empresa?",
+      "Como transformar uma demanda empresarial em desafio de inovação?",
+      "Quais critérios definem sucesso em uma prova de conceito?",
+      "Como preparar uma parceria entre empresa e universidade?"
+    ],
+    "answer": "Um piloto deve reduzir uma incerteza relevante para quem decide. Alinhe problema, resultado observável, escopo e condições de execução antes de prometer escala ou contratação.",
+    "steps": [
+      "Identifique patrocinador, usuário e decisor. Registre o processo atual e a consequência do problema.",
+      "Combine hipótese, escopo, acesso a dados e recursos, responsáveis, prazo e critério de sucesso.",
+      "Preveja como os resultados serão avaliados e quem decide a etapa seguinte. Trate uso de dados e propriedade intelectual com as partes responsáveis."
+    ],
+    "example": "Para reduzir retrabalho, compare o indicador no processo atual com o piloto em condições descritas. Defina antes o que levará a repetir, ajustar ou discutir contratação.",
+    "caution": "Um piloto bem-sucedido não garante contrato. Acesso a dados, autorizações e obrigações precisam ser combinados antes da execução.",
+    "next": "Prepare uma proposta de uma página com desafio, hipótese, entregas, condições e decisão ao final.",
+    "followups": [
+      "Como definir o MVP de um piloto?",
+      "Como proteger a tecnologia antes de uma parceria?"
+    ],
+    "refs": [
+      "ext-embrapii",
+      "ext-test",
+      "ext-mit-course"
+    ]
+  },
+  {
+    "id": "agro",
+    "label": "AgTech e campo",
+    "focus": "Produto e MVP",
+    "keywords": [
+      "agtech",
+      "agro",
+      "agricultura",
+      "produtor rural",
+      "safra",
+      "campo",
+      "agronomico"
+    ],
+    "search": "agricultura digital adoção tecnologia produtor rural validação campo",
+    "questions": [
+      "Como validar uma AgTech com produtores rurais?",
+      "Como planejar um piloto em campo considerando a safra?",
+      "Como identificar quem usa, decide e paga por uma AgTech?",
+      "Como demonstrar valor sem prometer produtividade não comprovada?"
+    ],
+    "answer": "Na AgTech, a validação precisa considerar sistema produtivo, calendário, infraestrutura e quem decide a compra. Uma tecnologia útil em um contexto pode exigir adaptação em outra cultura, região ou escala de operação.",
+    "steps": [
+      "Caracterize a operação e o problema: cultura ou atividade, porte, rotina, conectividade e alternativas já usadas.",
+      "Planeje um teste compatível com o calendário e as condições locais. Combine indicador, comparação e acompanhamento técnico adequado.",
+      "Registre custo de adoção, uso e resultados, incluindo clima e outras condições que possam explicá-los. Investigue a decisão de compra separadamente."
+    ],
+    "example": "Antes de desenvolver um painel de dados, acompanhe como o produtor toma a decisão e se a informação chega a tempo de mudar uma ação concreta.",
+    "caution": "Uma demonstração isolada não comprova ganho de produtividade. Ensaios técnicos e alegações agronômicas exigem desenho e avaliação especializados.",
+    "next": "Converse com um usuário e um decisor da mesma operação e compare o que cada um considera valor.",
+    "followups": [
+      "Como desenhar um experimento para uma AgTech?",
+      "Como estruturar uma proposta de piloto empresarial?"
+    ],
+    "refs": [
+      "ext-agro",
+      "ext-customer",
+      "ext-test"
+    ]
+  },
+  {
+    "id": "impact",
+    "label": "Impacto e ESG",
+    "focus": "Impacto",
+    "keywords": [
+      "impacto",
+      "esg",
+      "ods",
+      "sustentabilidade",
+      "social",
+      "ambiental",
+      "carbono"
+    ],
+    "search": "avaliação impacto indicadores linha de base sustentabilidade ODS",
+    "questions": [
+      "Como medir impacto sem confundir atividade com resultado?",
+      "Quais indicadores ESG fazem sentido para meu projeto?",
+      "Como construir uma linha de base?",
+      "Como relacionar uma iniciativa aos ODS com evidências?"
+    ],
+    "answer": "Defina qual mudança pretende observar, para quem e em qual período. Separe o que foi feito, o resultado observado e o que pode ser atribuído à iniciativa; são afirmações diferentes.",
+    "steps": [
+      "Desenhe a relação esperada entre atividade e mudança. Identifique beneficiários, possíveis efeitos negativos e fatores externos.",
+      "Escolha poucos indicadores com unidade, fonte, linha de base, frequência e responsável pela coleta.",
+      "Compare resultados com a referência e explique limites. Use os ODS para organizar o tema, sem tratá-los como certificação."
+    ],
+    "example": "Número de oficinas é uma entrega. Mudança na capacidade de executar uma tarefa pode ser um resultado. Atribuir essa mudança apenas às oficinas exige avaliação adicional.",
+    "caution": "Associar um projeto a um ODS não comprova impacto. Alegações ambientais e de carbono precisam de evidências e métodos apropriados.",
+    "next": "Escolha um resultado e complete: indicador, valor inicial, fonte, periodicidade e mudança esperada.",
+    "followups": [
+      "Como testar a hipótese de impacto do meu projeto?",
+      "Como apresentar evidências de impacto em um pitch?"
+    ],
+    "refs": [
+      "ext-ods",
+      "ext-test",
+      "ext-ufpb-review"
+    ]
+  },
+  {
+    "id": "ip",
+    "label": "Tecnologia e proteção",
+    "focus": "Inovação aberta empresarial",
+    "keywords": [
+      "patente",
+      "propriedade intelectual",
+      "marca",
+      "protecao",
+      "licenciamento",
+      "nit",
+      "invencao"
+    ],
+    "search": "propriedade intelectual patente marca transferência tecnologia NIT",
+    "questions": [
+      "Como começar a avaliar a proteção da minha tecnologia?",
+      "Qual a diferença entre proteger marca e invenção?",
+      "O que preparar para conversar com um NIT?",
+      "Como discutir licenciamento com um parceiro?"
+    ],
+    "answer": "Comece identificando o ativo: marca, invenção, software, conhecimento ou outro resultado. Organize autoria, titularidade, desenvolvimento e divulgações já realizadas para discutir as alternativas com o responsável técnico ou NIT.",
+    "steps": [
+      "Descreva o que foi criado, por quem, em que projeto e com quais recursos ou vínculos.",
+      "Consulte os guias oficiais pertinentes e faça um levantamento inicial de soluções semelhantes.",
+      "Antes de divulgar detalhes ou negociar, peça avaliação sobre proteção, titularidade e condições de uso. Registre o que precisa ser decidido."
+    ],
+    "example": "O nome comercial e uma solução técnica são ativos diferentes. Proteger um deles não significa proteger automaticamente o outro.",
+    "caution": "Este roteiro não determina patenteabilidade, titularidade ou liberdade de operação. Esses pontos exigem análise especializada e regras vigentes.",
+    "next": "Prepare um resumo não confidencial do ativo e uma lista de envolvidos e divulgações anteriores.",
+    "followups": [
+      "Como estruturar uma parceria com universidade?",
+      "Como apresentar tecnologia sem revelar detalhes confidenciais?"
+    ],
+    "refs": [
+      "ext-patentes",
+      "ext-marcas",
+      "ext-embrapii"
+    ]
+  },
+  {
+    "id": "research",
+    "label": "Pesquisa e literatura",
+    "focus": "Problema e evidências",
+    "keywords": [
+      "literatura",
+      "artigo",
+      "academico",
+      "cientifico",
+      "pesquisa",
+      "revisao",
+      "referencia",
+      "bibliografia",
+      "universidade"
+    ],
+    "search": "lean startup revisão literatura evidências empreendedorismo inovação",
+    "questions": [
+      "Como encontrar artigos relevantes para meu desafio?",
+      "Como avaliar a qualidade de uma referência acadêmica?",
+      "Como transformar uma revisão de literatura em decisão prática?",
+      "Como comparar autores que chegam a conclusões diferentes?"
+    ],
+    "answer": "Transforme a dúvida em uma pergunta delimitada e procure termos equivalentes em português e inglês. Compare o tipo de evidência, o contexto estudado e os limites antes de aplicar uma conclusão ao seu negócio.",
+    "steps": [
+      "Defina problema, contexto e resultado de interesse. Prepare combinações de palavras e sinônimos.",
+      "Use referências acadêmicas e bases de busca; registre título, autores, ano, link ou DOI, método e resultado relevante.",
+      "Compare amostras, condições e limitações. Separe revisões, estudos empíricos, relatos de caso e guias de prática."
+    ],
+    "example": "Para investigar MVP, compare uma revisão de conceitos com uma pesquisa empírica e um estudo de caso. Eles respondem perguntas diferentes e não têm o mesmo alcance.",
+    "caution": "Título, resumo e número de citações não bastam para avaliar qualidade. Leia o método e não trate correlação como causalidade.",
+    "next": "Selecione três referências e anote o que cada uma permite afirmar — e o que não permite.",
+    "followups": [
+      "Como transformar uma evidência em hipótese de MVP?",
+      "Como medir resultados de um experimento?"
+    ],
+    "refs": [
+      "ext-scielo-sources",
+      "ext-ufpb-review",
+      "ext-uff-study",
+      "ext-ufg-case",
+      "ext-mit-method"
+    ]
+  },
+  {
+    "id": "team",
+    "label": "Equipe e execução",
+    "focus": "Problema e evidências",
+    "keywords": [
+      "equipe",
+      "socio",
+      "execucao",
+      "prioridade",
+      "responsavel",
+      "gestao",
+      "planejamento",
+      "competencia"
+    ],
+    "search": "empreendedorismo equipe fundadora execução prioridades novos negócios",
+    "questions": [
+      "Como escolher a prioridade da startup nesta semana?",
+      "Como dividir responsabilidades em uma equipe pequena?",
+      "Como identificar competências que faltam na equipe?",
+      "Como organizar uma reunião de acompanhamento objetiva?"
+    ],
+    "answer": "Organize a execução em torno da próxima decisão importante. Escolha poucas entregas observáveis e esclareça quem realiza, quem decide e quais dependências precisam ser resolvidas.",
+    "steps": [
+      "Liste os bloqueios e selecione o que mais impede aprendizado, entrega ao cliente ou continuidade da operação.",
+      "Defina uma entrega verificável, responsável, prazo e recursos necessários. Confirme capacidade e dependências com a equipe.",
+      "Na revisão, compare combinado e realizado, registre impedimentos e decida o próximo compromisso."
+    ],
+    "example": "Troque “melhorar as vendas” por “registrar as objeções de uma rodada de conversas com o público prioritário e decidir o ajuste da oferta”.",
+    "caution": "Ter muitas tarefas concluídas não garante avanço. Verifique se as entregas reduziram uma incerteza ou melhoraram um resultado relevante.",
+    "next": "Escolha uma entrega para a próxima revisão e escreva responsável, prazo e evidência de conclusão.",
+    "followups": [
+      "Como priorizar as hipóteses de um MVP?",
+      "Como definir métricas para acompanhar a execução?"
+    ],
+    "refs": [
+      "ext-mit-course",
+      "ext-mit-method",
+      "ext-test"
+    ]
+  }
+]
