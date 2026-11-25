@@ -1,8 +1,8 @@
-import {completeOAuth,loginAccount,myMember,memberToken,logout,validMemberToken} from './js/wix.js?v=ptp-20261028-final';
-import {SOURCES,authorized,dateValue,created,parseJSON,nameOf,statusOf,groupCount,filterRows,csvCell,trend,readPages} from './ptp_command_model.js?v=20261109-command4';
-import {verifyOwnerAccess,loadSources,publicationIndex,accessRevoked} from './ptp_command_data.js?v=20261109-command4';
-import {createCommandAPI} from './ptp_command_api.js?v=20261109-command4';
-const commandRequest=createCommandAPI({validMemberToken});
+import {completeOAuth,loginAccount,myMember,memberToken,logout,sessionVersion,validMemberToken} from './js/wix.js?v=ptp-20261028-final';
+import {SOURCES,authorized,dateValue,created,parseJSON,nameOf,statusOf,groupCount,filterRows,csvCell,trend,readPages} from './ptp_command_model.js?v=20261113-session5';
+import {verifyOwnerAccess,loadSources,publicationIndex,accessRevoked} from './ptp_command_data.js?v=20261125-command7';
+import {createCommandAPI} from './ptp_command_api.js?v=20261125-command7';
+const commandRequest=createCommandAPI({validMemberToken,sessionVersion,logout});
 const api={myMember,commandRequest};
 const $=id=>document.getElementById(id),fmt=new Intl.NumberFormat('pt-BR');
 const timeFmt=new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short',timeZone:'America/Sao_Paulo'});
@@ -25,7 +25,7 @@ async function start(){
   await refresh({verified:true});
  }catch(e){
   if(epoch!==generation)return;
-  locked(['OWNER_REQUIRED','service_not_configured','service_permission_denied','rate_limited'].includes(e.code)?e.message:e.status===401?'Sua sessão expirou. Entre novamente.':e.status===403?'O servidor recusou o acesso gerencial. Seus dados continuam protegidos.':'Não foi possível validar o acesso. Confira sua conexão e tente novamente.',e.status===401);
+  locked(['OWNER_REQUIRED','IDENTITY_PERMISSION_DENIED','DATA_PERMISSION_DENIED','service_not_configured','service_permission_denied','rate_limited'].includes(e.code)?e.message:e.status===401?'Sua sessão expirou. Entre novamente.':e.status===403?'O servidor recusou o acesso gerencial. Seus dados continuam protegidos.':'Não foi possível validar o acesso. Confira sua conexão e tente novamente.',e.status===401);
  }
 }
 async function query(source,limit,offset){if(!owner||!authorized(owner))throw new Error('Acesso encerrado');return commandRequest('query',{collection:source,limit,offset});}
@@ -122,6 +122,6 @@ document.addEventListener('visibilitychange',()=>{
  const epoch=generation;
  verifyOwnerAccess(api).catch(()=>{if(epoch===generation)locked('Não foi possível confirmar sua autorização.',false);});
 });
+document.addEventListener('ptp:session-cleared',()=>locked('Sua sessão foi encerrada. Entre novamente.'));
 window.addEventListener('pagehide',()=>wipe());window.addEventListener('pageshow',event=>{if(event.persisted)start();});
 start();
-

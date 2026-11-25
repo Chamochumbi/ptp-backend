@@ -1,4 +1,4 @@
-import {authorized,readPages} from './ptp_command_model.js?v=20261109-command4';
+import {authorized,readPages} from './ptp_command_model.js?v=20261113-session5';
 
 // Frontend identity is a UX guard; the backend verifies the member independently.
 export async function verifyOwnerAccess(api) {

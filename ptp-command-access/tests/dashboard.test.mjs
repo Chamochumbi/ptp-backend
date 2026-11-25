@@ -7,7 +7,7 @@ const modelCode=fs.readFileSync(new URL('../frontend/ptp_command_model.js',impor
 const modelURL='data:text/javascript;base64,'+Buffer.from(modelCode).toString('base64');
 const model=await import(modelURL);
 const dataCode=fs.readFileSync(new URL('../frontend/ptp_command_data.js',import.meta.url),'utf8');
-const dataModule=await import('data:text/javascript;base64,'+Buffer.from(dataCode.replace('./ptp_command_model.js?v=20261109-command4',modelURL)).toString('base64'));
+const dataModule=await import('data:text/javascript;base64,'+Buffer.from(dataCode.replace('./ptp_command_model.js?v=20261113-session5',modelURL)).toString('base64'));
 const good={id:model.OWNER_ID,loginEmail:model.OWNER_EMAIL,loginEmailVerified:true,status:'APPROVED'};
 const empty={dataItems:[],pagingMetadata:{total:0,hasNext:false}};
 
@@ -55,7 +55,7 @@ async function mount({member=good,failSource=null,failError={status:503},hold=nu
  nodes.get('dashboard').hidden=true;nodes.get('periodFilter').value='0';
  const calls=[],downloads=[];let currentMember=member,failed=failSource;
  const context=vm.createContext({console,Intl,Date,Map,Set,Promise,Blob,URL:{createObjectURL:blob=>{downloads.push(blob);return 'blob:test';},revokeObjectURL(){}},Option:class extends Element{constructor(text,value){super('option',text,value);}},document:{hidden:false,body:new Element('body'),getElementById:id=>{assert.ok(nodes.has(id),id);return nodes.get(id);},createElement:tag=>new Element(tag),addEventListener(){}},window:{addEventListener(){}},sessionStorage:{setItem(){},removeItem(){}},setInterval(){},setTimeout(){}});
- const api={completeOAuth:async()=>false,loginAccount:async()=>{},myMember:async()=>currentMember,memberToken:()=>currentMember?'test':'',validMemberToken:async()=>currentMember?'test':'',logout:()=>{currentMember=null;},commandRequest:async(path,body)=>{calls.push({path,body});if(path==='status')return {authorized:true,memberId:currentMember?.id};const source=body.collection;if(source===failed)throw Object.assign(new Error('offline'),failError);if(path==='query'&&hold)await hold;if(source==='PTPEnviosEcossistema')return {dataItems:records,pagingMetadata:{total:records.length,hasNext:false}};return empty;}};
+ const api={sessionVersion:()=>0,completeOAuth:async()=>false,loginAccount:async()=>{},myMember:async()=>currentMember,memberToken:()=>currentMember?'test':'',validMemberToken:async()=>currentMember?'test':'',logout:()=>{currentMember=null;},commandRequest:async(path,body)=>{calls.push({path,body});if(path==='status')return {authorized:true,memberId:currentMember?.id};const source=body.collection;if(source===failed)throw Object.assign(new Error('offline'),failError);if(path==='query'&&hold)await hold;if(source==='PTPEnviosEcossistema')return {dataItems:records,pagingMetadata:{total:records.length,hasNext:false}};return empty;}};
  const adapter=new vm.SyntheticModule(['createCommandAPI'],function(){this.setExport('createCommandAPI',()=>api.commandRequest);},{context});
  const wix=new vm.SyntheticModule(Object.keys(api),function(){for(const[k,v]of Object.entries(api))this.setExport(k,v);},{context});
  const modelVM=new vm.SourceTextModule(modelCode,{context});await modelVM.link(()=>{});
