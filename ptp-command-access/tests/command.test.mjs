@@ -4,14 +4,15 @@ import http from 'node:http';
 import {createCommandHandler, OWNER_ID, OWNER_EMAIL, ORIGIN, SITE_ID, COLLECTIONS} from '../backend/command.mjs';
 
 const good = {id:OWNER_ID,loginEmail:OWNER_EMAIL,loginEmailVerified:true,status:'APPROVED'};
-async function fixture(t, {member=good, key='server-test-secret', deny=0, broken=false, memberStatus=200}={}) {
+async function fixture(t, {member=good, key='server-test-secret', deny=0, broken=false, memberStatus=200, basicMember=member, basicStatus=200}={}) {
   const calls=[];
-  const state={member,key,deny,broken,memberStatus,time:0};
+  const state={member,key,deny,broken,memberStatus,basicMember,basicStatus,time:0};
   const handle=createCommandHandler({now:()=>state.time,apiKey:()=>state.key,fetchImpl:async(url,options)=>{
     calls.push({url,options});
     // Match the documented REST contract, including the identity fieldset.
     // A permissive /members/ mock hides bugs that omit the private owner fields.
     if(url==='https://www.wixapis.com/members/v1/members/my?fieldsets=FULL')return Response.json({member:state.member},{status:state.memberStatus});
+    if(url==='https://www.wixapis.com/members/v1/members/my')return Response.json({member:state.basicMember},{status:state.basicStatus});
     if(url!=='https://www.wixapis.com/data/v2/items/query')return Response.json({error:'invalid_test_contract'},{status:404});
     if(state.deny)return Response.json({message:'DO-NOT-LEAK-server-test-secret'},{status:state.deny});
     return Response.json(state.broken?{}:{dataItems:[],pagingMetadata:{total:0}});
@@ -71,4 +72,12 @@ test('rate limit blocks further upstream calls and resets after one minute',asyn
  const before=f.calls.length;const limited=await f.send();
  assert.equal(limited.status,429);assert.equal(f.calls.length,before);
  f.state.time=60000;assert.equal((await f.send()).status,200);
+});
+
+test('FULL fieldset denial permits basic identity only with every owner attribute verified',async t=>{
+ const f=await fixture(t,{memberStatus:403});assert.equal((await f.send()).status,200);assert.equal(f.calls.length,3);
+ for(const member of [{...good,id:'other'},{...good,loginEmailVerified:false},{id:good.id}]){
+  f.state.basicMember=member;const before=f.calls.length;assert.equal((await f.send()).status,403);assert.equal(f.calls.length-before,2);
+ }
+ f.state.basicStatus=403;assert.equal((await f.send()).status,403);
 });

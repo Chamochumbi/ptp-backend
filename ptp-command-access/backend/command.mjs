@@ -26,7 +26,12 @@ export function createCommandHandler({fetchImpl = fetch, apiKey = () => process.
     try { return await response.json(); } catch { throw failure(502, 'invalid_upstream_response'); }
   }
   async function owner(token) {
-    const result = await wix('/members/v1/members/my?fieldsets=FULL', token);
+    let result;
+    try { result = await wix('/members/v1/members/my?fieldsets=FULL', token); }
+    catch(error) {
+      if(error.status !== 403)throw error;
+      result = await wix('/members/v1/members/my', token);
+    }
     if (!isOwner(result.member)) throw failure(403, 'owner_required');
     return result.member;
   }
